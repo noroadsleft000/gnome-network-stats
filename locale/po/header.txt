@@ -1,0 +1,18 @@
+# MIT License.
+# Copyright (C) 2021 No roads left...
+# This file is distributed under the same license as the PACKAGE package.
+# No Roads Left <noroadsleft000@gmail.com>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: network-stats 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-05-22 14:42+0530\n"
+"PO-Revision-Date: 2021-05-22 14:42+0530\n"
+"Last-Translator: No roads left noroadsleft000@gmail.com\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"

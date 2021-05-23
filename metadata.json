@@ -1,0 +1,10 @@
+{
+  "name": "Network Stats",
+  "description": "displays network interfaces bandwidth and data usage",
+  "uuid": "network-stats@gnome.noroadsleft.xyz",
+  "shell-version": [
+    "3.36"
+  ],
+  "url" : "gnome.noroadsleft.xyz",
+  "version": 1
+}

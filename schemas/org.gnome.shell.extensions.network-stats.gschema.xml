@@ -1,0 +1,42 @@
+<schemalist gettext-domain="network-stats">
+  <schema id="org.gnome.shell.extensions.network-stats"
+      path="/org/gnome/shell/extensions/network-stats/">
+
+    <key type="i" name="refresh-interval">
+        <default>1500</default>
+        <summary>The interval between updates in miliseconds</summary>
+        <description>The interval between updates in miliseconds </description>
+        <range min="500" max="5000"/>
+    </key>
+
+    <key type="s" name="reset-time">
+        <default>"00:00"</default>
+        <summary>At what time in day should we reset device stats</summary>
+        <description>At this time data usage stats will be reset</description>
+    </key>
+
+    <key type="i" name="reset-hours">
+        <default>0</default>
+        <summary>At what hours in day should we reset device stats</summary>
+        <description>At this time data usage stats will be reset</description>
+        <range min="0" max="23"/>
+    </key>
+
+    <key type="i" name="reset-minutes">
+        <default>0</default>
+        <summary>At what minutes in day should we reset device stats</summary>
+        <description>At this time data usage stats will be reset</description>
+        <range min="0" max="59"/>
+    </key>
+
+    <key type="s" name="display-mode">
+        <default>"total_speed"</default>
+        <summary>What to display in top bar</summary>
+    </key>
+
+    <key type="b" name="disable-down-arrow">
+        <default>true</default>
+        <summary>Remove down arrow in top bar</summary>
+    </key>
+  </schema>
+</schemalist>
