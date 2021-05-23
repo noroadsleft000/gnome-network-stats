@@ -67,16 +67,11 @@ class AppView {
         if (!this._popupView) {
             this._popupView = new PopupView;
         }
-        //mainPanel.addChild(popupView);
 	    mainPanel.addToStatusArea(this._popupView);
-        //Main.panel.addToStatusArea('PopupMenuExample', popupView, 0, 'right');
     }
 
     hide() {
-        //mainPanel.removeChild(popupView);
-        //mainPanel.removeFromStatusArea(this._popupView);
         if (this._popupView) {
-            logger.debug("destroy the popupView 1");
             this._popupView.destroy();
             this._popupView = undefined;
         }

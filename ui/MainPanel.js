@@ -15,7 +15,6 @@ class MainPanel {
     }
 
     addToStatusArea(view) {
-        //Main.panel._rightBox.insert_child_at_index(view, 0);
         Main.panel.addToStatusArea('NetworkStatsStatusView', view, 0, 'right');
     }
 

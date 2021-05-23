@@ -51,9 +51,6 @@ class AppSettingsModel {
     }
 
     load() {
-        //get_boolean
-        //get_int
-        //get_string
         this._refreshInterval = this.schema.get_int(SettingKeys.REFRESH_INTERVAL);
         this._displayMode = this.schema.get_string(SettingKeys.DISPLAY_MODE);
         this._resetHours = this.schema.get_int(SettingKeys.RESET_HOURS);
@@ -84,7 +81,6 @@ class AppSettingsModel {
         date.setHours(this._resetHours);
         date.setMinutes(this._resetMinutes);
         date.setSeconds(0);
-        //logger.debug(date.toLocaleTimeString());
         return date;
     }
 

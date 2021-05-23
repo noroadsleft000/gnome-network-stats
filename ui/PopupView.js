@@ -214,13 +214,10 @@ class PopupViewClass extends PanelMenu.Button {
     onMainButtonClicked(_button, event) {
         //logger.debug(event);
         if (event.get_button() == 1) {
-            logger.debug("Left clicked");
             titleClickedMessageBroadcaster.broadcast({ button: "left" });
         } else if (event.get_button() == 2) {
-            logger.debug("Middle button clicked");
             titleClickedMessageBroadcaster.broadcast({ button: "middle" });
         } else if (event.get_button() == 3) {
-            logger.debug("Right clicked");
             titleClickedMessageBroadcaster.broadcast({ button: "right" });
         }
     }

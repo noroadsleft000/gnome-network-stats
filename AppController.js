@@ -121,12 +121,7 @@ class AppController {
 
     onRefreshTimeout() {
         //logger.debug("tick");
-        //try {
-            this.refresh();
-        //} catch (err) {
-            //logger.error(err.toString());
-        //}
-        // continue the timer
+        this.refresh();
         return true;
     }
 
@@ -134,7 +129,6 @@ class AppController {
         //logger.debug("every 1 minutes");
         const resetTime = appSettingsModel.getResetTime();
         const date = new Date();
-        //logger.debug(`now: ${date.toLocaleTimeString()}  reset: ${resetTime.toLocaleTimeString()}`);
         if (date.getHours() == resetTime.getHours() &&
             date.getMinutes() == resetTime.getMinutes())
         {

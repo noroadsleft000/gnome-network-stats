@@ -34,71 +34,63 @@ class NetworkMonitor {
     }
 
     getStats() {
-        //try {
-            const fileContent = GLib.file_get_contents('/proc/net/dev');
-            const lines = ByteArray.toString(fileContent[1]).split("\n");
+        const fileContent = GLib.file_get_contents('/proc/net/dev');
+        const lines = ByteArray.toString(fileContent[1]).split("\n");
 
-            const deviceLogs = {};
-            for (let index = 2; index < lines.length - 1; ++index) {
-                const line = lines[index].trim();
-                //logger.debug(`${index} - ${line}`);
-                const fields = line.split(/\W+/);
-                const deviceName = fields[0];
+        const deviceLogs = {};
+        for (let index = 2; index < lines.length - 1; ++index) {
+            const line = lines[index].trim();
+            //logger.debug(`${index} - ${line}`);
+            const fields = line.split(/\W+/);
+            const deviceName = fields[0];
 
-                if (deviceName == "lo")
-                    continue;
+            if (deviceName == "lo")
+                continue;
 
-                const sent = parseInt(fields[9]);
-                const received = parseInt(fields[1]);
-                if (!this._deviceLogs[deviceName] || this._deviceLogs[deviceName].reset) {
-                    logger.debug("reset");
-                    deviceLogs[deviceName] = {
-                        name: deviceName,
-                        sent,
-                        received,
-                        upDelta: 0,
-                        downDelta: 0,
-                        totalDelta: 0,
-                        totalData: 0,
-                        initialReading: sent + received,
-                        initailReadingTime: new Date(),
-                        reset: false
-                    };
-                } else {
-                    const {
-                        ["sent"]: oldSent,
-                        ["received"]: oldReceived,
-                        initialReading,
-                    } = this._deviceLogs[deviceName]; 
+            const sent = parseInt(fields[9]);
+            const received = parseInt(fields[1]);
+            if (!this._deviceLogs[deviceName] || this._deviceLogs[deviceName].reset) {
+                logger.debug("reset");
+                deviceLogs[deviceName] = {
+                    name: deviceName,
+                    sent,
+                    received,
+                    upDelta: 0,
+                    downDelta: 0,
+                    totalDelta: 0,
+                    totalData: 0,
+                    initialReading: sent + received,
+                    initailReadingTime: new Date(),
+                    reset: false
+                };
+            } else {
+                const {
+                    ["sent"]: oldSent,
+                    ["received"]: oldReceived,
+                    initialReading,
+                } = this._deviceLogs[deviceName]; 
 
-                    const upDelta = sent - oldSent;
-                    const downDelta = received - oldReceived;
-                    deviceLogs[deviceName] = {
-                        ...this._deviceLogs[deviceName],
-                        name: deviceName,
-                        sent,
-                        received,
-                        upDelta,
-                        downDelta,
-                        totalDelta: upDelta + downDelta,
-                        totalData: sent + received - initialReading
-                    };
-                }
-                //logger.debug(`up: ${sent} down: ${received}`);
+                const upDelta = sent - oldSent;
+                const downDelta = received - oldReceived;
+                deviceLogs[deviceName] = {
+                    ...this._deviceLogs[deviceName],
+                    name: deviceName,
+                    sent,
+                    received,
+                    upDelta,
+                    downDelta,
+                    totalDelta: upDelta + downDelta,
+                    totalData: sent + received - initialReading
+                };
             }
-
-            this._deviceLogs = deviceLogs;
-            return {
-                error: "",
-                deviceLogs: deviceLogs
-            };
-        /*
-        } catch (e) {
-            return {
-                error: e.toString()
-            }
+            //logger.debug(`up: ${sent} down: ${received}`);
         }
-        */
+
+        this._deviceLogs = deviceLogs;
+        return {
+            error: "",
+            deviceLogs: deviceLogs
+        };
     }
 }
 
