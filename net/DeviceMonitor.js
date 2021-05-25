@@ -107,7 +107,12 @@ class DeviceMonitor {
             const deviceObj = this._client.get_device_by_iface(name);
             const addresses = this._getIPAddress(deviceObj, GLib.SYSDEF_AF_INET);
             const type = this.getDeviceTypeFromDevice(deviceObj);
-            this._devices[name] = { name, type, device: deviceObj, ip: addresses[0] || "" };
+            this._devices[name] = {
+                name,
+                type,
+                device: deviceObj,
+                ip: addresses[0] || ""
+            };
         }
 
         // connect "state-changed" signals of new stored devices.

@@ -21,7 +21,7 @@ const { deviceResetMessageBroadcaster } = Me.imports.utils.EventBroadcaster;
 const { titleClickedMessageBroadcaster } = Me.imports.utils.EventBroadcaster;
 
 const Gettext = imports.gettext;
-const _ = Gettext.domain('network-stats').gettext;
+const _ = Gettext.domain("network-stats").gettext;
 
 
 /*

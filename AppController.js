@@ -31,6 +31,9 @@ class AppController {
 
     init() {
         appSettingsModel.init();
+        // TODO: remove refresh call from here and move device reset time to DeviceMonitor.
+        this.refresh();
+        this.resetDevices();
         this._rightClickSubscribeHandle = this.onRightClick.bind(this);
         titleClickedMessageBroadcaster.subscribe(this._rightClickSubscribeHandle);
         this._settingsSubscribeHandle = this.onSettingChanged.bind(this);
@@ -119,6 +122,27 @@ class AppController {
         // logger.debug(`deviceName: ${activeDevice} upload: ${uploadStr} download: ${downloadStr} totalData: ${totalDataStr}`);
     }
 
+    resetDevices() {
+        const now = new Date();
+        const resetTime = appSettingsModel.getResetTime();
+        const activeDevice = deviceMonitor.getActiveDeviceName();
+        const { resetedAt } = appSettingsModel.getDeviceInfo(activeDevice);
+        //logger.debug(typeof resetedAt);
+        let deviceResetedAt = new Date(resetTime.getTime() - 1000);
+        if (resetedAt) {
+            deviceResetedAt = new Date(resetedAt);
+        }
+
+        // logger.debug(`now:             ${now.toString()}`);
+        // logger.debug(`resetTime:       ${resetTime.toString()}`);
+        // logger.debug(`deviceResetedAt: ${deviceResetedAt.toString()}`);
+
+        if (now.getTime() >= resetTime.getTime() &&
+            deviceResetedAt.getTime() < resetTime.getTime()) {
+            deviceModel.resetAll();
+        }
+    }
+
     onRefreshTimeout() {
         //logger.debug("tick");
         this.refresh();
@@ -127,13 +151,7 @@ class AppController {
 
     onEveryMinute() {
         //logger.debug("every 1 minutes");
-        const resetTime = appSettingsModel.getResetTime();
-        const date = new Date();
-        if (date.getHours() == resetTime.getHours() &&
-            date.getMinutes() == resetTime.getMinutes())
-        {
-            deviceModel.resetAll();
-        }
+        this.resetDevices();
     }
 
     onSettingChanged() {

@@ -1,0 +1,47 @@
+#: ../prefs.js:121
+msgid "Refresh Interval (ms)"
+msgstr ""
+
+#: ../prefs.js:126
+msgid "What to show in top bar"
+msgstr ""
+
+#: ../prefs.js:131
+msgid "What time should we reset network stats"
+msgstr ""
+
+#: ../prefs.js:171 ../ui/ExpandableDeviceMenuItem.js:171
+msgid "Total speed"
+msgstr ""
+
+#: ../prefs.js:172 ../ui/ExpandableDeviceMenuItem.js:164
+msgid "Upload speed"
+msgstr ""
+
+#: ../prefs.js:173 ../ui/ExpandableDeviceMenuItem.js:167
+msgid "Download speed"
+msgstr ""
+
+#: ../prefs.js:174 ../ui/ExpandableDeviceMenuItem.js:174
+msgid "Total data used"
+msgstr ""
+
+#: ../ui/ExpandableDeviceMenuItem.js:161
+msgid "IP"
+msgstr ""
+
+#: ../ui/ExpandableDeviceMenuItem.js:175
+msgid "since"
+msgstr ""
+
+#: ../ui/PopupView.js:189
+msgid "Device"
+msgstr ""
+
+#: ../ui/PopupView.js:189
+msgid "Speed"
+msgstr ""
+
+#: ../ui/PopupView.js:189
+msgid "Data Used"
+msgstr ""

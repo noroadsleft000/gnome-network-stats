@@ -8,6 +8,7 @@ const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
 const { logger } = Me.imports.utils.Logger;
 const { deviceResetMessageBroadcaster } = Me.imports.utils.EventBroadcaster;
+const { appSettingsModel } = Me.imports.AppSettingsModel;
 
 class NetworkMonitor {
 
@@ -24,13 +25,18 @@ class NetworkMonitor {
     resetDeviceLogs({name}) {
         logger.info(`Reset the logs for device ${name}`);
         this._deviceLogs[name] = {...this._deviceLogs[name], reset: true };
+        appSettingsModel.setDeviceInfo(name, { resetedAt: new Date().toString() });
     }
 
     resetAll() {
         logger.info(`Restting all devices at ${new Date().toString()}`);
-        for (const name in  this._deviceLogs) {
+        const infoMap = {};
+        const currTime = new Date().toString();
+        for (const name in this._deviceLogs) {
             this._deviceLogs[name].reset = true;
+            infoMap[name] = { resetedAt:  currTime };
         }
+        appSettingsModel.devicesInfoMap = infoMap;
     }
 
     getStats() {

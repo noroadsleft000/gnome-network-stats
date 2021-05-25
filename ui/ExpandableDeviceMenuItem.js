@@ -1,12 +1,11 @@
 const { PopupSubMenuMenuItem } = imports.ui.popupMenu;
 const { Atk, Clutter, Gio, GObject, Graphene, Shell, St } = imports.gi;
 
-const ExtensionUtils = imports.misc.extensionUtils;
-const Me = ExtensionUtils.getCurrentExtension();
+const Me = imports.misc.extensionUtils.getCurrentExtension();
 
 const { logger } = Me.imports.utils.Logger;
 const Gettext = imports.gettext;
-const _ = Gettext.domain('network-stats').gettext;
+const _ = Gettext.domain("network-stats").gettext;
 
 
 /*

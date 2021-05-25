@@ -31,10 +31,12 @@ var DisplayMode = Object.freeze({
 
 var kSchemaName = "org.gnome.shell.extensions.network-stats";
 
+/* Sync these constants properly with schema file */
 var SettingKeys = Object.freeze({
     REFRESH_INTERVAL: "refresh-interval",
     DISPLAY_MODE: "display-mode",
     RESET_TIME: "reset-time",
     RESET_HOURS: "reset-hours",
     RESET_MINUTES: "reset-minutes",
+    DEVICES_INFO: "devices-info"
 });
