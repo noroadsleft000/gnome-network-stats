@@ -145,7 +145,11 @@ class AppController {
 
     onRefreshTimeout() {
         //logger.debug("tick");
-        this.refresh();
+        try {
+            this.refresh();
+        } catch(err) {
+            logger.error(`ERROR: ${err.toString()} TRACE: ${err.stack}`);
+        }
         return true;
     }
 

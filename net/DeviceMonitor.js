@@ -159,11 +159,11 @@ class DeviceMonitor {
     }
 
     _deviceChanged() {
-        this.loadDevices();
+        this._loadDevices();
     }
 
     _connectionChanged() {
-        this.loadDevices();
+        this._loadDevices();
     }
 
     _getIPAddress(device, family) {

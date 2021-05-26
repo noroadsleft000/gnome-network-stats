@@ -37,7 +37,7 @@ class AppSettingsModel {
 
     deinit() {
         if (this._settingsC) {
-            this._settings.disconnect(this._settingsC);
+            this.schema.disconnect(this._settingsC);
             this._settingsC = undefined;
         }
     }

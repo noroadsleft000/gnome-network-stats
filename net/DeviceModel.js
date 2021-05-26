@@ -83,29 +83,31 @@ class DeviceModel {
                     initailReadingTime: startTime,
                 } = deviceLog;
                 const device = deviceMonitor.getDeviceByName(name);
-                stats[name] = {
-                    name,
-                    ip: device.ip,
-                    type: device.type,
-                    upSpeed: upDelta/time,
-                    downSpeed: downDelta/time,
-                    totalSpeed: totalDelta/time,
-                    totalData: totalData,
-                    startTime: startTime,
-                };
+                if (device) {
+                    stats[name] = {
+                        name,
+                        ip: device.ip,
+                        type: device.type,
+                        upSpeed: upDelta/time,
+                        downSpeed: downDelta/time,
+                        totalSpeed: totalDelta/time,
+                        totalData: totalData,
+                        startTime: startTime,
+                    };
 
-                const { type, ip, upSpeed, downSpeed, totalSpeed } = stats[name];
-                statsText[name] = {
-                    name,
-                    ip: ip,
-                    type: type,
-                    upSpeed: bytesSpeedToString(upSpeed),
-                    downSpeed: bytesSpeedToString(downSpeed),
-                    totalSpeed: bytesSpeedToString(totalSpeed),
-                    totalData: bytesToString(totalData),
-                    startTime: startTime.toLocaleTimeString(),
-                };
-                //logger.debug(`${name} => upload: ${upSpeed} download: ${downSpeed} total: ${totalData}`);
+                    const { type, ip, upSpeed, downSpeed, totalSpeed } = stats[name];
+                    statsText[name] = {
+                        name,
+                        ip: ip,
+                        type: type,
+                        upSpeed: bytesSpeedToString(upSpeed),
+                        downSpeed: bytesSpeedToString(downSpeed),
+                        totalSpeed: bytesSpeedToString(totalSpeed),
+                        totalData: bytesToString(totalData),
+                        startTime: startTime.toLocaleTimeString(),
+                    };
+                    //logger.debug(`${name} => upload: ${upSpeed} download: ${downSpeed} total: ${totalData}`);
+                }
             }
             this._stats = stats;
             this._statsText = statsText;
