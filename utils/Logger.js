@@ -34,6 +34,10 @@ class Logger {
         log(`${tag} ${file}::${func}(${line}) ${args}`);
     }
 
+    log(...args) {
+        this._printLog("LOG", args);
+    }
+
     debug(...args) {
         this._printLog("DEBUG", args);
     }

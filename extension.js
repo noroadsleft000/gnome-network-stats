@@ -7,17 +7,17 @@ const { appController } = Me.imports.AppController;
 const Prefs = Me.imports.prefs;
 
 function init() {
-    logger.debug(`initializing ${Me.metadata.name}`);
-    appController.init();
+    logger.info(`initializing ${Me.metadata.name}`);
 }
 
 function enable() {
-    logger.debug(`enabling ${Me.metadata.name}`);
+    logger.info(`enabling ${Me.metadata.name}`);
+    appController.init();
     appController.show();
 }
 
 function disable() {
-    logger.debug(`disabling ${Me.metadata.name}`);
+    logger.info(`disabling ${Me.metadata.name}`);
     appController.hide();
-    //appController.deinit();
+    appController.deinit();
 }

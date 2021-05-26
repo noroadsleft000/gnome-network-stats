@@ -4,11 +4,13 @@
 
 help()
 {
-    echo "./commands.sh build           --  build the extension"
-    echo "./commands.sh install         --  install the extension"
-    echo "./commands.sh enable          --  enable the extension"
-    echo "./commands.sh disable         --  disable the extension"
-    echo "./commands.sh pack            --  package the extension"
+    echo "Command usage : "
+    echo "-------------------------------------------------------"
+    echo "./commands.sh build       --  build the extension"
+    echo "./commands.sh install     --  install the extension"
+    echo "./commands.sh enable      --  enable the extension"
+    echo "./commands.sh disable     --  disable the extension"
+    echo "./commands.sh pack        --  package the extension"
 }
 
 build()
@@ -19,10 +21,16 @@ build()
 
 install()
 {
-    EXTENSION_DIR=~/.local/share/gnome-shell/extensions/network-stats@gnome.noroadsleft.xyz
-    mkdir -p ${EXTENSION_DIR}
-    cp -r * ${EXTENSION_DIR}
+    build
+    pack
+    gnome-extensions install --force network-stats@gnome.noroadsleft.xyz.shell-extension.zip
     enable
+}
+
+uninstall()
+{
+    disable
+    gnome-extensions uninstall network-stats@gnome.noroadsleft.xyz
 }
 
 enable()
@@ -37,7 +45,18 @@ disable()
 
 pack()
 {
-    gnome-extensions pack
+    gnome-extensions pack \
+    --force \
+    --extra-source=AppController.js \
+    --extra-source=AppSettingsModel.js \
+    --extra-source=AUTHORS \
+    --extra-source=README.md \
+    --extra-source=LICENSE \
+    --extra-source=assets \
+    --extra-source=net \
+    --extra-source=ui \
+    --extra-source=utils \
+    --podir=locale
 }
 
 
@@ -45,6 +64,8 @@ if [ "$1" = "build" ]; then
     build
 elif [ "$1" = "install" ]; then
     install
+elif [ "$1" = "uninstall" ]; then
+    uninstall
 elif [ "$1" = "enable" ]; then
     enable
 elif [ "$1" = "enable" ]; then

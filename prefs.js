@@ -2,22 +2,22 @@ const { Gio, GObject, Gtk } = imports.gi;
 const Lang = imports.lang;
 const Pango = imports.gi.Pango;
 const Gettext = imports.gettext;
-const _ = Gettext.domain('network-stats').gettext;
+const _ = Gettext.domain("network-stats").gettext;
 
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 const { DisplayMode } = Me.imports.utils.Constants;
 const { SettingKeys } = Me.imports.utils.Constants;
 const { logger } = Me.imports.utils.Logger;
-const { appSettingsModel } = Me.imports.AppSettingsModel; 
+const { appSettingsModel } = Me.imports.AppSettingsModel;
 
 const kSchemaName = "org.gnome.shell.extensions.network-stats";
 
 
 function init() {
     logger.debug("init");
-    const localeDir = Me.dir.get_child('locale');
+    const localeDir = Me.dir.get_child("locale");
     if (localeDir.query_exists(null)) {
-        Gettext.bindtextdomain('network-stats', localeDir.get_path());
+        Gettext.bindtextdomain("network-stats", localeDir.get_path());
     }
 }
 
@@ -128,7 +128,7 @@ class PrefsApp {
             halign: Gtk.Align.START
         });
         const resetTimeLabel  = new Gtk.Label({
-            label: _("At what should we reset network stats"),
+            label: _("What time should we reset network stats"),
             hexpand: true,
             halign: Gtk.Align.START
         });

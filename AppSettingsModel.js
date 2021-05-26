@@ -22,20 +22,22 @@ class AppSettingsModel {
         this._resetMinutes = 0;
         this._refreshInterval = kRefreshInterval;
         this._displayMode = DisplayMode.DEFAULT;
+        this._devicesInfoMap = {};
     }
 
     init() {
+        this.load();
         this._settingsC = this.schema.connect("changed", () => {
             // setting changed - get the new values
+            logger.info("Prefrences/Settings value changed");
             this.load();
             this.notifyListerners();
-            this.getResetTime();
         });
     }
 
     deinit() {
         if (this._settingsC) {
-            this._settings.disconnect(this._settingsC);
+            this.schema.disconnect(this._settingsC);
             this._settingsC = undefined;
         }
     }
@@ -55,12 +57,16 @@ class AppSettingsModel {
         this._displayMode = this.schema.get_string(SettingKeys.DISPLAY_MODE);
         this._resetHours = this.schema.get_int(SettingKeys.RESET_HOURS);
         this._resetMinutes = this.schema.get_int(SettingKeys.RESET_MINUTES);
-        logger.debug(`new values [ refreshInterval: ${this._refreshInterval} displayMode: ${this._displayMode} resetTime: ${this._resetHours} : ${this._resetMinutes}]`);
+        const str = this.schema.get_string(SettingKeys.DEVICES_INFO);
+        this._devicesInfoMap = JSON.parse(str);
+        //logger.debug(`new values [ refreshInterval: ${this._refreshInterval} displayMode: ${this._displayMode} resetTime: ${this._resetHours} : ${this._resetMinutes}]`);
+        //logger.debug(`deivicesInfoMap ${str}`);
     }
 
     save() {
         // right now we are chaning only mode value.
         this.schema.set_string(SettingKeys.DISPLAY_MODE, this._displayMode);
+        //this.schema.set_string(SettingKeys.DEVICES_INFO, JSON.stringify(this._lastResetMap));
     }
 
     get refreshInterval() {
@@ -82,6 +88,24 @@ class AppSettingsModel {
         date.setMinutes(this._resetMinutes);
         date.setSeconds(0);
         return date;
+    }
+
+    get devicesInfoMap() {
+        return this._devicesInfoMap;
+    }
+
+    set devicesInfoMap(info) {
+        this._devicesInfoMap = { ...this._devicesInfoMap, ...info };
+        this.schema.set_string(SettingKeys.DEVICES_INFO, JSON.stringify(this._devicesInfoMap));
+    }
+
+    getDeviceInfo(name) {
+        return this._devicesInfoMap[name] || {};
+    }
+
+    setDeviceInfo(name, info) {
+        this._devicesInfoMap[name] = info;
+        this.schema.set_string(SettingKeys.DEVICES_INFO, JSON.stringify(this._devicesInfoMap));
     }
 
     notifyListerners() {

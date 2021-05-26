@@ -1,14 +1,24 @@
 # gnome-network-stats
-Gnome extension for showing network speed and data usage.
+Gnome extension for showing network upload, download speed and per day data usage.
+
+<div>
+<p><a href="#"><img src="assets/logo.svg" height=80px alt="NSS Logo"/></a></p>
+<h1>Network Stats</h1>
+<p><img src='assets/screenshot.png' height = "400px" width="400px"  alt="Screenshot"/>
+</div>
 
 ## Installation
 
-### install from extensions.gnome.org
+### install from https://extensions.gnome.org
 
 The latest reviewed version can be found at
-[network-stats](https://extensions.gnome.org/extension/network-stats/)
+<div>
+<a href="https://extensions.gnome.org/extension/4308/network-stats/" >
+<img src="assets/get-it-on-ge.svg" height="100" alt="Get it on GNOME Extensions">
+</a>
+</div>
 
-### Via github.com
+### donwload from github.com and install yourself
 
 The latest development version can be installed manually with these commands:
 
@@ -23,7 +33,7 @@ cd gnome-network-stats
 ```
 
 Then go to https://extensions.gnome.org/local/ to turn on the extension or use
-gnome-tweak-tool.
+gnome-tweak-tool to enable it.
 
 
 ## Commands
@@ -31,9 +41,13 @@ gnome-tweak-tool.
 ```
 ./commands.sh build
 ```
-### install extension locally
+### install extension
 ```
 ./commands.sh install
+```
+### uninstall extension
+```
+./commands.sh uninstall
 ```
 ### enable extension
 ```
