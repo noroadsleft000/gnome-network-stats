@@ -2,7 +2,7 @@ const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
 
 const { logger } = Me.imports.utils.Logger;
-const { networkMonitor } = Me.imports.net.NetworkMonitor;
+const { NetworkMonitor } = Me.imports.net.NetworkMonitor;
 const { deviceMonitor } = Me.imports.net.DeviceMonitor;
 const { bytesSpeedToString } = Me.imports.utils.GenUtils;
 const { bytesToString } = Me.imports.utils.GenUtils;
@@ -13,13 +13,14 @@ const { bytesToString } = Me.imports.utils.GenUtils;
 * Device model is used by AppController and UI for fetching the stats details.
 */
 
-class DeviceModel {
+class DeviceModelClass {
 
     constructor() {
         this._upload = 0;
         this._download = 0;
         this._stats = {};
         this._statsText = {};
+        this._networkMonitor = new NetworkMonitor();
     }
 
     getUploadSpeed(deviceName) {
@@ -63,11 +64,16 @@ class DeviceModel {
         return this._statsText;
     }
 
+    get networkMonitor() {
+        return this._networkMonitor;
+    }
+
+    /* time in milliseconds */
     update(time) {
         const {
             error,
             deviceLogs
-        } = networkMonitor.getStats();
+        } = this._networkMonitor.getStats();
 
         //logger.debug(`defaultGateway: ${deviceMonitor.getActiveDeviceName()}`);
         if (!error) {
@@ -80,7 +86,7 @@ class DeviceModel {
                     downDelta,
                     totalDelta,
                     totalData,
-                    initailReadingTime: startTime,
+                    ["resetedAt"]: startTime,
                 } = deviceLog;
                 const device = deviceMonitor.getDeviceByName(name);
                 if (device) {
@@ -88,9 +94,9 @@ class DeviceModel {
                         name,
                         ip: device.ip,
                         type: device.type,
-                        upSpeed: upDelta/time,
-                        downSpeed: downDelta/time,
-                        totalSpeed: totalDelta/time,
+                        upSpeed: upDelta / (time/1000),
+                        downSpeed: downDelta / (time/1000),
+                        totalSpeed: totalDelta /(time/1000),
                         totalData: totalData,
                         startTime: startTime,
                     };
@@ -117,8 +123,8 @@ class DeviceModel {
     }
 
     resetAll() {
-        networkMonitor.resetAll();
+        this._networkMonitor.resetAll();
     }
 }
 
-var deviceModel = new DeviceModel;
+var DeviceModel = DeviceModelClass;

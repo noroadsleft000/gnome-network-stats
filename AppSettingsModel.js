@@ -59,8 +59,8 @@ class AppSettingsModel {
         this._resetMinutes = this.schema.get_int(SettingKeys.RESET_MINUTES);
         const str = this.schema.get_string(SettingKeys.DEVICES_INFO);
         this._devicesInfoMap = JSON.parse(str);
-        //logger.debug(`new values [ refreshInterval: ${this._refreshInterval} displayMode: ${this._displayMode} resetTime: ${this._resetHours} : ${this._resetMinutes}]`);
-        //logger.debug(`deivicesInfoMap ${str}`);
+        // logger.debug(`new values [ refreshInterval: ${this._refreshInterval} displayMode: ${this._displayMode} resetTime: ${this._resetHours} : ${this._resetMinutes}]`);
+        // logger.debug(`deivicesInfoMap ${str}`);
     }
 
     save() {
@@ -105,6 +105,11 @@ class AppSettingsModel {
 
     setDeviceInfo(name, info) {
         this._devicesInfoMap[name] = info;
+        this.schema.set_string(SettingKeys.DEVICES_INFO, JSON.stringify(this._devicesInfoMap));
+    }
+
+    updateDeviceInfo(name, info) {
+        this._devicesInfoMap[name] = { ...this.devicesInfoMap[name], ...info };
         this.schema.set_string(SettingKeys.DEVICES_INFO, JSON.stringify(this._devicesInfoMap));
     }
 
