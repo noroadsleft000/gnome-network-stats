@@ -5,7 +5,7 @@ const Me = ExtensionUtils.getCurrentExtension();
 
 const { appView } = Me.imports.ui.AppView;
 const { logger } = Me.imports.utils.Logger;
-const { deviceModel } = Me.imports.net.DeviceModel;
+const { DeviceModel } = Me.imports.net.DeviceModel;
 const { deviceMonitor } = Me.imports.net.DeviceMonitor;
 const { appSettingsModel } = Me.imports.AppSettingsModel;
 
@@ -27,6 +27,7 @@ class AppController {
         this._resetTimeout = undefined;
         this._rightClickSubscribeHandle = undefined;
         this._settingsSubscribeHandle = undefined;
+        this._deviceModel = new DeviceModel();
     }
 
     init() {
@@ -75,46 +76,46 @@ class AppController {
     refresh() {
         const { displayMode, refreshInterval } = appSettingsModel;
         //logger.debug(`displayMode : ${displayMode}`);
-        deviceModel.update(refreshInterval);
+        this._deviceModel.update(refreshInterval);
         const activeDevice = deviceMonitor.getActiveDeviceName();
         let titleStr = "----";
         switch(displayMode) {
             case DisplayMode.TOTAL_SPEED:
             {
-                const totalSpeed = deviceModel.getTotalSpeed(activeDevice);
+                const totalSpeed = this._deviceModel.getTotalSpeed(activeDevice);
                 const totalSpeedStr = bytesSpeedToString(totalSpeed);
                 titleStr = `↕ ${totalSpeedStr}`;
                 break;
             }
             case DisplayMode.DOWNLOAD_SPEED:
             {
-                const download = deviceModel.getDownloadSpeed(activeDevice);
+                const download = this._deviceModel.getDownloadSpeed(activeDevice);
                 const downloadStr = bytesSpeedToString(download);
                 titleStr = `↓ ${downloadStr}`;
                 break;
             }
             case DisplayMode.UPLOAD_SPEED:
             {
-                const upload = deviceModel.getUploadSpeed(activeDevice);
+                const upload = this._deviceModel.getUploadSpeed(activeDevice);
                 const uploadStr = bytesSpeedToString(upload);
                 titleStr = `↑ ${uploadStr}`;
                 break;
             }
             case DisplayMode.TOTAL_DATA:
             {
-                const totalData = deviceModel.getTotalDataUsage(activeDevice);
+                const totalData = this._deviceModel.getTotalDataUsage(activeDevice);
                 const totalDataStr = bytesToString(totalData);
                 titleStr = `Σ ${totalDataStr}`;
                 break;
             }
         }
         appView.setTitleText(titleStr);
-        appView.update(deviceModel);
+        appView.update(this._deviceModel);
 
         // Debugging
-        // const upload = deviceModel.getUploadSpeed(activeDevice);
-        // const download = deviceModel.getDownloadSpeed(activeDevice);
-        // const totalData = deviceModel.getTotalDataUsage(activeDevice);
+        // const upload = this._deviceModel.getUploadSpeed(activeDevice);
+        // const download = this._deviceModel.getDownloadSpeed(activeDevice);
+        // const totalData = this._deviceModel.getTotalDataUsage(activeDevice);
         // logger.debug(`upload: ${upload} download: ${download} totalData: ${totalData}`);
         // const uploadStr = bytesSpeedToString(upload);
         // const downloadStr = bytesSpeedToString(download);
@@ -139,7 +140,7 @@ class AppController {
 
         if (now.getTime() >= resetTime.getTime() &&
             deviceResetedAt.getTime() < resetTime.getTime()) {
-            deviceModel.resetAll();
+            this._deviceModel.resetAll();
         }
     }
 

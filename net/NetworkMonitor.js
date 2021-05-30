@@ -10,7 +10,7 @@ const { logger } = Me.imports.utils.Logger;
 const { deviceResetMessageBroadcaster } = Me.imports.utils.EventBroadcaster;
 const { appSettingsModel } = Me.imports.AppSettingsModel;
 
-class NetworkMonitor {
+class NetworkMonitorClass {
 
     constructor() {
         this._deviceLogs = {};
@@ -19,6 +19,20 @@ class NetworkMonitor {
 
     init() {
         // load from preferences
+        const now = new Date();
+        appSettingsModel.load();
+        const {devicesInfoMap} = appSettingsModel;
+        for (const name in devicesInfoMap) {
+            const { resetedAt, initialReading } = devicesInfoMap[name];
+            logger.info(`init - ${resetedAt} - ${initialReading}`);
+            if (resetedAt) {
+                this._deviceLogs[name] = {
+                    resetedAt: new Date(resetedAt) || now,
+                    initialReading,
+                    reset: false
+                };
+            }
+        }
         deviceResetMessageBroadcaster.subscribe(this.resetDeviceLogs.bind(this));
     }
 
@@ -34,9 +48,20 @@ class NetworkMonitor {
         const currTime = new Date().toString();
         for (const name in this._deviceLogs) {
             this._deviceLogs[name].reset = true;
-            infoMap[name] = { resetedAt:  currTime };
+            infoMap[name] = { resetedAt: currTime };
         }
         appSettingsModel.devicesInfoMap = infoMap;
+    }
+
+    _needReset(deviceName) {
+        if (!this._deviceLogs[deviceName] ||
+            this._deviceLogs[deviceName].reset ||
+            this._deviceLogs[deviceName].initialReading == undefined ||
+            !this._deviceLogs[deviceName].resetedAt)
+        {
+            return true;
+        }
+        return false;
     }
 
     getStats() {
@@ -55,8 +80,8 @@ class NetworkMonitor {
 
             const sent = parseInt(fields[9]);
             const received = parseInt(fields[1]);
-            if (!this._deviceLogs[deviceName] || this._deviceLogs[deviceName].reset) {
-                logger.debug("reset");
+            if (this._needReset(deviceName)) {
+                logger.debug(`reset - ${deviceName}`);
                 deviceLogs[deviceName] = {
                     name: deviceName,
                     sent,
@@ -66,15 +91,20 @@ class NetworkMonitor {
                     totalDelta: 0,
                     totalData: 0,
                     initialReading: sent + received,
-                    initailReadingTime: new Date(),
+                    resetedAt: new Date(),
                     reset: false
                 };
+                // write to app settings/prefs
+                appSettingsModel.updateDeviceInfo(deviceName, {
+                    initialReading: deviceLogs[deviceName].initialReading,
+                    resetedAt: deviceLogs[deviceName].resetedAt.toString(),
+                });
             } else {
                 const {
-                    ["sent"]: oldSent,
-                    ["received"]: oldReceived,
+                    ["sent"]: oldSent = sent,
+                    ["received"]: oldReceived = received,
                     initialReading,
-                } = this._deviceLogs[deviceName]; 
+                } = this._deviceLogs[deviceName];
 
                 const upDelta = sent - oldSent;
                 const downDelta = received - oldReceived;
@@ -88,6 +118,11 @@ class NetworkMonitor {
                     totalDelta: upDelta + downDelta,
                     totalData: sent + received - initialReading
                 };
+
+                if (deviceLogs[deviceName].totalData < 0) {
+                    logger.info("Reset due to -ve reading, may be a wrap around.");
+                    deviceLogs[deviceName].reset = true;
+                }
             }
             //logger.debug(`up: ${sent} down: ${received}`);
         }
@@ -100,4 +135,4 @@ class NetworkMonitor {
     }
 }
 
-var networkMonitor = new NetworkMonitor;
+var NetworkMonitor = NetworkMonitorClass;
