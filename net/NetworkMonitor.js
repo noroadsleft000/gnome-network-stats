@@ -53,6 +53,17 @@ class NetworkMonitorClass {
         appSettingsModel.devicesInfoMap = infoMap;
     }
 
+    _needReset(deviceName) {
+        if (!this._deviceLogs[deviceName] ||
+            this._deviceLogs[deviceName].reset ||
+            this._deviceLogs[deviceName].initialReading == undefined ||
+            !this._deviceLogs[deviceName].resetedAt)
+        {
+            return true;
+        }
+        return false;
+    }
+
     getStats() {
         const fileContent = GLib.file_get_contents('/proc/net/dev');
         const lines = ByteArray.toString(fileContent[1]).split("\n");
@@ -69,7 +80,7 @@ class NetworkMonitorClass {
 
             const sent = parseInt(fields[9]);
             const received = parseInt(fields[1]);
-            if (!this._deviceLogs[deviceName] || this._deviceLogs[deviceName].reset) {
+            if (this._needReset(deviceName)) {
                 logger.debug(`reset - ${deviceName}`);
                 deviceLogs[deviceName] = {
                     name: deviceName,
@@ -92,7 +103,7 @@ class NetworkMonitorClass {
                 const {
                     ["sent"]: oldSent = sent,
                     ["received"]: oldReceived = received,
-                    initialReading = sent + received,
+                    initialReading,
                 } = this._deviceLogs[deviceName];
 
                 const upDelta = sent - oldSent;
