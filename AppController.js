@@ -46,6 +46,7 @@ class AppController {
         titleClickedMessageBroadcaster.unsubscribe(this._rightClickSubscribeHandle);
         appSettingsModel.unsubscribe(this._settingsSubscribeHandle);
         appSettingsModel.deinit();
+        this.uninstallTimers();
     }
 
     installTimers() {
