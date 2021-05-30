@@ -3,7 +3,7 @@ const Me = ExtensionUtils.getCurrentExtension();
 
 const { logger } = Me.imports.utils.Logger;
 const { NetworkMonitor } = Me.imports.net.NetworkMonitor;
-const { deviceMonitor } = Me.imports.net.DeviceMonitor;
+const { DeviceMonitor } = Me.imports.net.DeviceMonitor;
 const { bytesSpeedToString } = Me.imports.utils.GenUtils;
 const { bytesToString } = Me.imports.utils.GenUtils;
 
@@ -20,6 +20,7 @@ class DeviceModelClass {
         this._download = 0;
         this._stats = {};
         this._statsText = {};
+        this._deviceMonitor = new DeviceMonitor();
         this._networkMonitor = new NetworkMonitor();
     }
 
@@ -49,11 +50,11 @@ class DeviceModelClass {
     }
 
     getActiveDeviceName() {
-        return deviceMonitor.getActiveDeviceName();
+        return this._deviceMonitor.getActiveDeviceName();
     }
 
     getDevices() {
-        return this.deviceMonitor.getDevices();
+        return this._deviceMonitor.getDevices();
     }
 
     getStats() {
@@ -68,6 +69,10 @@ class DeviceModelClass {
         return this._networkMonitor;
     }
 
+    get deviceMonitor() {
+        return this._deviceMonitor;
+    }
+
     /* time in milliseconds */
     update(time) {
         const {
@@ -75,7 +80,7 @@ class DeviceModelClass {
             deviceLogs
         } = this._networkMonitor.getStats();
 
-        //logger.debug(`defaultGateway: ${deviceMonitor.getActiveDeviceName()}`);
+        //logger.debug(`defaultGateway: ${this._deviceMonitor.getActiveDeviceName()}`);
         if (!error) {
             const stats = {};
             const statsText = {};
@@ -88,7 +93,7 @@ class DeviceModelClass {
                     totalData,
                     ["resetedAt"]: startTime,
                 } = deviceLog;
-                const device = deviceMonitor.getDeviceByName(name);
+                const device = this._deviceMonitor.getDeviceByName(name);
                 if (device) {
                     stats[name] = {
                         name,

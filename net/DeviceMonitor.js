@@ -14,13 +14,12 @@ const { DeviceType } = Me.imports.utils.Constants;
 * It handles addtion and removal of devices at run time.
 */
 
-class DeviceMonitor {
+class DeviceMonitorClass {
 
     constructor() {
         this._client = NetworkManager.Client.new(null);
         this._devices = {};
         this._defaultGw = "";
-
         this.init();
     }
 
@@ -198,4 +197,4 @@ class DeviceMonitor {
 }
 
 
-var deviceMonitor = new DeviceMonitor;
+var DeviceMonitor = DeviceMonitorClass;
