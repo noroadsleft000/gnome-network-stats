@@ -68,6 +68,11 @@ gnome-tweak-tool to enable it.
 When reporting a bug, please include debugging output from `gnome-shell`.
 
 You can capture the logs with this command:
+```
+journalctl /usr/bin/gnome-shell | grep network-stats
+
+journalctl -f -o cat /usr/bin/gnome-shell
+```
 
 
 ## Contibutors

@@ -24,7 +24,7 @@ class NetworkMonitorClass {
         const {devicesInfoMap} = appSettingsModel;
         for (const name in devicesInfoMap) {
             const { resetedAt, initialReading } = devicesInfoMap[name];
-            logger.info(`init - ${resetedAt} - ${initialReading}`);
+            logger.info(`init - ${name} - ${resetedAt} - ${initialReading}`);
             if (resetedAt) {
                 this._deviceLogs[name] = {
                     resetedAt: new Date(resetedAt) || now,

@@ -44,8 +44,11 @@ class AppController {
 
     deinit() {
         titleClickedMessageBroadcaster.unsubscribe(this._rightClickSubscribeHandle);
+        this._rightClickSubscribeHandle = undefined;
         appSettingsModel.unsubscribe(this._settingsSubscribeHandle);
+        this._settingsSubscribeHandle = undefined;
         appSettingsModel.deinit();
+        this.uninstallTimers();
     }
 
     installTimers() {
@@ -77,7 +80,7 @@ class AppController {
         const { displayMode, refreshInterval } = appSettingsModel;
         //logger.debug(`displayMode : ${displayMode}`);
         this._deviceModel.update(refreshInterval);
-        const activeDevice = deviceMonitor.getActiveDeviceName();
+        const activeDevice = this._deviceModel.getActiveDeviceName();
         let titleStr = "----";
         switch(displayMode) {
             case DisplayMode.TOTAL_SPEED:
@@ -126,9 +129,9 @@ class AppController {
     resetDevices() {
         const now = new Date();
         const resetTime = appSettingsModel.getResetTime();
-        const activeDevice = deviceMonitor.getActiveDeviceName();
+        const activeDevice = this._deviceModel.getActiveDeviceName();
         const { resetedAt } = appSettingsModel.getDeviceInfo(activeDevice);
-        //logger.debug(typeof resetedAt);
+        //logger.debug(typeof resetedAt, resetedAt);
         let deviceResetedAt = new Date(resetTime.getTime() - 1000);
         if (resetedAt) {
             deviceResetedAt = new Date(resetedAt);
@@ -156,7 +159,12 @@ class AppController {
 
     onEveryMinute() {
         //logger.debug("every 1 minutes");
-        this.resetDevices();
+        try {
+            this.resetDevices();
+        } catch(err) {
+            logger.error(`ERROR: ${err.toString()} TRACE: ${err.stack}`);
+        }
+        return true;
     }
 
     onSettingChanged() {
