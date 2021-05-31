@@ -198,7 +198,7 @@ class PopupViewClass extends PanelMenu.Button {
         // separator item
         //this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
         this.connect('button-press-event', this.onMainButtonClicked.bind(this));
-        appSettingsModel.subscribe(() => {
+        this._settingsListener = appSettingsModel.subscribe(() => {
             this.updateGroupButtonsState();
         });
     }
@@ -297,6 +297,12 @@ class PopupViewClass extends PanelMenu.Button {
         if (this.menu) {
             this.menu.close();
         }
+        this._uploadSpeed = undefined;
+        this._downloadSpeed = undefined;
+        this._totalSpeed = undefined;
+        this._dataUsage = undefined;
+        appSettingsModel.unsubscribe(this._settingsListener);
+        this._settingsListener = undefined;
         super.destroy();
     }
 }
