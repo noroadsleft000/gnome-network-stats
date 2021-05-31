@@ -131,7 +131,7 @@ class AppController {
         const resetTime = appSettingsModel.getResetTime();
         const activeDevice = this._deviceModel.getActiveDeviceName();
         const { resetedAt } = appSettingsModel.getDeviceInfo(activeDevice);
-        //logger.debug(typeof resetedAt);
+        //logger.debug(typeof resetedAt, resetedAt);
         let deviceResetedAt = new Date(resetTime.getTime() - 1000);
         if (resetedAt) {
             deviceResetedAt = new Date(resetedAt);
@@ -159,7 +159,12 @@ class AppController {
 
     onEveryMinute() {
         //logger.debug("every 1 minutes");
-        this.resetDevices();
+        try {
+            this.resetDevices();
+        } catch(err) {
+            logger.error(`ERROR: ${err.toString()} TRACE: ${err.stack}`);
+        }
+        return true;
     }
 
     onSettingChanged() {
