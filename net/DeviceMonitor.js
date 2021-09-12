@@ -94,7 +94,7 @@ class DeviceMonitorClass {
         for (let index = 2; index < lines.length - 1; ++index) {
             const line = lines[index].trim();
             logger.debug(`${index} - ${line}`);
-            const fields = line.split(/\W+/);
+            const fields = line.split(/[^A-Za-z0-9_-]+/);
             const deviceName = fields[0];
 
             if (deviceName == "lo")
