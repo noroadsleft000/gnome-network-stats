@@ -1,0 +1,61 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.0\n"
+"Last-Translator: Heimen Stoffels <vistausss@fastmail.com>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: nl\n"
+
+#: ../prefs.js:121
+msgid "Refresh Interval (ms)"
+msgstr "Ververstussenpoos (in ms)"
+
+#: ../prefs.js:126
+msgid "What to show in top bar"
+msgstr "Tonen op bovenbalk:"
+
+#: ../prefs.js:131
+msgid "What time should we reset network stats"
+msgstr "Op welk tijdstip de statistieken moeten worden gewist"
+
+#: ../prefs.js:171 ../ui/ExpandableDeviceMenuItem.js:171
+msgid "Total speed"
+msgstr "Snelheid (totaal)"
+
+#: ../prefs.js:172 ../ui/ExpandableDeviceMenuItem.js:164
+msgid "Upload speed"
+msgstr "Uploadsnelheid"
+
+#: ../prefs.js:173 ../ui/ExpandableDeviceMenuItem.js:167
+msgid "Download speed"
+msgstr "Downloadsnelheid"
+
+#: ../prefs.js:174 ../ui/ExpandableDeviceMenuItem.js:174
+msgid "Total data used"
+msgstr "Dataverbruik (totaal)"
+
+#: ../ui/ExpandableDeviceMenuItem.js:161
+msgid "IP"
+msgstr "IP-adres"
+
+#: ../ui/ExpandableDeviceMenuItem.js:175
+msgid "since"
+msgstr "sinds"
+
+#: ../ui/PopupView.js:189
+msgid "Device"
+msgstr "Apparaat"
+
+#: ../ui/PopupView.js:189
+msgid "Speed"
+msgstr "Snelheid"
+
+#: ../ui/PopupView.js:189
+msgid "Data Used"
+msgstr "Dataverbruik"
