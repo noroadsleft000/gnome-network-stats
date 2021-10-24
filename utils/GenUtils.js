@@ -75,18 +75,28 @@ function getIconPath(name) {
 }
 
 
-function iconPathForDeviceType(deviceType) {
-    const currDir = Me.dir.get_path();
+/**
+ * Lookup and returns icon path for given deviceType
+ * @param {string} deviceType
+ * @returns icon relative path
+ */
+function getDeviceIcon(deviceType) {
     let path = "";
     switch(deviceType) {
         case DeviceType.ETHERNET:
-            path = `${currDir}/assets/ethernet_black_24dp.svg`;
+            path = getIconPath("ethernet_black_24dp.svg");
             break;
         case DeviceType.WIFI:
-            path = `${currDir}/assets/wifi_black_24dp.svg`;
+            path = getIconPath("wifi_black_24dp.svg");
+            break;
+        case DeviceType.BLETOOTH:
+            path = getIconPath("bluetooth_black_24dp.svg");
+            break;
+        case DeviceType.MODEM:
+            path = getIconPath("modem_black_24dp.svg");
             break;
         default:
-            path = `${currDir}/assets/network_black_black_24dp.svg`;
+            path = getIconPath("device_hub_black_24dp.svg");
             break;
     }
     return path;
