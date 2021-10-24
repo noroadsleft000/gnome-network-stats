@@ -2,7 +2,7 @@ const { PopupSubMenuMenuItem } = imports.ui.popupMenu;
 const { Atk, Clutter, Gio, GObject, Graphene, Shell, St } = imports.gi;
 
 const Me = imports.misc.extensionUtils.getCurrentExtension();
-const { getIconPath } = Me.imports.utils.GenUtils;
+
 const { logger } = Me.imports.utils.Logger;
 const Gettext = imports.gettext;
 const _ = Gettext.domain("network-stats").gettext;
@@ -119,8 +119,8 @@ class ExpandableDeviceMenuItemClass extends PopupSubMenuMenuItem {
         box5.add_child(this._totalDataValueLabel);
 
         const resetIcon = new St.Icon({
-            gicon: Gio.icon_new_for_string(getIconPath("restart_alt_black_24dp.svg")),
-            style_class: 'icon-16',
+            icon_name: "edit-delete-symbolic",
+	        style_class: "system-status-icon icon-16"
         });
 
         const resetButton = new St.Button({
