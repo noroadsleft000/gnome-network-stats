@@ -38,5 +38,6 @@ var SettingKeys = Object.freeze({
     RESET_TIME: "reset-time",
     RESET_HOURS: "reset-hours",
     RESET_MINUTES: "reset-minutes",
-    DEVICES_INFO: "devices-info"
+    DEVICES_INFO: "devices-info",
+    PREFERED_DEVICE: "prefered-device"
 });

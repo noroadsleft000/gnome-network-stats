@@ -62,6 +62,21 @@
     text-align: right;
 }
 
+.ns-button {
+    padding: 6px;
+    border: 1px solid #BBB;
+    background: #f9f9f9;
+    cursor: pointer;
+}
+
+.ns-button:hover {
+    background: #CCC;
+}
+
+.ns-button:active {
+    background: #AAA;
+}
+
 .ns-action-button {
     padding: 6px;
     border: 1px solid #BBB;
