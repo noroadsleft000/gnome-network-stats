@@ -120,7 +120,7 @@ class ExpandableDeviceMenuItemClass extends PopupSubMenuMenuItem {
 
         const resetIcon = new St.Icon({
             icon_name: "edit-delete-symbolic",
-	        style_class: "system-status-icon icon-16"
+            style_class: "system-status-icon icon-16"
         });
 
         const resetButton = new St.Button({
