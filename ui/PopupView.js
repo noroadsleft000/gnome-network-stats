@@ -10,7 +10,7 @@ const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
 
 const { logger } = Me.imports.utils.Logger;
-const { iconPathForDeviceType, getIconPath } = Me.imports.utils.GenUtils;
+const { getDeviceIcon, getIconPath } = Me.imports.utils.GenUtils;
 const { ExpandableMenuItem } = Me.imports.ui.ExpandableMenuItem;
 const { ExpandableDeviceMenuItem } = Me.imports.ui.ExpandableDeviceMenuItem;
 const { DeviceMenuTitleItem } = Me.imports.ui.DeviceMenuTitleItem;
@@ -259,7 +259,7 @@ class PopupViewClass extends PanelMenu.Button {
 
     updateItem(device) {
         let menuItem = this._menuItems[device.name];
-        const iconPath = iconPathForDeviceType(device.type);
+        const iconPath = getDeviceIcon(device.type);
         device.iconPath = iconPath;
         if (!menuItem) {
             menuItem = new ExpandableDeviceMenuItem(device, {
