@@ -76,11 +76,20 @@ class AppController {
         appView.hide();
     }
 
+    _getActiveDeviceName() {
+        const userPreferedDevice = appSettingsModel.preferedDeviceName;
+        if (this._deviceModel.hasDevice(userPreferedDevice)) {
+            return userPreferedDevice;
+        }
+        return this._deviceModel.getActiveDeviceName();
+    }
+
     refresh() {
         const { displayMode, refreshInterval } = appSettingsModel;
         //logger.debug(`displayMode : ${displayMode}`);
         this._deviceModel.update(refreshInterval);
-        const activeDevice = this._deviceModel.getActiveDeviceName();
+        const activeDevice = this._getActiveDeviceName();
+        //logger.debug(`activeDevice: ${activeDevice}`);
         let titleStr = "----";
         switch(displayMode) {
             case DisplayMode.TOTAL_SPEED:
@@ -129,7 +138,7 @@ class AppController {
     resetDevices() {
         const now = new Date();
         const resetTime = appSettingsModel.getResetTime();
-        const activeDevice = this._deviceModel.getActiveDeviceName();
+        const activeDevice = this._getActiveDeviceName();
         const { resetedAt } = appSettingsModel.getDeviceInfo(activeDevice);
         //logger.debug(typeof resetedAt, resetedAt);
         let deviceResetedAt = new Date(resetTime.getTime() - 1000);

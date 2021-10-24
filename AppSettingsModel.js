@@ -22,6 +22,7 @@ class AppSettingsModel {
         this._resetMinutes = 0;
         this._refreshInterval = kRefreshInterval;
         this._displayMode = DisplayMode.DEFAULT;
+        this._preferedDeviceName = undefined;
         this._devicesInfoMap = {};
     }
 
@@ -59,14 +60,19 @@ class AppSettingsModel {
         this._resetMinutes = this.schema.get_int(SettingKeys.RESET_MINUTES);
         const str = this.schema.get_string(SettingKeys.DEVICES_INFO);
         this._devicesInfoMap = JSON.parse(str);
+        this._preferedDeviceName = this.schema.get_string(SettingKeys.PREFERED_DEVICE);
         // logger.debug(`new values [ refreshInterval: ${this._refreshInterval} displayMode: ${this._displayMode} resetTime: ${this._resetHours} : ${this._resetMinutes}]`);
         // logger.debug(`deivicesInfoMap ${str}`);
     }
 
     save() {
-        // right now we are chaning only mode value.
+        // write back the changed values.
+        if (this.schema.get_string(SettingKeys.DISPLAY_MODE) !== this._displayMode) {
         this.schema.set_string(SettingKeys.DISPLAY_MODE, this._displayMode);
-        //this.schema.set_string(SettingKeys.DEVICES_INFO, JSON.stringify(this._lastResetMap));
+        }
+        if (this.schema.get_string(SettingKeys.PREFERED_DEVICE) !== this._preferedDeviceName) {
+            this.schema.set_string(SettingKeys.PREFERED_DEVICE, this._preferedDeviceName);
+        }
     }
 
     get refreshInterval() {
@@ -79,6 +85,15 @@ class AppSettingsModel {
 
     set displayMode(mode) {
         this._displayMode = mode;
+        this.save();
+    }
+
+    get preferedDeviceName() {
+        return this._preferedDeviceName;
+    }
+
+    set preferedDeviceName(deviceName) {
+        this._preferedDeviceName = deviceName;
         this.save();
     }
 

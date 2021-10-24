@@ -262,17 +262,26 @@ class PopupViewClass extends PanelMenu.Button {
         const iconPath = iconPathForDeviceType(device.type);
         device.iconPath = iconPath;
         if (!menuItem) {
-            menuItem = new ExpandableDeviceMenuItem(device, this.onResetClicked.bind(this, device.name));
+            menuItem = new ExpandableDeviceMenuItem(device, {
+                defaultDeviceName: appSettingsModel.preferedDeviceName,
+                onResetClicked: this.onResetClicked.bind(this, device.name),
+                onMarkDefaultClicked: this.onMarkDefaultClicked.bind(this, device.name)
+            });
             this.menu.addMenuItem(menuItem);
             this._menuItems[device.name] = menuItem;
         } else {
-            menuItem.update(device);
+            menuItem.update(device, appSettingsModel.preferedDeviceName);
         }
     }
 
     onResetClicked(name) {
         logger.info(`Reset the device : ${name}`);
         deviceResetMessageBroadcaster.broadcast({ name });
+    }
+
+    onMarkDefaultClicked(name) {
+        logger.info(`Mark the device "${name}" as default`);
+        appSettingsModel.preferedDeviceName = name;
     }
 
     setTitleText(text) {

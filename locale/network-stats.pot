@@ -1,3 +1,22 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR 2021 No roads left
+# This file is distributed under the same license as the network-stats package.
+# No roads left noroadsleft000@gmail.com, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: network-stats 1.0\n"
+"Report-Msgid-Bugs-To: noroadsleft000@gmail.com\n"
+"POT-Creation-Date: 2021-10-25 03:57+0530\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: No roads left noroadsleft000@gmail.com\n"
+"Language-Team: LANGUAGE noroadsleft000@gmail.com\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
 #: ../prefs.js:121
 msgid "Refresh Interval (ms)"
 msgstr ""
@@ -10,28 +29,44 @@ msgstr ""
 msgid "What time should we reset network stats"
 msgstr ""
 
-#: ../prefs.js:171 ../ui/ExpandableDeviceMenuItem.js:171
+#: ../prefs.js:171 ../ui/ExpandableDeviceMenuItem.js:214
 msgid "Total speed"
 msgstr ""
 
-#: ../prefs.js:172 ../ui/ExpandableDeviceMenuItem.js:164
+#: ../prefs.js:172 ../ui/ExpandableDeviceMenuItem.js:207
 msgid "Upload speed"
 msgstr ""
 
-#: ../prefs.js:173 ../ui/ExpandableDeviceMenuItem.js:167
+#: ../prefs.js:173 ../ui/ExpandableDeviceMenuItem.js:210
 msgid "Download speed"
 msgstr ""
 
-#: ../prefs.js:174 ../ui/ExpandableDeviceMenuItem.js:174
+#: ../prefs.js:174 ../ui/ExpandableDeviceMenuItem.js:217
 msgid "Total data used"
 msgstr ""
 
-#: ../ui/ExpandableDeviceMenuItem.js:161
+#: ../ui/ExpandableDeviceMenuItem.js:158
+msgid "Make Default"
+msgstr ""
+
+#: ../ui/ExpandableDeviceMenuItem.js:204
 msgid "IP"
 msgstr ""
 
-#: ../ui/ExpandableDeviceMenuItem.js:175
+#: ../ui/ExpandableDeviceMenuItem.js:218
 msgid "since"
+msgstr ""
+
+#: ../ui/ExpandableDeviceMenuItem.js:222
+msgid "Yes"
+msgstr ""
+
+#: ../ui/ExpandableDeviceMenuItem.js:225
+msgid "No"
+msgstr ""
+
+#: ../ui/ExpandableDeviceMenuItem.js:229
+msgid "Default device"
 msgstr ""
 
 #: ../ui/PopupView.js:189

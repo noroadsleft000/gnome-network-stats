@@ -27,6 +27,10 @@ class DeviceMonitorClass {
         return this._devices;
     }
 
+    hasDevice(name) {
+        return this._devices[name] !== undefined;
+    }
+
     getDeviceByName(name) {
         return this._devices[name];
     }

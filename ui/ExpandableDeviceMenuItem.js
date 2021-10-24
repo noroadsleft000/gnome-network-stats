@@ -13,7 +13,13 @@ const _ = Gettext.domain("network-stats").gettext;
 */
 
 class ExpandableDeviceMenuItemClass extends PopupSubMenuMenuItem {
-    _init(device, onResetClicked) {
+    _init(device,
+        {
+            defaultDeviceName,
+            onResetClicked, 
+            onMarkDefaultClicked,
+        }
+    ) {
         super._init("", false);
 
         const {
@@ -101,23 +107,24 @@ class ExpandableDeviceMenuItemClass extends PopupSubMenuMenuItem {
         const box5 = new St.BoxLayout({ style_class: "popup-menu-item", vertical: false });
         this._totalDataTitleLabel = new St.Label({
             text: "",
-            style_class: "text-item text-right"
+            style_class: "text-item text-right",
+            y_align: Clutter.ActorAlign.CENTER
         });
         this._totalDataValueLabel = new St.Label({
             text: "",
-            style_class: "text-item text-left"
+            style_class: "text-item text-left",
+            y_align: Clutter.ActorAlign.CENTER,
         });
         box5.add_child(this._totalDataTitleLabel);
         box5.add_child(this._totalDataValueLabel);
-
 
         const resetIcon = new St.Icon({
             icon_name: "edit-delete-symbolic",
             style_class: "system-status-icon icon-16"
         });
 
-        const button = new St.Button({
-            style_class: 'ci-action-btn',
+        const resetButton = new St.Button({
+            style_class: 'ci-action-btn ns-button',
             can_focus: true,
             child: resetIcon,
             x_align: Clutter.ActorAlign.END,
@@ -125,9 +132,45 @@ class ExpandableDeviceMenuItemClass extends PopupSubMenuMenuItem {
             y_expand: true
         });
 
-        button.connect('button-press-event', onResetClicked);
-        this._resetButton = button;
+        resetButton.connect('button-press-event', onResetClicked);
+        this._resetButton = resetButton;
         box5.add_child(this._resetButton);
+
+
+        const box6 = new St.BoxLayout({
+            style_class: "popup-menu-item",
+            vertical: false
+        });
+        this._makeDefaultTitleLabel = new St.Label({
+            text: "",
+            style_class: "text-item text-right",
+            y_align: Clutter.ActorAlign.CENTER
+        });
+        this._makeDefaultValueLabel = new St.Label({
+            text: "text-item",
+            y_align: Clutter.ActorAlign.CENTER
+        });
+        box6.add_child(this._makeDefaultTitleLabel);
+        box6.add_child(this._makeDefaultValueLabel);
+
+
+        const makeDefaultLabel = new St.Label({
+            text: _("Make Default"),
+        });
+
+        const makeDefaultButton = new St.Button({
+            style_class: 'ns-button ns-text-button',
+            can_focus: true,
+            child: makeDefaultLabel,
+            x_align: Clutter.ActorAlign.END,
+            y_align: Clutter.ActorAlign.CENTER,
+            x_expand: false,
+            y_expand: true
+        });
+
+        makeDefaultButton.connect('button-press-event', onMarkDefaultClicked);
+        this._makeDefaultButton = makeDefaultButton;
+        box6.add_child(this._makeDefaultButton);
 
 
         this.menu.box.add_child(box1);
@@ -135,11 +178,12 @@ class ExpandableDeviceMenuItemClass extends PopupSubMenuMenuItem {
         this.menu.box.add_child(box3);
         this.menu.box.add_child(box4);
         this.menu.box.add_child(box5);
+        this.menu.box.add_child(box6);
 
-        this.update(device);
+        this.update(device, defaultDeviceName);
     }
 
-    update(device) {
+    update(device, defaultDeviceName) {
         const {
             //iconPath,
             name,
@@ -172,6 +216,17 @@ class ExpandableDeviceMenuItemClass extends PopupSubMenuMenuItem {
 
         this._totalDataTitleLabel.set_text(`${_("Total data used")} [Σ] : `);
         this._totalDataValueLabel.set_text(`${totalData}  --  ${_("since")} -- ${startTime}`);
+
+        let symbol = "★";
+        if (name === defaultDeviceName) {
+            this._makeDefaultValueLabel.set_text(`${_("Yes")}`);
+            this._makeDefaultButton.hide();
+        } else {
+            this._makeDefaultValueLabel.set_text(`${_("No")}`);
+            symbol = "☆";
+            this._makeDefaultButton.show();
+        }
+        this._makeDefaultTitleLabel.set_text(`${_("Default device")} [${symbol}] : `);
     }
 }
 

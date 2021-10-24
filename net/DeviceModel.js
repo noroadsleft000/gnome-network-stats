@@ -49,6 +49,10 @@ class DeviceModelClass {
         return 0;
     }
 
+    hasDevice(deviceName) {
+        return this._deviceMonitor.hasDevice(deviceName);
+    }
+
     getActiveDeviceName() {
         return this._deviceMonitor.getActiveDeviceName();
     }
