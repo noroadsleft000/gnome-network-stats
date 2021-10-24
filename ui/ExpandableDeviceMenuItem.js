@@ -201,7 +201,7 @@ class ExpandableDeviceMenuItemClass extends PopupSubMenuMenuItem {
         this._dataLabel.set_text(totalData);
 
         // details
-        this._ipTitleLabel.set_text(`${_("IP")} : `);
+        this._ipTitleLabel.set_text(`${_("IP")} [♁] : `);
         this._ipValueLabel.set_text(ip);
         
         this._uploadSpeedTitleLabel.set_text(`${_("Upload speed")} [↑] : `);

@@ -97,3 +97,7 @@
 .ns-action-button-down {
     background: #BBB;
 }
+
+.ns-text-button {
+    padding: 4px 6px;
+}

@@ -16,3 +16,4 @@
 ../utils/EventBroadcaster.js
 ../utils/GenUtils.js
 ../utils/Logger.js
+../utils/TypeUtils.js

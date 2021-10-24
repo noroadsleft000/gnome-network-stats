@@ -6,7 +6,6 @@ const Me = ExtensionUtils.getCurrentExtension();
 const { appView } = Me.imports.ui.AppView;
 const { logger } = Me.imports.utils.Logger;
 const { DeviceModel } = Me.imports.net.DeviceModel;
-const { deviceMonitor } = Me.imports.net.DeviceMonitor;
 const { appSettingsModel } = Me.imports.AppSettingsModel;
 
 const { DisplayMode } = Me.imports.utils.Constants;

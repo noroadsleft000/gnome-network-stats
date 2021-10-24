@@ -39,7 +39,7 @@ class NetworkMonitorClass {
     resetDeviceLogs({name}) {
         logger.info(`Reset the logs for device ${name}`);
         this._deviceLogs[name] = {...this._deviceLogs[name], reset: true };
-        appSettingsModel.setDeviceInfo(name, { resetedAt: new Date().toString() });
+        appSettingsModel.replaceDeviceInfo(name, { resetedAt: new Date().toString() });
     }
 
     resetAll() {

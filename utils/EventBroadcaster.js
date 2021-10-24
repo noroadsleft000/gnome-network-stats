@@ -31,11 +31,5 @@ class EventBroadcaster {
     }
 }
 
-class DeviceResetMessageBroadcaster extends EventBroadcaster {
-}
-
-class TitleClickedMessageBroadcaster extends EventBroadcaster {
-}
-
-var deviceResetMessageBroadcaster = new DeviceResetMessageBroadcaster();
-var titleClickedMessageBroadcaster = new TitleClickedMessageBroadcaster();
+var deviceResetMessageBroadcaster = new EventBroadcaster();
+var titleClickedMessageBroadcaster = new EventBroadcaster();
