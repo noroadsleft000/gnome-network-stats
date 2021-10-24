@@ -38,13 +38,29 @@ msgstr "Download speed"
 msgid "Total data used"
 msgstr "Total data used"
 
+#: ../ui/ExpandableDeviceMenuItem.js:158
+msgid "Make Default"
+msgstr "Make Default"
+
 #: ../ui/ExpandableDeviceMenuItem.js:161
 msgid "IP"
 msgstr "IP"
 
 #: ../ui/ExpandableDeviceMenuItem.js:175
 msgid "since"
-msgstr "since -1-"
+msgstr "since"
+
+#: ../ui/ExpandableDeviceMenuItem.js:222
+msgid "Yes"
+msgstr "Yes"
+
+#: ../ui/ExpandableDeviceMenuItem.js:225
+msgid "No"
+msgstr "No"
+
+#: ../ui/ExpandableDeviceMenuItem.js:229
+msgid "Default device"
+msgstr "Default device"
 
 #: ../ui/PopupView.js:189
 msgid "Device"
