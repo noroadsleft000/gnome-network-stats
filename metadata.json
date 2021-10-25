@@ -1,6 +1,6 @@
 {
   "name": "Network Stats",
-  "description": "Displays internet upload speed, download speed, bandwidth, data usage. \n\n visit github page for instructions.",
+  "description": "Displays internet upload speed, download speed, bandwidth, data usage. \n\n visit github page for instructions, suggestions and feature requests.",
   "uuid": "network-stats@gnome.noroadsleft.xyz",
   "settings-schema": "org.gnome.shell.extensions.network-stats",
   "gettext-domain": "network-stats",
@@ -18,5 +18,5 @@
     "3.38"
   ],
   "url" : "https://github.com/noroadsleft000/gnome-network-stats",
-  "version": 8
+  "version": 9
 }
