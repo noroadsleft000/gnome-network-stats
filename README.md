@@ -61,6 +61,10 @@ gnome-tweak-tool to enable it.
 ```
 ./commands.sh pack
 ```
+### launch a nested wayland session for debugging the extension
+```
+./commands.sh launch_debug
+```
 
 
 ## Reporting a Bug
@@ -74,6 +78,11 @@ journalctl /usr/bin/gnome-shell | grep network-stats
 journalctl -f -o cat /usr/bin/gnome-shell
 ```
 
+## Developer resources
+- [Basic Gnome extension guide](https://gjs.guide/extensions/development/creating.html#gnome-extensions-tool)
+- [Gnome JS API documentation](https://gjs-docs.gnome.org/)
+- [JS API documentaion - Unofficial](https://www.roojs.com/seed/gir-1.2-gtk-3.0/seed)
+- [Gnome JS API source code](https://github.com/GNOME/gnome-shell/tree/main/js)
 
 ## Contibutors
 Contributions are always welcome, fork this repository make your changes.

@@ -1,0 +1,4 @@
+Add preffered device selection to extension settings UI.
+Improve documentation use JSDoc markup.
+Add some unit tests and continuous integration.
+Add weekly, monthly network-stat reports feature. [user request taken from extension store comments].

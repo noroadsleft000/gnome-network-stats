@@ -5,6 +5,7 @@ const Me = ExtensionUtils.getCurrentExtension();
 const { logger } = Me.imports.utils.Logger;
 const { DisplayMode } = Me.imports.utils.Constants;
 const { SettingKeys } = Me.imports.utils.Constants;
+const { compareJsonStrings } = Me.imports.utils.GenUtils;
 
 const kRefreshInterval = 2 * 1000; // milliseconds
 const kSchemaName = "org.gnome.shell.extensions.network-stats";
@@ -68,10 +69,14 @@ class AppSettingsModel {
     save() {
         // write back the changed values.
         if (this.schema.get_string(SettingKeys.DISPLAY_MODE) !== this._displayMode) {
-        this.schema.set_string(SettingKeys.DISPLAY_MODE, this._displayMode);
+            this.schema.set_string(SettingKeys.DISPLAY_MODE, this._displayMode);
         }
         if (this.schema.get_string(SettingKeys.PREFERED_DEVICE) !== this._preferedDeviceName) {
             this.schema.set_string(SettingKeys.PREFERED_DEVICE, this._preferedDeviceName);
+        }
+        const devicesJson = JSON.stringify(this._devicesInfoMap);
+        if (!compareJsonStrings(this.schema.get_string(SettingKeys.DEVICES_INFO), devicesJson)) {
+            this.schema.set_string(SettingKeys.DEVICES_INFO, devicesJson);
         }
     }
 
@@ -111,21 +116,21 @@ class AppSettingsModel {
 
     set devicesInfoMap(info) {
         this._devicesInfoMap = { ...this._devicesInfoMap, ...info };
-        this.schema.set_string(SettingKeys.DEVICES_INFO, JSON.stringify(this._devicesInfoMap));
+        this.save();
     }
 
     getDeviceInfo(name) {
         return this._devicesInfoMap[name] || {};
     }
 
-    setDeviceInfo(name, info) {
+    replaceDeviceInfo(name, info) {
         this._devicesInfoMap[name] = info;
-        this.schema.set_string(SettingKeys.DEVICES_INFO, JSON.stringify(this._devicesInfoMap));
+        this.save();
     }
 
     updateDeviceInfo(name, info) {
         this._devicesInfoMap[name] = { ...this.devicesInfoMap[name], ...info };
-        this.schema.set_string(SettingKeys.DEVICES_INFO, JSON.stringify(this._devicesInfoMap));
+        this.save();
     }
 
     notifyListerners() {

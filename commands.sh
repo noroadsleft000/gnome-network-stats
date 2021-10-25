@@ -6,11 +6,12 @@ help()
 {
     echo "Command usage : "
     echo "-------------------------------------------------------"
-    echo "./commands.sh build       --  build the extension"
-    echo "./commands.sh install     --  install the extension"
-    echo "./commands.sh enable      --  enable the extension"
-    echo "./commands.sh disable     --  disable the extension"
-    echo "./commands.sh pack        --  package the extension"
+    echo "./commands.sh build           --  build the extension"
+    echo "./commands.sh install         --  install the extension"
+    echo "./commands.sh enable          --  enable the extension"
+    echo "./commands.sh disable         --  disable the extension"
+    echo "./commands.sh pack            --  package the extension"
+    echo "./commands.sh launch_debug    --  launch nested session to debug the extension"
 }
 
 build()
@@ -59,6 +60,12 @@ pack()
     --podir=locale
 }
 
+launch_debug()
+{
+    install
+    dbus-run-session -- gnome-shell --nested --wayland
+}
+
 
 if [ "$1" = "build" ]; then
     build
@@ -72,6 +79,8 @@ elif [ "$1" = "enable" ]; then
     disable
 elif [ "$1" = "pack" ]; then
     pack
+elif [ "$1" = "launch_debug" ]; then
+    launch_debug
 else
     help
 fi
