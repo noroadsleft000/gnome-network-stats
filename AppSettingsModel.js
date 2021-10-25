@@ -141,6 +141,7 @@ class AppSettingsModel {
 
     subscribe(listener) {
         this._settingListeners.push(listener);
+        return listener;
     }
 
     unsubscribe(listener) {
@@ -148,6 +149,7 @@ class AppSettingsModel {
         if (index != -1) {
             this._settingListeners.splice(index, 1);
         }
+        return listener;
     }
 }
 
