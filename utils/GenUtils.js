@@ -1,5 +1,3 @@
-const { St } = imports.gi;
-
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
 const { DeviceType } = Me.imports.utils.Constants;
@@ -161,19 +159,5 @@ function getDeviceIcon(deviceType) {
             break;
     }
     return path;
-}
-
-
-/**
- * create new Icon object for given iconName
- * @param {string} iconName
- * @returns Icon UI object
- */
-function createIcon(iconName) {
-    const icon = new St.Icon({
-        gicon : Gio.icon_new_for_string(getIconPath(iconName)),
-        style_class : 'system-status-icon',
-    });
-    return icon;
 }
 
