@@ -4,7 +4,7 @@ Gnome extension for showing network upload, download speed and per day data usag
 <div>
 <p><a href="#"><img src="assets/logo.svg" height=80px alt="NSS Logo"/></a></p>
 <h1>Network Stats</h1>
-<p><img src='assets/screenshot.png' height = "400px" width="400px"  alt="Screenshot"/>
+<p><img src='assets/screenshot.png' width="400px"  alt="Screenshot"/>
 </div>
 
 ## Installation
@@ -66,6 +66,12 @@ gnome-tweak-tool to enable it.
 ./commands.sh launch_debug
 ```
 
+## ERROR while updating extension from store.
+Universal solution of all problems `"Restart your machine"` will work.
+
+If you are on X11 and not of wayland, reload shell `"Alt + F2", "r + Enter"` would be sufficient.
+
+still facing some error? report it by creating a bug.
 
 ## Reporting a Bug
 

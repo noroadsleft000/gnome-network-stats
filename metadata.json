@@ -1,6 +1,6 @@
 {
   "name": "Network Stats",
-  "description": "Displays internet upload speed, download speed, bandwidth, data usage. \n\n visit github page for instructions, suggestions and feature requests.",
+  "description": "Displays internet upload speed, download speed, bandwidth, data usage. \n\n visit github page for instructions, suggestions and feature requests. \n\n ERROR while updating extension ? restart your system or reload gnome shell. Alt + F2  then  r + Enter",
   "uuid": "network-stats@gnome.noroadsleft.xyz",
   "settings-schema": "org.gnome.shell.extensions.network-stats",
   "gettext-domain": "network-stats",
