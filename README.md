@@ -18,7 +18,7 @@ The latest reviewed version can be found at
 </a>
 </div>
 
-### donwload from github.com and install yourself
+### Download from github.com and install yourself
 
 The latest development version can be installed manually with these commands:
 
