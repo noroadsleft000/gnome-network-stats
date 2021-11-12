@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: network-stats 1.0\n"
 "Report-Msgid-Bugs-To: noroadsleft000@gmail.com\n"
-"POT-Creation-Date: 2021-10-25 03:57+0530\n"
+"POT-Creation-Date: 2021-11-12 23:51+0530\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: No roads left noroadsleft000@gmail.com\n"
 "Language-Team: LANGUAGE noroadsleft000@gmail.com\n"
@@ -17,32 +17,92 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../prefs.js:121
+#: ../prefs.js:143
 msgid "Refresh Interval (ms)"
 msgstr ""
 
-#: ../prefs.js:126
-msgid "What to show in top bar"
+#: ../prefs.js:162
+msgid "What to show in status bar"
 msgstr ""
 
-#: ../prefs.js:131
-msgid "What time should we reset network stats"
-msgstr ""
-
-#: ../prefs.js:171 ../ui/ExpandableDeviceMenuItem.js:214
+#: ../prefs.js:170 ../ui/ExpandableDeviceMenuItem.js:214
 msgid "Total speed"
 msgstr ""
 
-#: ../prefs.js:172 ../ui/ExpandableDeviceMenuItem.js:207
+#: ../prefs.js:171 ../ui/ExpandableDeviceMenuItem.js:207
 msgid "Upload speed"
 msgstr ""
 
-#: ../prefs.js:173 ../ui/ExpandableDeviceMenuItem.js:210
+#: ../prefs.js:172 ../ui/ExpandableDeviceMenuItem.js:210
 msgid "Download speed"
 msgstr ""
 
-#: ../prefs.js:174 ../ui/ExpandableDeviceMenuItem.js:217
+#: ../prefs.js:173 ../ui/ExpandableDeviceMenuItem.js:217
 msgid "Total data used"
+msgstr ""
+
+#: ../prefs.js:190
+msgid "When do you want to reset the stats ?"
+msgstr ""
+
+#: ../prefs.js:198
+msgid "Daily"
+msgstr ""
+
+#: ../prefs.js:199
+msgid "Weekly"
+msgstr ""
+
+#: ../prefs.js:200
+msgid "BiWeekly"
+msgstr ""
+
+#: ../prefs.js:201
+msgid "Monthly"
+msgstr ""
+
+#: ../prefs.js:202
+msgid "Never"
+msgstr ""
+
+#: ../prefs.js:219
+msgid "Reset on day of week"
+msgstr ""
+
+#: ../prefs.js:227
+msgid "Monday"
+msgstr ""
+
+#: ../prefs.js:228
+msgid "Tuesday"
+msgstr ""
+
+#: ../prefs.js:229
+msgid "Wednesday"
+msgstr ""
+
+#: ../prefs.js:230
+msgid "Thursday"
+msgstr ""
+
+#: ../prefs.js:231
+msgid "Friday"
+msgstr ""
+
+#: ../prefs.js:232
+msgid "Saturday"
+msgstr ""
+
+#: ../prefs.js:233
+msgid "Sunday"
+msgstr ""
+
+#: ../prefs.js:250
+msgid "Reset on day of month"
+msgstr ""
+
+#: ../prefs.js:269
+msgid "What time should we reset network stats"
 msgstr ""
 
 #: ../ui/ExpandableDeviceMenuItem.js:158

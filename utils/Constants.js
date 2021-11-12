@@ -1,3 +1,5 @@
+var kSchemaName = "org.gnome.shell.extensions.network-stats";
+
 var DeviceType = Object.freeze({
     ETHERNET: "ethernet",
     WIFI: "wifi",
@@ -6,17 +8,6 @@ var DeviceType = Object.freeze({
     WIMAX: "wimax",
     MODEM: "modem",
     NONE: "none"
-});
-
-var IconType = Object.freeze({
-    UP: "arrow-up.svg",
-    DOWN: "arrow-down.svg",
-    UPDOWN: "arrow-down-up.svg",
-    SETTINGS: "gear.svg",
-
-    ETHERNET: "1ethernet_black_24dp.svg",
-    WIFI: "wifi_black_24dp.svg",
-    BLUETOOTH: "bluetooth_black_24dp.svg",
 });
 
 var DisplayMode = Object.freeze({
@@ -28,14 +19,31 @@ var DisplayMode = Object.freeze({
     DEFAULT: "total_speed"
 });
 
+var ResetSchedule = Object.freeze({
+    DAILY: "daily",
+    WEEKLY: "weekly",
+    BIWEEKLY: "biweekly",
+    MONTHLY: "monthly",
+    NEVER: "never"
+});
 
-var kSchemaName = "org.gnome.shell.extensions.network-stats";
+var DayOfWeek = Object.freeze({
+    MONDAY: "monday",
+    TUESDAY: "tuesday",
+    WEDNESDAY: "wednesday",
+    THURSDAY: "thursday",
+    FRIDAY: "friday",
+    SATURDAY: "saturday",
+    SUNDAY: "sunday"
+});
 
 /* Sync these constants properly with schema file */
 var SettingKeys = Object.freeze({
     REFRESH_INTERVAL: "refresh-interval",
     DISPLAY_MODE: "display-mode",
-    RESET_TIME: "reset-time",
+    RESET_SCHEDULE: "reset-schedule",
+    RESET_WEEK_DAY: "reset-week-day",
+    RESET_MONTH_DAY: "reset-month-day",
     RESET_HOURS: "reset-hours",
     RESET_MINUTES: "reset-minutes",
     DEVICES_INFO: "devices-info",
