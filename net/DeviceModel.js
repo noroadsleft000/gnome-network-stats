@@ -119,7 +119,16 @@ class DeviceModelClass {
                         downSpeed: bytesSpeedToString(downSpeed),
                         totalSpeed: bytesSpeedToString(totalSpeed),
                         totalData: bytesToString(totalData),
-                        startTime: startTime.toLocaleTimeString(),
+                        startTime: startTime.toLocaleString(undefined, {
+                            weekday: "short",
+                            day: "2-digit",
+                            month: "short",
+                            year: "numeric",
+                            hour12: true,
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            second: "2-digit"
+                        }),
                     };
                     //logger.debug(`${name} => upload: ${upSpeed} download: ${downSpeed} total: ${totalData}`);
                 }
