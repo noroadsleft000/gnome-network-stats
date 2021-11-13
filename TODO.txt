@@ -1,4 +1,10 @@
-Add preffered device selection to extension settings UI.
-Improve documentation use JSDoc markup.
-Add some unit tests and continuous integration.
-Add weekly, monthly network-stat reports feature. [user request taken from extension store comments].
+1.) Add feature to mark preffered device in case multiple
+devices (network interfaces) are active [✓ version 9]
+2.) Improve documentation use JSDoc markup.
+3.) Add some unit tests and continuous integration.
+4.) Migrate to flutter depending on community support.
+
+[top feature request from extension store comments]
+1.) Make the data reset optional. [target - version 10]
+2.) Show both download and upload speeds side-by-side.
+3.) Add weekly, monthly network-stat reports feature.
