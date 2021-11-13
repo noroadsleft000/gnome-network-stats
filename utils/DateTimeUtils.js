@@ -1,6 +1,9 @@
 const Mainloop = imports.mainloop;
 const Me = imports.misc.extensionUtils.getCurrentExtension();
+const { ResetSchedule } = Me.imports.utils.Constants;
 const { DayOfWeek } = Me.imports.utils.Constants;
+
+const kOneDayInMilliSeconds = (1000 * 60 * 60 * 24);
 
 /**
  * Registers a timeout handler to be executed in future.
@@ -113,4 +116,59 @@ function daysInThisMonth(month, year) {
     month = month || now.getMonth();
     year = year || now.getFullYear();
     return new Date(year, month + 1, 0).getDate();
+}
+
+/**
+ * Computes the upcomming reset point in time.
+ * @param {Date} lastResetDate
+ * @returns {Date} object to upcomming reset time.
+ */
+ function getNextResetTime(lastResetDate, settings) {
+    let newResetDateTime = new Date();
+
+    if (!lastResetDate) {
+        return newResetDateTime;
+    }
+
+    const {
+        resetSchedule,
+        resetDayOfWeek,
+        resetDayOfMonth,
+        resetHours,
+        resetMinutes
+    } = settings;
+
+    const lastResetDateCopy = new Date(lastResetDate.valueOf());
+    switch(resetSchedule) {
+        default:
+        case ResetSchedule.DAILY: {
+            newResetDateTime = getNextTimeOfTheDay(resetHours, resetMinutes, lastResetDateCopy);
+            break;
+        }
+        case ResetSchedule.WEEKLY:
+        case ResetSchedule.BIWEEKLY: {
+            const resetDayOfWeekIndex = getDayNumberForDayOfWeek(resetDayOfWeek);
+            newResetDateTime = getNextDayOfTheWeek(resetDayOfWeekIndex, true, lastResetDateCopy);
+            if (resetSchedule === ResetSchedule.BIWEEKLY) {
+                newResetDateTime.setDate(newResetDateTime.getDate() + 7);
+            }
+            break;
+        }
+        case ResetSchedule.MONTHLY: {
+            newResetDateTime = getNextDayOfTheMonth(resetDayOfMonth, true, lastResetDateCopy);
+            break;
+        }
+        case ResetSchedule.NEVER: {
+            const oneYearFromResetTime = lastResetDate.getTime() + (365 * kOneDayInMilliSeconds);
+            newResetDateTime.setTime(oneYearFromResetTime);
+            break;
+        }
+    }
+
+    // set the exact reset time.
+    newResetDateTime.setHours(resetHours);
+    newResetDateTime.setMinutes(resetMinutes);
+    newResetDateTime.setSeconds(0);
+
+    return newResetDateTime;
 }
