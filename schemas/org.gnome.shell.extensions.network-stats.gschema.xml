@@ -9,10 +9,23 @@
         <range min="500" max="5000"/>
     </key>
 
-    <key type="s" name="reset-time">
-        <default>"00:00"</default>
-        <summary>At what time in day should we reset device stats</summary>
-        <description>At this time data usage stats will be reset</description>
+    <key type="s" name="reset-schedule">
+        <default>"daily"</default>
+        <summary>Reset schedule for resetting the network stats.</summary>
+        <description>Reset schedule for resetting the network stats.</description>
+    </key>
+
+    <key type="s" name="reset-week-day">
+        <default>"monday"</default>
+        <summary>Reset on which day of week.</summary>
+        <description>Reset on which day of week.</description>
+    </key>
+
+    <key type="i" name="reset-month-day">
+        <default>1</default>
+        <summary>Reset on which day of month.</summary>
+        <description>Reset on which day of month.</description>
+        <range min="1" max="31"/>
     </key>
 
     <key type="i" name="reset-hours">
@@ -31,22 +44,17 @@
 
     <key type="s" name="display-mode">
         <default>"total_speed"</default>
-        <summary>What to display in top bar</summary>
+        <summary>What to display in status bar</summary>
     </key>
 
     <key type="s" name="prefered-device">
       <default>""</default>
-      <summary>devices or interfaces info as json object. e.g. last reset time</summary>
+      <summary>prefered device to be shown in status bar, in case multiple devices are connected</summary>
     </key>
 
     <key type="s" name="devices-info">
       <default>"{}"</default>
       <summary>devices or interfaces info as json object. e.g. last reset time</summary>
-    </key>
-
-    <key type="b" name="disable-down-arrow">
-        <default>true</default>
-        <summary>Remove down arrow in top bar</summary>
     </key>
   </schema>
 </schemalist>

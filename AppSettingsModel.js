@@ -4,8 +4,11 @@ const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
 const { logger } = Me.imports.utils.Logger;
 const { DisplayMode } = Me.imports.utils.Constants;
+const { ResetSchedule } = Me.imports.utils.Constants;
+const { DayOfWeek } = Me.imports.utils.Constants;
 const { SettingKeys } = Me.imports.utils.Constants;
 const { compareJsonStrings } = Me.imports.utils.GenUtils;
+const { getDayNumberForDayOfWeek } = Me.imports.utils.DateTimeUtils;
 
 const kRefreshInterval = 2 * 1000; // milliseconds
 const kSchemaName = "org.gnome.shell.extensions.network-stats";
@@ -19,10 +22,13 @@ class AppSettingsModel {
     constructor() {
         this._schema = undefined;
         this._settingListeners = [];
-        this._resetHours = 0;
-        this._resetMinutes = 0;
         this._refreshInterval = kRefreshInterval;
         this._displayMode = DisplayMode.DEFAULT;
+        this._resetSchedule = ResetSchedule.DAILY;
+        this._resetDayOfWeek = DayOfWeek.MONDAY;
+        this._resetDayOfMonth = 1;
+        this._resetHours = 0;
+        this._resetMinutes = 0;
         this._preferedDeviceName = undefined;
         this._devicesInfoMap = {};
     }
@@ -57,6 +63,9 @@ class AppSettingsModel {
     load() {
         this._refreshInterval = this.schema.get_int(SettingKeys.REFRESH_INTERVAL);
         this._displayMode = this.schema.get_string(SettingKeys.DISPLAY_MODE);
+        this._resetSchedule = this.schema.get_string(SettingKeys.RESET_SCHEDULE);
+        this._resetDayOfWeek = this.schema.get_string(SettingKeys.RESET_WEEK_DAY);
+        this._resetDayOfMonth = this.schema.get_int(SettingKeys.RESET_MONTH_DAY);
         this._resetHours = this.schema.get_int(SettingKeys.RESET_HOURS);
         this._resetMinutes = this.schema.get_int(SettingKeys.RESET_MINUTES);
         const str = this.schema.get_string(SettingKeys.DEVICES_INFO);
@@ -71,6 +80,7 @@ class AppSettingsModel {
         if (this.schema.get_string(SettingKeys.DISPLAY_MODE) !== this._displayMode) {
             this.schema.set_string(SettingKeys.DISPLAY_MODE, this._displayMode);
         }
+
         if (this.schema.get_string(SettingKeys.PREFERED_DEVICE) !== this._preferedDeviceName) {
             this.schema.set_string(SettingKeys.PREFERED_DEVICE, this._preferedDeviceName);
         }
@@ -102,12 +112,41 @@ class AppSettingsModel {
         this.save();
     }
 
+    get resetSchedule() {
+        return this._resetSchedule;
+    }
+
+    get resetDayOfWeek() {
+        return this._resetDayOfWeek;
+    }
+
+    get resetDayOfMonth() {
+        return this._resetDayOfMonth;
+    }
+
+    get resetHours() {
+        return this._resetHours;
+    }
+
+    get resetMinutes() {
+        return this._resetMinutes;
+    }
+
     getResetTime() {
         const date = new Date();
         date.setHours(this._resetHours);
         date.setMinutes(this._resetMinutes);
         date.setSeconds(0);
         return date;
+    }
+
+    getLastResetDateTime(deviceName) {
+        const { resetedAt } = this.getDeviceInfo(deviceName);
+        let lastResetedAt = undefined;
+        if (resetedAt) {
+            lastResetedAt = new Date(resetedAt);
+        }
+        return lastResetedAt;
     }
 
     get devicesInfoMap() {
