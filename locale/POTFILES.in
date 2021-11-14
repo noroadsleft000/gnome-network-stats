@@ -16,6 +16,7 @@
 ../utils/DateTimeUtils.js
 ../utils/EventBroadcaster.js
 ../utils/GenUtils.js
+../utils/GtkUtils.js
 ../utils/Logger.js
 ../utils/TypeUtils.js
 ../utils/UIUtils.js
