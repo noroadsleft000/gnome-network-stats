@@ -10,127 +10,96 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../prefs.js:143
 msgid "Refresh Interval (ms)"
 msgstr "Refresh Interval (ms)"
 
-#: ../prefs.js:162
 msgid "What to show in status bar"
 msgstr "What to show in status bar"
 
-#: ../prefs.js:170 ../ui/ExpandableDeviceMenuItem.js:214
 msgid "Total speed"
 msgstr "Total speed"
 
-#: ../prefs.js:171 ../ui/ExpandableDeviceMenuItem.js:207
 msgid "Upload speed"
 msgstr "Upload speed"
 
-#: ../prefs.js:172 ../ui/ExpandableDeviceMenuItem.js:210
 msgid "Download speed"
 msgstr "Download speed"
 
-#: ../prefs.js:173 ../ui/ExpandableDeviceMenuItem.js:217
 msgid "Total data used"
 msgstr "Total data used"
 
-#: ../prefs.js:190
 msgid "When do you want to reset the stats ?"
 msgstr "When do you want to reset the stats ?"
 
-#: ../prefs.js:198
 msgid "Daily"
 msgstr "Daily"
 
-#: ../prefs.js:199
 msgid "Weekly"
 msgstr "Weekly"
 
-#: ../prefs.js:200
 msgid "BiWeekly"
 msgstr "BiWeekly"
 
-#: ../prefs.js:201
 msgid "Monthly"
 msgstr "Monthly"
 
-#: ../prefs.js:202
 msgid "Never"
 msgstr "Never"
 
-#: ../prefs.js:219
 msgid "Reset on day of week"
 msgstr "Reset on day of week"
 
-#: ../prefs.js:227
 msgid "Monday"
 msgstr "Monday"
 
-#: ../prefs.js:228
 msgid "Tuesday"
 msgstr "Tuesday"
 
-#: ../prefs.js:229
 msgid "Wednesday"
 msgstr "Wednesday"
 
-#: ../prefs.js:230
 msgid "Thursday"
 msgstr "Thursday"
 
-#: ../prefs.js:231
 msgid "Friday"
 msgstr "Friday"
 
-#: ../prefs.js:232
 msgid "Saturday"
 msgstr "Saturday"
 
-#: ../prefs.js:233
 msgid "Sunday"
 msgstr "Sunday"
 
-#: ../prefs.js:250
 msgid "Reset on day of month"
 msgstr "Reset on day of month"
 
-#: ../prefs.js:269
 msgid "What time should we reset network stats"
 msgstr "What time should we reset network stats"
 
-#: ../ui/ExpandableDeviceMenuItem.js:158
 msgid "Make Default"
 msgstr "Make Default"
 
-#: ../ui/ExpandableDeviceMenuItem.js:204
 msgid "IP"
 msgstr "IP"
 
-#: ../ui/ExpandableDeviceMenuItem.js:218
 msgid "since"
 msgstr "since"
 
-#: ../ui/ExpandableDeviceMenuItem.js:222
 msgid "Yes"
 msgstr "Yes"
 
-#: ../ui/ExpandableDeviceMenuItem.js:225
 msgid "No"
 msgstr "No"
 
-#: ../ui/ExpandableDeviceMenuItem.js:229
 msgid "Default device"
 msgstr "Default device"
 
-#: ../ui/PopupView.js:189
 msgid "Device"
 msgstr "Device"
 
-#: ../ui/PopupView.js:189
 msgid "Speed"
 msgstr "Speed"
 
-#: ../ui/PopupView.js:189
 msgid "Data Used"
 msgstr "Data Used"
 
