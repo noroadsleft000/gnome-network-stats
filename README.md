@@ -66,10 +66,23 @@ gnome-tweak-tool to enable it.
 ./commands.sh launch_debug
 ```
 
-## ERROR while updating extension from store.
-Universal solution of all problems `"Restart your machine"` will work.
+## Known issues
+### ERROR while updating extension from store.
+Universal solution of all problems `"Restart your machine"` will work. Or you can restart the gnome-shell alone.
 
-If you are on X11 and not of wayland, reload shell `"Alt + F2", "r + Enter"` would be sufficient.
+restart gnome-shell on X11:
+```
+"Alt + F2", "r + Enter"
+```
+
+restart gnome-shell on wayland or (ubuntu >= 21.10):
+```
+busctl --user call org.gnome.Shell /org/gnome/Shell org.gnome.Shell Eval s 'Meta.restart("Restarting…")'
+```
+kill gnome shell, works for both X11 and wayland:
+```
+killall -9 gnome-shell
+```
 
 still facing some error? report it by creating a bug.
 
@@ -85,6 +98,7 @@ journalctl -f -o cat /usr/bin/gnome-shell
 ```
 
 ## Developer resources
+- [Gnome Javascript guide](https://gjs.guide)
 - [Basic Gnome extension guide](https://gjs.guide/extensions/development/creating.html#gnome-extensions-tool)
 - [Gnome JS API documentation](https://gjs-docs.gnome.org/)
 - [JS API documentaion - Unofficial](https://www.roojs.com/seed/gir-1.2-gtk-3.0/seed)
