@@ -12,6 +12,7 @@ const { DayOfWeek } = Me.imports.utils.Constants;
 const { SettingKeys } = Me.imports.utils.Constants;
 const { kSchemaName } = Me.imports.utils.Constants;
 const { setTimeout } = Me.imports.utils.DateTimeUtils;
+const { isGtk3, addChildToBox } = Me.imports.utils.GtkUtils;
 const { logger } = Me.imports.utils.Logger;
 const { appSettingsModel } = Me.imports.AppSettingsModel;
 
@@ -119,7 +120,7 @@ class PrefsApp {
     _hideRow(row) {
         const label = this.main.get_child_at(0, row);
         const input = this.main.get_child_at(1, row);
-        logger.log(`${row}. label: ${label} input: ${input}`);
+        //logger.log(`${row}. label: ${label} input: ${input}`);
         if (label) {
             this.main.remove(label);
         }
@@ -130,7 +131,7 @@ class PrefsApp {
 
     _showRow(row) {
         const { label, input } = this._rows[row];
-        logger.log(`${row}. label: ${label} input: ${input}`);
+        //logger.log(`${row}. label: ${label} input: ${input}`);
         if (!label.parent && !input.parent) {
             this.main.attach(label, 0, row, 1, 1);
             this.main.attach(input, 1, row, 1, 1);
@@ -280,6 +281,12 @@ class PrefsApp {
             }),
             orientation: Gtk.Orientation.VERTICAL
         });
+        const timeSeparatorLabel = new Gtk.Label({
+            label: ":",
+            hexpand: false,
+            halign: Gtk.Align.CENTER,
+            use_markup: true
+        })
         this._resetMinutesInput = new Gtk.SpinButton({
             wrap: true,
             numeric: true,
@@ -292,14 +299,9 @@ class PrefsApp {
         });
 
         const resetTimeWidget = new Gtk.Box({orientation: Gtk.Orientation.HORIZONTAL});
-        resetTimeWidget.add(this._resetHoursInput);
-        resetTimeWidget.add(new Gtk.Label({
-            label: ":",
-            hexpand: false,
-            halign: Gtk.Align.CENTER,
-            use_markup: true
-        }));
-        resetTimeWidget.add(this._resetMinutesInput);
+        addChildToBox(resetTimeWidget, this._resetHoursInput);
+        addChildToBox(resetTimeWidget, timeSeparatorLabel);
+        addChildToBox(resetTimeWidget, this._resetMinutesInput);
 
         this._addRow(resetTimeLabel, resetTimeWidget, SettingRowOrder.RESET_TIME);
         this.schema.bind(SettingKeys.RESET_HOURS, this._resetHoursInput, 'value', Gio.SettingsBindFlags.DEFAULT);
@@ -390,6 +392,8 @@ function init() {
 function buildPrefsWidget() {
     logger.debug("buildPrefsWidget");
     const widget = new PrefsApp();
-    widget.main.show_all();
+    if (isGtk3()) {
+        widget.main.show_all();
+    }
     return widget.main;
 };
