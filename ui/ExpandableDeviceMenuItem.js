@@ -26,6 +26,7 @@ class ExpandableDeviceMenuItemClass extends PopupSubMenuMenuItem {
             iconPath,
         } = device;
 
+        // header
         const box = new St.BoxLayout({ style_class: "popup-menu-item" });
         this.insert_child_at_index(box, 1);
         this._boxed = box;
@@ -54,7 +55,7 @@ class ExpandableDeviceMenuItemClass extends PopupSubMenuMenuItem {
         box.insert_child_at_index(this._speedLabel, 3);
         box.insert_child_at_index(this._dataLabel, 4);
 
-        const box1 = new St.BoxLayout({ style_class: "popup-menu-item", vertical: false });
+        // IP address
         this._ipTitleLabel = new St.Label({
             text: "",
             style_class: "text-item text-right"
@@ -63,10 +64,12 @@ class ExpandableDeviceMenuItemClass extends PopupSubMenuMenuItem {
             text: "",
             style_class: "text-item text-left"
         });
-        box1.add_child(this._ipTitleLabel);
-        box1.add_child(this._ipValueLabel);
+        this.addNewRowWithItems([
+            this._ipTitleLabel,
+            this._ipValueLabel
+        ]);
 
-        const box2 = new St.BoxLayout({ style_class: "popup-menu-item", vertical: false });
+        // Upload speed
         this._uploadSpeedTitleLabel = new St.Label({
             text: "",
             style_class: "text-item text-right"
@@ -75,10 +78,12 @@ class ExpandableDeviceMenuItemClass extends PopupSubMenuMenuItem {
             text: "",
             style_class: "text-item text-left"
         });
-        box2.add_child(this._uploadSpeedTitleLabel);
-        box2.add_child(this._uploadSpeedValueLabel);
+        this.addNewRowWithItems([
+            this._uploadSpeedTitleLabel,
+            this._uploadSpeedValueLabel
+        ]);
 
-        const box3 = new St.BoxLayout({ style_class: "popup-menu-item", vertical: false });
+        // Download speed
         this._downloadSpeedTitleLabel = new St.Label({
             text: "",
             style_class: "text-item text-right"
@@ -87,11 +92,12 @@ class ExpandableDeviceMenuItemClass extends PopupSubMenuMenuItem {
             text: "",
             style_class: "text-item text-left"
         });
-        box3.add_child(this._downloadSpeedTitleLabel);
-        box3.add_child(this._downloadSpeedValueLabel);
+        this.addNewRowWithItems([
+            this._downloadSpeedTitleLabel,
+            this._downloadSpeedValueLabel
+        ]);
 
-
-        const box4 = new St.BoxLayout({ style_class: "popup-menu-item", vertical: false });
+        // Total speed
         this._totalSpeedTitleLabel = new St.Label({
             text: "",
             style_class: "text-item text-right"
@@ -100,11 +106,12 @@ class ExpandableDeviceMenuItemClass extends PopupSubMenuMenuItem {
             text: "",
             style_class: "text-item text-left"
         });
-        box4.add_child(this._totalSpeedTitleLabel);
-        box4.add_child(this._totalSpeedValueLabel);
+        this.addNewRowWithItems([
+            this._totalSpeedTitleLabel,
+            this._totalSpeedValueLabel
+        ]);
 
-
-        const box5 = new St.BoxLayout({ style_class: "popup-menu-item", vertical: false });
+        // Data used since last reset
         this._totalDataTitleLabel = new St.Label({
             text: "",
             style_class: "text-item text-right",
@@ -115,8 +122,21 @@ class ExpandableDeviceMenuItemClass extends PopupSubMenuMenuItem {
             style_class: "text-item text-left",
             y_align: Clutter.ActorAlign.CENTER,
         });
-        box5.add_child(this._totalDataTitleLabel);
-        box5.add_child(this._totalDataValueLabel);
+        this.addNewRowWithItems([
+            this._totalDataTitleLabel,
+            this._totalDataValueLabel
+        ]);
+
+        // Reseted At
+        this._lastResetedTitleLabel = new St.Label({
+            text: "",
+            style_class: "text-item text-right",
+            y_align: Clutter.ActorAlign.CENTER
+        });
+        this._lastResetedValueLabel = new St.Label({
+            text: "text-item",
+            y_align: Clutter.ActorAlign.CENTER
+        });
 
         const resetIcon = new St.Icon({
             gicon: Gio.icon_new_for_string(getIconPath("restart_alt_black_24dp.svg")),
@@ -134,13 +154,13 @@ class ExpandableDeviceMenuItemClass extends PopupSubMenuMenuItem {
 
         resetButton.connect('button-press-event', onResetClicked);
         this._resetButton = resetButton;
-        box5.add_child(this._resetButton);
+        this.addNewRowWithItems([
+            this._lastResetedTitleLabel,
+            this._lastResetedValueLabel,
+            this._resetButton
+        ]);
 
-
-        const box6 = new St.BoxLayout({
-            style_class: "popup-menu-item",
-            vertical: false
-        });
+        // Mark default device or interface to monitor.
         this._makeDefaultTitleLabel = new St.Label({
             text: "",
             style_class: "text-item text-right",
@@ -150,9 +170,6 @@ class ExpandableDeviceMenuItemClass extends PopupSubMenuMenuItem {
             text: "text-item",
             y_align: Clutter.ActorAlign.CENTER
         });
-        box6.add_child(this._makeDefaultTitleLabel);
-        box6.add_child(this._makeDefaultValueLabel);
-
 
         const makeDefaultLabel = new St.Label({
             text: _("Make Default"),
@@ -170,17 +187,25 @@ class ExpandableDeviceMenuItemClass extends PopupSubMenuMenuItem {
 
         makeDefaultButton.connect('button-press-event', onMarkDefaultClicked);
         this._makeDefaultButton = makeDefaultButton;
-        box6.add_child(this._makeDefaultButton);
-
-
-        this.menu.box.add_child(box1);
-        this.menu.box.add_child(box2);
-        this.menu.box.add_child(box3);
-        this.menu.box.add_child(box4);
-        this.menu.box.add_child(box5);
-        this.menu.box.add_child(box6);
+        this.addNewRowWithItems([
+            this._makeDefaultTitleLabel,
+            this._makeDefaultValueLabel,
+            this._makeDefaultButton
+        ]);
 
         this.update(device, defaultDeviceName);
+    }
+
+    addNewRowWithItems(items) {
+        const box = new St.BoxLayout({
+            style_class: "popup-menu-item",
+            vertical: false
+        });
+        for (const item of items) {
+            box.add_child(item);
+        }
+        this.menu.box.add_child(box);
+        return box;
     }
 
     update(device, defaultDeviceName) {
@@ -215,7 +240,10 @@ class ExpandableDeviceMenuItemClass extends PopupSubMenuMenuItem {
         this._totalSpeedValueLabel.set_text(totalSpeed);
 
         this._totalDataTitleLabel.set_text(`${_("Total data used")} [Σ] : `);
-        this._totalDataValueLabel.set_text(`${totalData}  --  ${_("since")} -- ${startTime}`);
+        this._totalDataValueLabel.set_text(`${totalData} -- ${_("Since last reseted")}`);
+
+        this._lastResetedTitleLabel.set_text(`${_("Last reseted at")} [⛿] : `);
+        this._lastResetedValueLabel.set_text(startTime);
 
         let symbol = "★";
         if (name === defaultDeviceName) {
