@@ -4,7 +4,7 @@ Gnome extension for showing network upload, download speed and per day data usag
 <div>
 <p><a href="#"><img src="assets/logo.svg" height=80px alt="NSS Logo"/></a></p>
 <h1>Network Stats</h1>
-<p><img src='assets/screenshot.png' width="400px"  alt="Screenshot"/>
+<p><img src='assets/screenshot.png' width="100%"  alt="Screenshot"/>
 </div>
 
 ## Installation
