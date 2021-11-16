@@ -82,8 +82,11 @@ msgstr "Make Default"
 msgid "IP"
 msgstr "IP"
 
-msgid "since"
-msgstr "since"
+msgid "Since last reseted"
+msgstr "Since last reseted"
+
+msgid "Last reseted at"
+msgstr "Last reseted at"
 
 msgid "Yes"
 msgstr "Yes"
