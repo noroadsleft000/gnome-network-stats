@@ -1,5 +1,5 @@
 # gnome-network-stats
-Gnome extension for showing network upload, download speed and per day data usage.
+Gnome extension for showing internet upload, download speed and per day data usage.
 
 <div>
 <p><a href="#"><img src="assets/logo.svg" height=80px alt="NSS Logo"/></a></p>
@@ -7,6 +7,8 @@ Gnome extension for showing network upload, download speed and per day data usag
 <p><img src='assets/screenshot.png' width="100%"  alt="Screenshot"/>
 </div>
 
+## Roadmap
+See detils on <a href="TODO.md">Todo page</a>.
 ## Installation
 
 ### install from https://extensions.gnome.org
