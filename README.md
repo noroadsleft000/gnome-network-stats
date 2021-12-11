@@ -8,7 +8,7 @@ Gnome extension for showing internet upload, download speed and per day data usa
 </div>
 
 ## Roadmap
-See detils on <a href="TODO.md">Todo page</a>.
+See details on <a href="TODO.md">Todo page</a>.
 ## Installation
 
 ### install from https://extensions.gnome.org
