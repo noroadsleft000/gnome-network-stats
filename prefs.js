@@ -72,7 +72,8 @@ const SettingRowOrder = Object.freeze({
     RESET_WEEK_DAY: 3,
     RESET_MONTH_DAY: 4,
     RESET_TIME: 5,
-    DISPLAY_BYTES: 6
+    DISPLAY_BYTES: 6,
+    SHOW_ICON: 7
 });
 
 class PrefsApp {
@@ -96,6 +97,7 @@ class PrefsApp {
         this._createResetMonthdayControl();
         this._createResetTimeControl();
         this._createUnitToggleControl();
+        this._createIconToggleControl();
 
         setTimeout(() => {
             this.updateControls();
@@ -326,6 +328,22 @@ class PrefsApp {
         });
         this._addRow(unitLabel, this._unitSwitch, SettingRowOrder.DISPLAY_BYTES);
         this.schema.bind(SettingKeys.DISPLAY_BYTES, this._unitSwitch, 'state', Gio.SettingsBindFlags.DEFAULT);
+    }
+
+    // 8. Show icon in status bar
+    _createIconToggleControl() {
+        const iconLabel = new Gtk.Label({
+            label: _(_("Show icon in status bar (requires reload)")),
+            hexpand: true,
+            halign: Gtk.Align.END
+        });
+
+        this._iconSwitch = new Gtk.Switch({
+            halign: Gtk.Align.END,
+            visible: true
+        });
+        this._addRow(iconLabel, this._iconSwitch, SettingRowOrder.SHOW_ICON);
+        this.schema.bind(SettingKeys.SHOW_ICON, this._iconSwitch, 'state', Gio.SettingsBindFlags.DEFAULT);
     }
 
     _createOptionsList(options) {

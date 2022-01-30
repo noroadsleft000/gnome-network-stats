@@ -61,5 +61,10 @@
       <default>true</default>
       <summary>Show speeds in bytes instead of bits</summary>
     </key>
+
+    <key type="b" name="show-icon">
+      <default>true</default>
+      <summary>Show icon in status bar</summary>
+    </key>
   </schema>
 </schemalist>

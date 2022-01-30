@@ -31,7 +31,8 @@ class AppSettingsModel {
         this._resetMinutes = 0;
         this._preferedDeviceName = undefined;
         this._devicesInfoMap = {};
-        this._displayBytes = false;
+        this._displayBytes = true;
+        this._showIcon = true;
     }
 
     init() {
@@ -73,6 +74,7 @@ class AppSettingsModel {
         this._devicesInfoMap = JSON.parse(str);
         this._preferedDeviceName = this.schema.get_string(SettingKeys.PREFERED_DEVICE);
         this._displayBytes = this.schema.get_boolean(SettingKeys.DISPLAY_BYTES);
+        this._showIcon = this.schema.get_boolean(SettingKeys.SHOW_ICON);
         // logger.debug(`new values [ refreshInterval: ${this._refreshInterval} displayMode: ${this._displayMode} resetTime: ${this._resetHours} : ${this._resetMinutes}]`);
         // logger.debug(`deivicesInfoMap ${str}`);
     }
@@ -139,6 +141,10 @@ class AppSettingsModel {
 
     get displayBytes() {
         return this._displayBytes;
+    }
+
+    get showIcon() {
+        return this._showIcon;
     }
 
     getResetTime() {

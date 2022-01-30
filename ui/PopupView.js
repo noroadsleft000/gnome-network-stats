@@ -53,7 +53,9 @@ class PopupViewClass extends PanelMenu.Button {
 
         const topBox = new St.BoxLayout();
         topBox.add_actor(this._mainLabel);
-        topBox.add_actor(this._mainIcon);
+        if (appSettingsModel.showIcon === true) {
+            topBox.add_actor(this._mainIcon);
+        }
         this.add_actor(topBox);
 
         const upIcon = new St.Icon({
