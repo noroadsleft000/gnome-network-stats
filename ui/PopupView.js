@@ -71,6 +71,11 @@ class PopupViewClass extends PanelMenu.Button {
             style_class: 'system-status-icon',
         });
 
+        const bothSpeedIcon = new St.Icon({
+            gicon: Gio.icon_new_for_string(getIconPath("arrow_both_black_24dp.svg")),
+            style_class: 'system-status-icon',
+        });
+
         const settingIcon = new St.Icon({
             //icon_name: "emblem-system",
             gicon: Gio.icon_new_for_string(getIconPath("settings_black_24dp.svg")),
@@ -117,6 +122,17 @@ class PopupViewClass extends PanelMenu.Button {
             y_expand: true
         });
 
+        this._bothSpeed = new St.Button({
+            style_class: 'message-list-clear-button ns-action-button',
+            reactive: true,
+            can_focus: true,
+            track_hover: true,
+            child: bothSpeedIcon,
+            x_align: Clutter.ActorAlign.CENTER,
+            x_expand: true,
+            y_expand: true
+        });
+
         this._dataUsage = new St.Button({
             style_class: 'ci-action-btn ns-action-button',
             reactive: true,
@@ -148,6 +164,7 @@ class PopupViewClass extends PanelMenu.Button {
         box.add_child(this._totalSpeed);
         box.add_child(this._downloadSpeed);
         box.add_child(this._uploadSpeed);
+        box.add_child(this._bothSpeed);
         box.add_child(this._dataUsage);
         box.add_child(this._settings);
 
@@ -164,6 +181,11 @@ class PopupViewClass extends PanelMenu.Button {
         this._uploadSpeed.connect("button-press-event", () => {
             //logger.debug("upload speed button pressed");
             appSettingsModel.displayMode = DisplayMode.UPLOAD_SPEED;
+            this.updateGroupButtonsState();
+        });
+        this._bothSpeed.connect("button-press-event", () => {
+            //logger.debug("upload speed button pressed");
+            appSettingsModel.displayMode = DisplayMode.BOTH_SPEED;
             this.updateGroupButtonsState();
         });
         this._dataUsage.connect("button-press-event", () => {
@@ -208,6 +230,7 @@ class PopupViewClass extends PanelMenu.Button {
         this.toggleButtonState(this._totalSpeed, displayMode == DisplayMode.TOTAL_SPEED);
         this.toggleButtonState(this._uploadSpeed, displayMode == DisplayMode.UPLOAD_SPEED);
         this.toggleButtonState(this._downloadSpeed, displayMode == DisplayMode.DOWNLOAD_SPEED);
+        this.toggleButtonState(this._bothSpeed, displayMode == DisplayMode.BOTH_SPEED);
         this.toggleButtonState(this._dataUsage, displayMode == DisplayMode.TOTAL_DATA);
     }
 
@@ -309,6 +332,7 @@ class PopupViewClass extends PanelMenu.Button {
         this._uploadSpeed = undefined;
         this._downloadSpeed = undefined;
         this._totalSpeed = undefined;
+        this._bothSpeed = undefined;
         this._dataUsage = undefined;
         appSettingsModel.unsubscribe(this._settingsListener);
         this._settingsListener = undefined;

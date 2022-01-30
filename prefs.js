@@ -42,7 +42,8 @@ const kDisplayModeMapping = new IndexMap({
     0: DisplayMode.TOTAL_SPEED,
     1: DisplayMode.UPLOAD_SPEED,
     2: DisplayMode.DOWNLOAD_SPEED,
-    3: DisplayMode.TOTAL_DATA
+    3: DisplayMode.BOTH_SPEED,
+    4: DisplayMode.TOTAL_DATA
 });
 
 const kResetScheduleMapping = new IndexMap({
@@ -171,6 +172,7 @@ class PrefsApp {
             { name: _("Total speed") },
             { name: _("Upload speed") },
             { name: _("Download speed") },
+            { name: _("Upload and download speed") },
             { name: _("Total data used") },
         ];
 
