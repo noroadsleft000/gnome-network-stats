@@ -56,5 +56,10 @@
       <default>"{}"</default>
       <summary>devices or interfaces info as json object. e.g. last reset time</summary>
     </key>
+
+    <key type="b" name="display-bytes">
+      <default>true</default>
+      <summary>Show speeds in bytes instead of bits</summary>
+    </key>
   </schema>
 </schemalist>

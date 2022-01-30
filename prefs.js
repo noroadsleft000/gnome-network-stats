@@ -71,7 +71,8 @@ const SettingRowOrder = Object.freeze({
     RESET_SCHEDULE: 2,
     RESET_WEEK_DAY: 3,
     RESET_MONTH_DAY: 4,
-    RESET_TIME: 5
+    RESET_TIME: 5,
+    DISPLAY_BYTES: 6
 });
 
 class PrefsApp {
@@ -94,6 +95,7 @@ class PrefsApp {
         this._createResetDayOfWeekControl();
         this._createResetMonthdayControl();
         this._createResetTimeControl();
+        this._createUnitToggleControl();
 
         setTimeout(() => {
             this.updateControls();
@@ -308,6 +310,22 @@ class PrefsApp {
         this._addRow(resetTimeLabel, resetTimeWidget, SettingRowOrder.RESET_TIME);
         this.schema.bind(SettingKeys.RESET_HOURS, this._resetHoursInput, 'value', Gio.SettingsBindFlags.DEFAULT);
         this.schema.bind(SettingKeys.RESET_MINUTES, this._resetMinutesInput, 'value', Gio.SettingsBindFlags.DEFAULT);
+    }
+
+    // 7. Show numbers in bytes instead of bits
+    _createUnitToggleControl() {
+        const unitLabel = new Gtk.Label({
+            label: _(_("Show speeds in bytes instead of bits")),
+            hexpand: true,
+            halign: Gtk.Align.END
+        });
+
+        this._unitSwitch = new Gtk.Switch({
+            halign: Gtk.Align.END,
+            visible: true
+        });
+        this._addRow(unitLabel, this._unitSwitch, SettingRowOrder.DISPLAY_BYTES);
+        this.schema.bind(SettingKeys.DISPLAY_BYTES, this._unitSwitch, 'state', Gio.SettingsBindFlags.DEFAULT);
     }
 
     _createOptionsList(options) {
