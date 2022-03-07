@@ -146,7 +146,7 @@ class PrefsApp {
     // 1. Refresh interval control number edit box.
     _createRefreshIntervalControl() {
         const intervalLabel = new Gtk.Label({
-            label: _(_("Refresh Interval (ms)")),
+            label: _("Refresh Interval (ms)"),
             hexpand: true,
             halign: Gtk.Align.END
         });
@@ -254,7 +254,7 @@ class PrefsApp {
     // 5. Day of month when Month is selected in reset schedule.
     _createResetMonthdayControl() {
         const resetOnDayOfMonthLabel = new Gtk.Label({
-            label: _(_("Reset on day of month")),
+            label: _("Reset on day of month"),
             hexpand: true,
             halign: Gtk.Align.END
         });
@@ -317,7 +317,7 @@ class PrefsApp {
     // 7. Show numbers in bytes instead of bits
     _createUnitToggleControl() {
         const unitLabel = new Gtk.Label({
-            label: _(_("Show speeds in bytes instead of bits")),
+            label: _("Show speeds in bytes instead of bits"),
             hexpand: true,
             halign: Gtk.Align.END
         });
@@ -333,7 +333,7 @@ class PrefsApp {
     // 8. Show icon in status bar
     _createIconToggleControl() {
         const iconLabel = new Gtk.Label({
-            label: _(_("Show icon in status bar (requires reload)")),
+            label: _("Show icon in status bar (requires reload)"),
             hexpand: true,
             halign: Gtk.Align.END
         });

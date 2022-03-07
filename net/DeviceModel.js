@@ -78,7 +78,7 @@ class DeviceModelClass {
     }
 
     /* time in milliseconds */
-    update(time) {
+    update(time, mode = true) {
         const {
             error,
             deviceLogs
@@ -115,9 +115,9 @@ class DeviceModelClass {
                         name,
                         ip: ip,
                         type: type,
-                        upSpeed: bytesSpeedToString(upSpeed),
-                        downSpeed: bytesSpeedToString(downSpeed),
-                        totalSpeed: bytesSpeedToString(totalSpeed),
+                        upSpeed: bytesSpeedToString(upSpeed, mode),
+                        downSpeed: bytesSpeedToString(downSpeed, mode),
+                        totalSpeed: bytesSpeedToString(totalSpeed, mode),
                         totalData: bytesToString(totalData),
                         startTime: startTime.toLocaleString(undefined, {
                             weekday: "short",

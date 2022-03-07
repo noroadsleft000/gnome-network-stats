@@ -86,9 +86,9 @@ class AppController {
     }
 
     update() {
-        const { displayMode, refreshInterval } = appSettingsModel;
+        const { displayMode, refreshInterval, displayBytes } = appSettingsModel;
         //logger.debug(`displayMode : ${displayMode}`);
-        this._deviceModel.update(refreshInterval);
+        this._deviceModel.update(refreshInterval, displayBytes);
         const activeDevice = this._getActiveDeviceName();
         //logger.debug(`activeDevice: ${activeDevice}`);
         let titleStr = "----";
@@ -96,30 +96,30 @@ class AppController {
             case DisplayMode.TOTAL_SPEED:
             {
                 const totalSpeed = this._deviceModel.getTotalSpeed(activeDevice);
-                const totalSpeedStr = bytesSpeedToString(totalSpeed);
+                const totalSpeedStr = bytesSpeedToString(totalSpeed, displayBytes);
                 titleStr = `↕ ${totalSpeedStr}`;
                 break;
             }
             case DisplayMode.DOWNLOAD_SPEED:
             {
                 const download = this._deviceModel.getDownloadSpeed(activeDevice);
-                const downloadStr = bytesSpeedToString(download);
+                const downloadStr = bytesSpeedToString(download, displayBytes);
                 titleStr = `↓ ${downloadStr}`;
                 break;
             }
             case DisplayMode.UPLOAD_SPEED:
             {
                 const upload = this._deviceModel.getUploadSpeed(activeDevice);
-                const uploadStr = bytesSpeedToString(upload);
+                const uploadStr = bytesSpeedToString(upload, displayBytes);
                 titleStr = `↑ ${uploadStr}`;
                 break;
             }
             case DisplayMode.BOTH_SPEED:
             {
                 const download = this._deviceModel.getDownloadSpeed(activeDevice);
-                const downloadStr = bytesSpeedToString(download);
+                const downloadStr = bytesSpeedToString(download, displayBytes);
                 const upload = this._deviceModel.getUploadSpeed(activeDevice);
-                const uploadStr = bytesSpeedToString(upload);
+                const uploadStr = bytesSpeedToString(upload, displayBytes);
                 titleStr = `↓ ${downloadStr} ↑ ${uploadStr}`;
                 break;
             }
@@ -139,8 +139,8 @@ class AppController {
         // const download = this._deviceModel.getDownloadSpeed(activeDevice);
         // const totalData = this._deviceModel.getTotalDataUsage(activeDevice);
         // logger.debug(`upload: ${upload} download: ${download} totalData: ${totalData}`);
-        // const uploadStr = bytesSpeedToString(upload);
-        // const downloadStr = bytesSpeedToString(download);
+        // const uploadStr = bytesSpeedToString(upload, displayBytes);
+        // const downloadStr = bytesSpeedToString(download, displayBytes);
         // const totalDataStr = bytesToString(totalData);
         // logger.debug(`deviceName: ${activeDevice} upload: ${uploadStr} download: ${downloadStr} totalData: ${totalDataStr}`);
     }

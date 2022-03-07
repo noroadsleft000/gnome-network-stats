@@ -58,10 +58,10 @@ function compareJsonStrings(str1, str2) {
 /**
  * converts data bytes to string representation of data speed.
  * @param {number} amount
- * @param {number} mode  0 - bits mode,  1 - bytes mode
+ * @param {boolean} mode  false - bits mode,  true - bytes mode
  * @returns - string representation of data speed
  */
-function bytesSpeedToString(amount, mode = appSettingsModel.displayBytes) {
+function bytesSpeedToString(amount, mode = true) {
 
     let unitsMap;
     if (mode == false) {
