@@ -42,7 +42,8 @@ const kDisplayModeMapping = new IndexMap({
     0: DisplayMode.TOTAL_SPEED,
     1: DisplayMode.UPLOAD_SPEED,
     2: DisplayMode.DOWNLOAD_SPEED,
-    3: DisplayMode.TOTAL_DATA
+    3: DisplayMode.BOTH_SPEED,
+    4: DisplayMode.TOTAL_DATA
 });
 
 const kResetScheduleMapping = new IndexMap({
@@ -70,7 +71,9 @@ const SettingRowOrder = Object.freeze({
     RESET_SCHEDULE: 2,
     RESET_WEEK_DAY: 3,
     RESET_MONTH_DAY: 4,
-    RESET_TIME: 5
+    RESET_TIME: 5,
+    DISPLAY_BYTES: 6,
+    SHOW_ICON: 7
 });
 
 class PrefsApp {
@@ -93,6 +96,8 @@ class PrefsApp {
         this._createResetDayOfWeekControl();
         this._createResetMonthdayControl();
         this._createResetTimeControl();
+        this._createUnitToggleControl();
+        this._createIconToggleControl();
 
         setTimeout(() => {
             this.updateControls();
@@ -171,6 +176,7 @@ class PrefsApp {
             { name: _("Total speed") },
             { name: _("Upload speed") },
             { name: _("Download speed") },
+            { name: _("Upload and download speed") },
             { name: _("Total data used") },
         ];
 
@@ -306,6 +312,38 @@ class PrefsApp {
         this._addRow(resetTimeLabel, resetTimeWidget, SettingRowOrder.RESET_TIME);
         this.schema.bind(SettingKeys.RESET_HOURS, this._resetHoursInput, 'value', Gio.SettingsBindFlags.DEFAULT);
         this.schema.bind(SettingKeys.RESET_MINUTES, this._resetMinutesInput, 'value', Gio.SettingsBindFlags.DEFAULT);
+    }
+
+    // 7. Show numbers in bytes instead of bits
+    _createUnitToggleControl() {
+        const unitLabel = new Gtk.Label({
+            label: _(_("Show speeds in bytes instead of bits")),
+            hexpand: true,
+            halign: Gtk.Align.END
+        });
+
+        this._unitSwitch = new Gtk.Switch({
+            halign: Gtk.Align.END,
+            visible: true
+        });
+        this._addRow(unitLabel, this._unitSwitch, SettingRowOrder.DISPLAY_BYTES);
+        this.schema.bind(SettingKeys.DISPLAY_BYTES, this._unitSwitch, 'state', Gio.SettingsBindFlags.DEFAULT);
+    }
+
+    // 8. Show icon in status bar
+    _createIconToggleControl() {
+        const iconLabel = new Gtk.Label({
+            label: _(_("Show icon in status bar (requires reload)")),
+            hexpand: true,
+            halign: Gtk.Align.END
+        });
+
+        this._iconSwitch = new Gtk.Switch({
+            halign: Gtk.Align.END,
+            visible: true
+        });
+        this._addRow(iconLabel, this._iconSwitch, SettingRowOrder.SHOW_ICON);
+        this.schema.bind(SettingKeys.SHOW_ICON, this._iconSwitch, 'state', Gio.SettingsBindFlags.DEFAULT);
     }
 
     _createOptionsList(options) {

@@ -2,6 +2,7 @@ const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
 const { DeviceType } = Me.imports.utils.Constants;
 const { TypeUtils } = Me.imports.utils.TypeUtils;
+const { appSettingsModel } = Me.imports.AppSettingsModel;
 
 
 /**
@@ -60,10 +61,10 @@ function compareJsonStrings(str1, str2) {
  * @param {number} mode  0 - bits mode,  1 - bytes mode
  * @returns - string representation of data speed
  */
-function bytesSpeedToString(amount, mode = 1) {
+function bytesSpeedToString(amount, mode = appSettingsModel.displayBytes) {
 
     let unitsMap;
-    if (mode == 0) {
+    if (mode == false) {
         unitsMap = ["b/s", "Kb/s", "Mb/s", "Gb/s", "Tb/s"];
     } else {
         unitsMap = ["B/s", "KB/s", "MB/s", "GB/s", "TB/s"];
@@ -74,7 +75,7 @@ function bytesSpeedToString(amount, mode = 1) {
     }
 
     let base = 1024;
-    if (mode == 0) {
+    if (mode == false) {
         base = 1000;
         amount = amount * 8;
     }

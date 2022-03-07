@@ -114,6 +114,15 @@ class AppController {
                 titleStr = `↑ ${uploadStr}`;
                 break;
             }
+            case DisplayMode.BOTH_SPEED:
+            {
+                const download = this._deviceModel.getDownloadSpeed(activeDevice);
+                const downloadStr = bytesSpeedToString(download);
+                const upload = this._deviceModel.getUploadSpeed(activeDevice);
+                const uploadStr = bytesSpeedToString(upload);
+                titleStr = `↓ ${downloadStr} ↑ ${uploadStr}`;
+                break;
+            }
             case DisplayMode.TOTAL_DATA:
             {
                 const totalData = this._deviceModel.getTotalDataUsage(activeDevice);
@@ -192,6 +201,11 @@ class AppController {
                     break;
                 }
                 case DisplayMode.UPLOAD_SPEED:
+                {
+                    displayMode = DisplayMode.BOTH_SPEED;
+                    break;
+                }
+                case DisplayMode.BOTH_SPEED:
                 {
                     displayMode = DisplayMode.TOTAL_DATA;
                     break;

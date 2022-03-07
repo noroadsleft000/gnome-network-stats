@@ -31,6 +31,8 @@ class AppSettingsModel {
         this._resetMinutes = 0;
         this._preferedDeviceName = undefined;
         this._devicesInfoMap = {};
+        this._displayBytes = true;
+        this._showIcon = true;
     }
 
     init() {
@@ -71,6 +73,8 @@ class AppSettingsModel {
         const str = this.schema.get_string(SettingKeys.DEVICES_INFO);
         this._devicesInfoMap = JSON.parse(str);
         this._preferedDeviceName = this.schema.get_string(SettingKeys.PREFERED_DEVICE);
+        this._displayBytes = this.schema.get_boolean(SettingKeys.DISPLAY_BYTES);
+        this._showIcon = this.schema.get_boolean(SettingKeys.SHOW_ICON);
         // logger.debug(`new values [ refreshInterval: ${this._refreshInterval} displayMode: ${this._displayMode} resetTime: ${this._resetHours} : ${this._resetMinutes}]`);
         // logger.debug(`deivicesInfoMap ${str}`);
     }
@@ -87,6 +91,9 @@ class AppSettingsModel {
         const devicesJson = JSON.stringify(this._devicesInfoMap);
         if (!compareJsonStrings(this.schema.get_string(SettingKeys.DEVICES_INFO), devicesJson)) {
             this.schema.set_string(SettingKeys.DEVICES_INFO, devicesJson);
+        }
+        if(this.schema.get_boolean(SettingKeys.DISPLAY_BYTES) !== this._displayBytes) {
+            this.schema.set_boolean(SettingKeys.DISPLAY_BYTES, this._displayBytes);
         }
     }
 
@@ -130,6 +137,14 @@ class AppSettingsModel {
 
     get resetMinutes() {
         return this._resetMinutes;
+    }
+
+    get displayBytes() {
+        return this._displayBytes;
+    }
+
+    get showIcon() {
+        return this._showIcon;
     }
 
     getResetTime() {
