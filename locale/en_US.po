@@ -25,6 +25,9 @@ msgstr "Upload speed"
 msgid "Download speed"
 msgstr "Download speed"
 
+msgid "Upload and download speed"
+msgstr "Upload and download speed"
+
 msgid "Total data used"
 msgstr "Total data used"
 
@@ -75,6 +78,12 @@ msgstr "Reset on day of month"
 
 msgid "What time should we reset network stats"
 msgstr "What time should we reset network stats"
+
+msgid "Show speeds in bytes instead of bits"
+msgstr "Show speeds in bytes instead of bits"
+
+msgid "Show icon in status bar (requires reload)"
+msgstr "Show icon in status bar (requires reload)"
 
 msgid "Make Default"
 msgstr "Make Default"
