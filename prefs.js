@@ -109,7 +109,7 @@ class PrefsApp {
 
         if (input instanceof Gtk.Switch) {
             inputWidget = new Gtk.Box({orientation: Gtk.Orientation.HORIZONTAL});
-            inputWidget.append(input);
+            addChildToBox(inputWidget, input);
         }
 
         if (label) {
