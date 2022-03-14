@@ -15,13 +15,14 @@ const { bytesToString } = Me.imports.utils.GenUtils;
 
 class DeviceModelClass {
 
-    constructor() {
+    constructor(logger, deviceMonitor, networkMonitor) {
         this._upload = 0;
         this._download = 0;
         this._stats = {};
         this._statsText = {};
-        this._deviceMonitor = new DeviceMonitor();
-        this._networkMonitor = new NetworkMonitor();
+        this._logger = logger;
+        this._deviceMonitor = deviceMonitor;
+        this._networkMonitor = networkMonitor;
     }
 
     getUploadSpeed(deviceName) {
@@ -84,7 +85,7 @@ class DeviceModelClass {
             deviceLogs
         } = this._networkMonitor.getStats();
 
-        //logger.debug(`defaultGateway: ${this._deviceMonitor.getActiveDeviceName()}`);
+        //this._logger.debug(`defaultGateway: ${this._deviceMonitor.getActiveDeviceName()}`);
         if (!error) {
             const stats = {};
             const statsText = {};
@@ -130,13 +131,13 @@ class DeviceModelClass {
                             second: "2-digit"
                         }),
                     };
-                    //logger.debug(`${name} => upload: ${upSpeed} download: ${downSpeed} total: ${totalData}`);
+                    //this._logger.debug(`${name} => upload: ${upSpeed} download: ${downSpeed} total: ${totalData}`);
                 }
             }
             this._stats = stats;
             this._statsText = statsText;
         } else {
-            logger.debug(error);
+            this._logger.debug(error);
         }
     }
 

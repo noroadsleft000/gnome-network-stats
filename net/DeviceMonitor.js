@@ -4,7 +4,6 @@ const NetworkManager = imports.gi.NM;
 
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
-const { logger } = Me.imports.utils.Logger;
 const { DeviceType } = Me.imports.utils.Constants;
 
 
@@ -16,7 +15,8 @@ const { DeviceType } = Me.imports.utils.Constants;
 
 class DeviceMonitorClass {
 
-    constructor() {
+    constructor(logger) {
+        this._logger = logger;
         this._client = NetworkManager.Client.new(null);
         this._devices = {};
         this._defaultGw = "";
@@ -97,7 +97,7 @@ class DeviceMonitorClass {
         const devices = [];
         for (let index = 2; index < lines.length - 1; ++index) {
             const line = lines[index].trim();
-            logger.debug(`${index} - ${line}`);
+            this._logger.debug(`${index} - ${line}`);
             const fields = line.split(/[^A-Za-z0-9_-]+/);
             const deviceName = fields[0];
 
@@ -139,7 +139,7 @@ class DeviceMonitorClass {
                 this._defaultGw = params[0];
             }
         }
-        logger.debug(`default gateway: ${this._defaultGw}`);
+        this._logger.debug(`default gateway: ${this._defaultGw}`);
     }
 
     _connectDeviceStateChangeSignals() {
@@ -178,14 +178,14 @@ class DeviceMonitorClass {
             ipConfig = device.get_ip6_config();
 
         if (ipConfig == null) {
-            logger.info(`No config found for device '${device.get_iface()}'`);
+            this._logger.info(`No config found for device '${device.get_iface()}'`);
             addresses[0] = "-";
             return addresses;
         }
 
         const netMgrAddresses = ipConfig.get_addresses();
         if (netMgrAddresses.length == 0) {
-            logger.info(`No IP addresses found for device '${device.get_iface()}'`);
+            this._logger.info(`No IP addresses found for device '${device.get_iface()}'`);
             addresses[0] = "-";
             return addresses;
         }

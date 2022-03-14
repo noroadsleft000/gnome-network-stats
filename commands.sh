@@ -48,6 +48,7 @@ pack()
 {
     gnome-extensions pack \
     --force \
+    --extra-source=App.js \
     --extra-source=AppController.js \
     --extra-source=AppSettingsModel.js \
     --extra-source=AUTHORS \

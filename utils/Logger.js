@@ -8,7 +8,7 @@ const Me = ExtensionUtils.getCurrentExtension();
 * Utility class for logging.
 */
 
-class Logger {
+class LoggerClass {
     constructor() {
         this.test = "Hello";
     }
@@ -55,4 +55,4 @@ class Logger {
     }
 };
 
-var logger = new Logger;
+var Logger = LoggerClass;
