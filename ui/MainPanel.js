@@ -4,7 +4,7 @@ const Main = imports.ui.main;
 * MainPanel class manager class for adding removing things from panel.
 */
 
-class MainPanel {
+class MainPanelClass {
 
     addChild(child){
         Main.panel._rightBox.insert_child_at_index(child, 0);
@@ -23,4 +23,4 @@ class MainPanel {
     }
 }
 
-var mainPanel = new MainPanel;
+var MainPanel = MainPanelClass;

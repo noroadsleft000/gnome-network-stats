@@ -2,7 +2,6 @@ const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
 const { DeviceType } = Me.imports.utils.Constants;
 const { TypeUtils } = Me.imports.utils.TypeUtils;
-const { appSettingsModel } = Me.imports.AppSettingsModel;
 
 
 /**

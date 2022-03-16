@@ -17,9 +17,10 @@ const kSchemaName = "org.gnome.shell.extensions.network-stats";
 /*
 * AppSettingsModel represents application setttings and user prefrences.
 */
-class AppSettingsModel {
+class AppSettingsModelClass {
 
-    constructor() {
+    constructor(logger) {
+        this._logger = logger;
         this._schema = undefined;
         this._settingListeners = [];
         this._refreshInterval = kRefreshInterval;
@@ -39,7 +40,7 @@ class AppSettingsModel {
         this.load();
         this._settingsC = this.schema.connect("changed", () => {
             // setting changed - get the new values
-            logger.info("Prefrences/Settings value changed");
+            this._logger.info("Prefrences/Settings value changed");
             this.load();
             this.notifyListerners();
         });
@@ -75,8 +76,8 @@ class AppSettingsModel {
         this._preferedDeviceName = this.schema.get_string(SettingKeys.PREFERED_DEVICE);
         this._displayBytes = this.schema.get_boolean(SettingKeys.DISPLAY_BYTES);
         this._showIcon = this.schema.get_boolean(SettingKeys.SHOW_ICON);
-        // logger.debug(`new values [ refreshInterval: ${this._refreshInterval} displayMode: ${this._displayMode} resetTime: ${this._resetHours} : ${this._resetMinutes}]`);
-        // logger.debug(`deivicesInfoMap ${str}`);
+        // this._logger.debug(`new values [ refreshInterval: ${this._refreshInterval} displayMode: ${this._displayMode} resetTime: ${this._resetHours} : ${this._resetMinutes}]`);
+        // this._logger.debug(`deivicesInfoMap ${str}`);
     }
 
     save() {
@@ -207,4 +208,4 @@ class AppSettingsModel {
     }
 }
 
-var appSettingsModel = new AppSettingsModel;
+var AppSettingsModel = AppSettingsModelClass;

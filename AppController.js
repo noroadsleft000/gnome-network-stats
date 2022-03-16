@@ -3,16 +3,14 @@ const Mainloop = imports.mainloop;
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
 
-const { appView } = Me.imports.ui.AppView;
-const { logger } = Me.imports.utils.Logger;
+const { AppView } = Me.imports.ui.AppView;
 const { DeviceModel } = Me.imports.net.DeviceModel;
-const { appSettingsModel } = Me.imports.AppSettingsModel;
 
 const { DisplayMode } = Me.imports.utils.Constants;
 const { bytesSpeedToString } = Me.imports.utils.GenUtils;
 const { bytesToString } = Me.imports.utils.GenUtils;
 const { getNextResetTime } = Me.imports.utils.DateTimeUtils;
-const { titleClickedMessageBroadcaster } = Me.imports.utils.EventBroadcaster;
+const { getTitleClickedMessageBroadcaster } = Me.imports.utils.Broadcasters;
 
 const kOneMinuteInMilliSeconds = 60 * 1000;
 
@@ -21,39 +19,41 @@ const kOneMinuteInMilliSeconds = 60 * 1000;
 * refreshing view and pushing model updates to UI.
 */
 
-class AppController {
+class AppControllerClass {
 
-    constructor() {
+    constructor(logger, appSettingsModel, deviceModel) {
+        this._logger = logger;
+        this._appSettingsModel = appSettingsModel;
+        this._deviceModel = deviceModel;
+        this._appView = new AppView(logger, appSettingsModel);
         this._refreshTimeout = undefined;
         this._minuteTimeout = undefined;
         this._rightClickSubscribeHandle = undefined;
         this._settingsSubscribeHandle = undefined;
-        this._deviceModel = new DeviceModel();
     }
 
     init() {
-        appSettingsModel.init();
         // TODO: remove update() call from here and move device reset time to DeviceMonitor.
         this.update();
         this.resetIfRequired();
         this._rightClickSubscribeHandle = this.onRightClick.bind(this);
-        titleClickedMessageBroadcaster.subscribe(this._rightClickSubscribeHandle);
+        getTitleClickedMessageBroadcaster().subscribe(this._rightClickSubscribeHandle);
         this._settingsSubscribeHandle = this.onSettingChanged.bind(this);
-        appSettingsModel.subscribe(this._settingsSubscribeHandle);
+        this._appSettingsModel.subscribe(this._settingsSubscribeHandle);
         this.installTimers();
     }
 
     deinit() {
-        titleClickedMessageBroadcaster.unsubscribe(this._rightClickSubscribeHandle);
+        getTitleClickedMessageBroadcaster().unsubscribe(this._rightClickSubscribeHandle);
         this._rightClickSubscribeHandle = undefined;
-        appSettingsModel.unsubscribe(this._settingsSubscribeHandle);
+        this._appSettingsModel.unsubscribe(this._settingsSubscribeHandle);
         this._settingsSubscribeHandle = undefined;
-        appSettingsModel.deinit();
+        this._appSettingsModel.deinit();
         this.uninstallTimers();
     }
 
     installTimers() {
-        const { refreshInterval } = appSettingsModel;
+        const { refreshInterval } = this._appSettingsModel;
         this._refreshTimeout = Mainloop.timeout_add(refreshInterval, this.onRefreshTimeout.bind(this));
         this._minuteTimeout = Mainloop.timeout_add(kOneMinuteInMilliSeconds, this.onEveryMinute.bind(this));
     }
@@ -70,15 +70,15 @@ class AppController {
     }
 
     show() {
-        appView.show();
+        this._appView.show();
     }
 
     hide() {
-        appView.hide();
+        this._appView.hide();
     }
 
     _getActiveDeviceName() {
-        const userPreferedDevice = appSettingsModel.preferedDeviceName;
+        const userPreferedDevice = this._appSettingsModel.preferedDeviceName;
         if (this._deviceModel.hasDevice(userPreferedDevice)) {
             return userPreferedDevice;
         }
@@ -86,11 +86,11 @@ class AppController {
     }
 
     update() {
-        const { displayMode, refreshInterval, displayBytes } = appSettingsModel;
-        //logger.debug(`displayMode : ${displayMode}`);
+        const { displayMode, refreshInterval, displayBytes } = this._appSettingsModel;
+        //this._logger.debug(`displayMode : ${displayMode}`);
         this._deviceModel.update(refreshInterval, displayBytes);
         const activeDevice = this._getActiveDeviceName();
-        //logger.debug(`activeDevice: ${activeDevice}`);
+        //this._logger.debug(`activeDevice: ${activeDevice}`);
         let titleStr = "----";
         switch(displayMode) {
             case DisplayMode.TOTAL_SPEED:
@@ -131,27 +131,27 @@ class AppController {
                 break;
             }
         }
-        appView.setTitleText(titleStr);
-        appView.update(this._deviceModel);
+        this._appView.setTitleText(titleStr);
+        this._appView.update(this._deviceModel);
 
         // Debugging
         // const upload = this._deviceModel.getUploadSpeed(activeDevice);
         // const download = this._deviceModel.getDownloadSpeed(activeDevice);
         // const totalData = this._deviceModel.getTotalDataUsage(activeDevice);
-        // logger.debug(`upload: ${upload} download: ${download} totalData: ${totalData}`);
+        // this._logger.debug(`upload: ${upload} download: ${download} totalData: ${totalData}`);
         // const uploadStr = bytesSpeedToString(upload, displayBytes);
         // const downloadStr = bytesSpeedToString(download, displayBytes);
         // const totalDataStr = bytesToString(totalData);
-        // logger.debug(`deviceName: ${activeDevice} upload: ${uploadStr} download: ${downloadStr} totalData: ${totalDataStr}`);
+        // this._logger.debug(`deviceName: ${activeDevice} upload: ${uploadStr} download: ${downloadStr} totalData: ${totalDataStr}`);
     }
 
     resetIfRequired() {
         const now = new Date();
         const activeDevice = this._getActiveDeviceName();
-        const lastResetedAt = appSettingsModel.getLastResetDateTime(activeDevice);
-        const newResetTime = getNextResetTime(lastResetedAt, appSettingsModel);
-        //logger.log(`oldResetTime: ${lastResetedAt}`);
-        //logger.log(`newResetTime: ${newResetTime}`);
+        const lastResetedAt = this._appSettingsModel.getLastResetDateTime(activeDevice);
+        const newResetTime = getNextResetTime(lastResetedAt, this._appSettingsModel);
+        //this._logger.log(`oldResetTime: ${lastResetedAt}`);
+        //this._logger.log(`newResetTime: ${newResetTime}`);
         if (now.getTime() >= newResetTime.getTime()) {
             // crossed the mark, Time to reset network stats
             this._deviceModel.resetAll();
@@ -160,21 +160,21 @@ class AppController {
 
     // #region Event handlers
     onRefreshTimeout() {
-        //logger.debug("tick");
+        //this._logger.debug("tick");
         try {
             this.update();
         } catch(err) {
-            logger.error(`ERROR: ${err.toString()} TRACE: ${err.stack}`);
+            this._logger.error(`ERROR: ${err.toString()} TRACE: ${err.stack}`);
         }
         return true;
     }
 
     onEveryMinute() {
-        //logger.debug("every 1 minutes");
+        //this._logger.debug("every 1 minutes");
         try {
             this.resetIfRequired();
         } catch(err) {
-            logger.error(`ERROR: ${err.toString()} TRACE: ${err.stack}`);
+            this._logger.error(`ERROR: ${err.toString()} TRACE: ${err.stack}`);
         }
         return true;
     }
@@ -187,7 +187,7 @@ class AppController {
     onRightClick({button}) {
         if (button === "right") {
             // cycle through the modes
-            let { displayMode } = appSettingsModel;
+            let { displayMode } = this._appSettingsModel;
             switch(displayMode) {
                 default:
                 case DisplayMode.TOTAL_SPEED:
@@ -216,11 +216,11 @@ class AppController {
                     break;
                 }
             }
-            appSettingsModel.displayMode = displayMode;
+            this._appSettingsModel.displayMode = displayMode;
             this.update();
         }
     }
     // #endregion Event handlers
 }
 
-var appController = new AppController;
+var AppController = AppControllerClass;

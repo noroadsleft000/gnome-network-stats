@@ -3,7 +3,7 @@
 * EventBroadcaster class can be inherited to create a new type of event broadcaster.
 */
 
-class EventBroadcaster {
+class EventBroadcasterClass {
     
     constructor() {
         this._listeners = [];
@@ -30,6 +30,4 @@ class EventBroadcaster {
         }
     }
 }
-
-var deviceResetMessageBroadcaster = new EventBroadcaster();
-var titleClickedMessageBroadcaster = new EventBroadcaster();
+var EventBroadcaster = EventBroadcasterClass;

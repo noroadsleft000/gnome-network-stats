@@ -6,13 +6,13 @@ const ByteArray = imports.byteArray;
 
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
-const { logger } = Me.imports.utils.Logger;
-const { deviceResetMessageBroadcaster } = Me.imports.utils.EventBroadcaster;
-const { appSettingsModel } = Me.imports.AppSettingsModel;
+const { getDeviceResetMessageBroadcaster } = Me.imports.utils.Broadcasters;
 
 class NetworkMonitorClass {
 
-    constructor() {
+    constructor(logger, appSettingsModel) {
+        this._logger = logger;
+        this._appSettingsModel = appSettingsModel;
         this._deviceLogs = {};
         this.init();
     }
@@ -20,11 +20,11 @@ class NetworkMonitorClass {
     init() {
         // load from preferences
         const now = new Date();
-        appSettingsModel.load();
-        const {devicesInfoMap} = appSettingsModel;
+        this._appSettingsModel.load();
+        const {devicesInfoMap} = this._appSettingsModel;
         for (const name in devicesInfoMap) {
             const { resetedAt, initialReading } = devicesInfoMap[name];
-            logger.info(`init - ${name} - ${resetedAt} - ${initialReading}`);
+            this._logger.info(`init - ${name} - ${resetedAt} - ${initialReading}`);
             if (resetedAt) {
                 this._deviceLogs[name] = {
                     resetedAt: new Date(resetedAt) || now,
@@ -33,24 +33,24 @@ class NetworkMonitorClass {
                 };
             }
         }
-        deviceResetMessageBroadcaster.subscribe(this.resetDeviceLogs.bind(this));
+        getDeviceResetMessageBroadcaster().subscribe(this.resetDeviceLogs.bind(this));
     }
 
     resetDeviceLogs({name}) {
-        logger.info(`Reset the logs for device ${name}`);
+        this._logger.info(`Reset the logs for device ${name}`);
         this._deviceLogs[name] = {...this._deviceLogs[name], reset: true };
-        appSettingsModel.replaceDeviceInfo(name, { resetedAt: new Date().toString() });
+        this._appSettingsModel.replaceDeviceInfo(name, { resetedAt: new Date().toString() });
     }
 
     resetAll() {
-        logger.info(`Restting all devices at ${new Date().toString()}`);
+        this._logger.info(`Restting all devices at ${new Date().toString()}`);
         const infoMap = {};
         const currTime = new Date().toString();
         for (const name in this._deviceLogs) {
             this._deviceLogs[name].reset = true;
             infoMap[name] = { resetedAt: currTime };
         }
-        appSettingsModel.devicesInfoMap = infoMap;
+        this._appSettingsModel.devicesInfoMap = infoMap;
     }
 
     _needReset(deviceName) {
@@ -71,7 +71,7 @@ class NetworkMonitorClass {
         const deviceLogs = {};
         for (let index = 2; index < lines.length - 1; ++index) {
             const line = lines[index].trim();
-            //logger.debug(`${index} - ${line}`);
+            //this._logger.debug(`${index} - ${line}`);
             const fields = line.split(/[^A-Za-z0-9_-]+/);
             const deviceName = fields[0];
 
@@ -81,7 +81,7 @@ class NetworkMonitorClass {
             const sent = parseInt(fields[9]);
             const received = parseInt(fields[1]);
             if (this._needReset(deviceName)) {
-                logger.debug(`reset - ${deviceName}`);
+                this._logger.debug(`reset - ${deviceName}`);
                 deviceLogs[deviceName] = {
                     name: deviceName,
                     sent,
@@ -95,7 +95,7 @@ class NetworkMonitorClass {
                     reset: false
                 };
                 // write to app settings/prefs
-                appSettingsModel.updateDeviceInfo(deviceName, {
+                this._appSettingsModel.updateDeviceInfo(deviceName, {
                     initialReading: deviceLogs[deviceName].initialReading,
                     resetedAt: deviceLogs[deviceName].resetedAt.toString(),
                 });
@@ -120,11 +120,11 @@ class NetworkMonitorClass {
                 };
 
                 if (deviceLogs[deviceName].totalData < 0) {
-                    logger.info("Reset due to -ve reading, may be a wrap around.");
+                    this._logger.info("Reset due to -ve reading, may be a wrap around.");
                     deviceLogs[deviceName].reset = true;
                 }
             }
-            //logger.debug(`up: ${sent} down: ${received}`);
+            //this._logger.debug(`up: ${sent} down: ${received}`);
         }
 
         this._deviceLogs = deviceLogs;

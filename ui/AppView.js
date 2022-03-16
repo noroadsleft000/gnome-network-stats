@@ -3,9 +3,7 @@ const Clutter = imports.gi.Clutter;
 
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
-
-const { logger } = Me.imports.utils.Logger;
-const { mainPanel } = Me.imports.ui.MainPanel;
+const { MainPanel } = Me.imports.ui.MainPanel;
 const { PopupView } = Me.imports.ui.PopupView;
 
 
@@ -13,9 +11,12 @@ const { PopupView } = Me.imports.ui.PopupView;
 * AppView class is manager class for managing UI show/hide/enable/disable.
 */
 
-class AppView {
+class AppViewClass {
 
-    constructor() {
+    constructor(logger, appSettingsModel) {
+        this._logger = logger;
+        this._appSettingsModel = appSettingsModel;
+        this._mainPanel = new MainPanel();
         this.createLayout();
     }
 
@@ -60,14 +61,14 @@ class AppView {
     }
 
     showDropDown() {
-        logger.debug("Show the drop down", this);
+        this._logger.debug("Show the drop down", this);
     }
 
     show() {
         if (!this._popupView) {
-            this._popupView = new PopupView;
+            this._popupView = new PopupView(this._logger, this._appSettingsModel);
         }
-	    mainPanel.addToStatusArea(this._popupView);
+	    this._mainPanel.addToStatusArea(this._popupView);
     }
 
     hide() {
@@ -78,4 +79,4 @@ class AppView {
     }
 }
 
-var appView = new AppView
+var AppView = AppViewClass;

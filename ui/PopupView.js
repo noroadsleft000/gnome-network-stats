@@ -9,16 +9,14 @@ const { CheckBox } = imports.ui.checkBox;
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
 
-const { logger } = Me.imports.utils.Logger;
 const { getDeviceIcon, getIconPath } = Me.imports.utils.GenUtils;
 const { ExpandableMenuItem } = Me.imports.ui.ExpandableMenuItem;
 const { ExpandableDeviceMenuItem } = Me.imports.ui.ExpandableDeviceMenuItem;
 const { DeviceMenuTitleItem } = Me.imports.ui.DeviceMenuTitleItem;
 const { DeviceType } = Me.imports.utils.Constants;
 const { DisplayMode } = Me.imports.utils.Constants;
-const { appSettingsModel } = Me.imports.AppSettingsModel;
-const { deviceResetMessageBroadcaster } = Me.imports.utils.EventBroadcaster;
-const { titleClickedMessageBroadcaster } = Me.imports.utils.EventBroadcaster;
+const { getDeviceResetMessageBroadcaster } = Me.imports.utils.Broadcasters;
+const { getTitleClickedMessageBroadcaster } = Me.imports.utils.Broadcasters;
 
 const Gettext = imports.gettext;
 const _ = Gettext.domain("network-stats").gettext;
@@ -32,9 +30,10 @@ class PopupViewClass extends PanelMenu.Button {
 
     // Constructor
     /** @override */
-    _init() {
+    _init(logger, appSettingsModel) {
         super._init(0);
-
+        this._logger = logger;
+        this._appSettingsModel = appSettingsModel;
         this._menuItems = {};
 
         const mainLabel = new St.Label({
@@ -53,7 +52,7 @@ class PopupViewClass extends PanelMenu.Button {
 
         const topBox = new St.BoxLayout();
         topBox.add_actor(this._mainLabel);
-        if (appSettingsModel.showIcon === true) {
+        if (this._appSettingsModel.showIcon === true) {
             topBox.add_actor(this._mainIcon);
         }
         this.add_actor(topBox);
@@ -171,28 +170,28 @@ class PopupViewClass extends PanelMenu.Button {
         box.add_child(this._settings);
 
         this._totalSpeed.connect("button-press-event", () => {
-            //logger.debug("total speed button pressed");
-            appSettingsModel.displayMode = DisplayMode.TOTAL_SPEED;
+            //this._logger.debug("total speed button pressed");
+            this._appSettingsModel.displayMode = DisplayMode.TOTAL_SPEED;
             this.updateGroupButtonsState();
         });
         this._downloadSpeed.connect("button-press-event", () => {
-            //logger.debug("download speed button pressed");
-            appSettingsModel.displayMode = DisplayMode.DOWNLOAD_SPEED;
+            //this._logger.debug("download speed button pressed");
+            this._appSettingsModel.displayMode = DisplayMode.DOWNLOAD_SPEED;
             this.updateGroupButtonsState();
         });
         this._uploadSpeed.connect("button-press-event", () => {
-            //logger.debug("upload speed button pressed");
-            appSettingsModel.displayMode = DisplayMode.UPLOAD_SPEED;
+            //this._logger.debug("upload speed button pressed");
+            this._appSettingsModel.displayMode = DisplayMode.UPLOAD_SPEED;
             this.updateGroupButtonsState();
         });
         this._bothSpeed.connect("button-press-event", () => {
-            //logger.debug("upload speed button pressed");
-            appSettingsModel.displayMode = DisplayMode.BOTH_SPEED;
+            //this._logger.debug("upload speed button pressed");
+            this._appSettingsModel.displayMode = DisplayMode.BOTH_SPEED;
             this.updateGroupButtonsState();
         });
         this._dataUsage.connect("button-press-event", () => {
-            //logger.debug("total data button pressed");
-            appSettingsModel.displayMode = DisplayMode.TOTAL_DATA;
+            //this._logger.debug("total data button pressed");
+            this._appSettingsModel.displayMode = DisplayMode.TOTAL_DATA;
             this.updateGroupButtonsState();
         });
         this.updateGroupButtonsState();
@@ -222,13 +221,13 @@ class PopupViewClass extends PanelMenu.Button {
         // separator item
         //this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
         this.connect('button-press-event', this.onMainButtonClicked.bind(this));
-        this._settingsListener = appSettingsModel.subscribe(() => {
+        this._settingsListener = this._appSettingsModel.subscribe(() => {
             this.updateGroupButtonsState();
         });
     }
 
     updateGroupButtonsState() {
-        const { displayMode } = appSettingsModel;
+        const { displayMode } = this._appSettingsModel;
         this.toggleButtonState(this._totalSpeed, displayMode == DisplayMode.TOTAL_SPEED);
         this.toggleButtonState(this._uploadSpeed, displayMode == DisplayMode.UPLOAD_SPEED);
         this.toggleButtonState(this._downloadSpeed, displayMode == DisplayMode.DOWNLOAD_SPEED);
@@ -237,13 +236,14 @@ class PopupViewClass extends PanelMenu.Button {
     }
 
     onMainButtonClicked(_button, event) {
-        //logger.debug(event);
+        //this._logger.debug(event);
+        const broadcaster = getTitleClickedMessageBroadcaster();
         if (event.get_button() == 1) {
-            titleClickedMessageBroadcaster.broadcast({ button: "left" });
+            broadcaster.broadcast({ button: "left" });
         } else if (event.get_button() == 2) {
-            titleClickedMessageBroadcaster.broadcast({ button: "middle" });
+            broadcaster.broadcast({ button: "middle" });
         } else if (event.get_button() == 3) {
-            titleClickedMessageBroadcaster.broadcast({ button: "right" });
+            broadcaster.broadcast({ button: "right" });
         }
     }
 
@@ -288,25 +288,25 @@ class PopupViewClass extends PanelMenu.Button {
         device.iconPath = iconPath;
         if (!menuItem) {
             menuItem = new ExpandableDeviceMenuItem(device, {
-                defaultDeviceName: appSettingsModel.preferedDeviceName,
+                defaultDeviceName: this._appSettingsModel.preferedDeviceName,
                 onResetClicked: this.onResetClicked.bind(this, device.name),
                 onMarkDefaultClicked: this.onMarkDefaultClicked.bind(this, device.name)
             });
             this.menu.addMenuItem(menuItem);
             this._menuItems[device.name] = menuItem;
         } else {
-            menuItem.update(device, appSettingsModel.preferedDeviceName);
+            menuItem.update(device, this._appSettingsModel.preferedDeviceName);
         }
     }
 
     onResetClicked(name) {
-        logger.info(`Reset the device : ${name}`);
-        deviceResetMessageBroadcaster.broadcast({ name });
+        this._logger.info(`Reset the device : ${name}`);
+        getDeviceResetMessageBroadcaster().broadcast({ name });
     }
 
     onMarkDefaultClicked(name) {
-        logger.info(`Mark the device "${name}" as default`);
-        appSettingsModel.preferedDeviceName = name;
+        this._logger.info(`Mark the device "${name}" as default`);
+        this._appSettingsModel.preferedDeviceName = name;
     }
 
     setTitleText(text) {
@@ -336,7 +336,7 @@ class PopupViewClass extends PanelMenu.Button {
         this._totalSpeed = undefined;
         this._bothSpeed = undefined;
         this._dataUsage = undefined;
-        appSettingsModel.unsubscribe(this._settingsListener);
+        this._appSettingsModel.unsubscribe(this._settingsListener);
         this._settingsListener = undefined;
         super.destroy();
     }
