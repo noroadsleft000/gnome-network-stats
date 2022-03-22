@@ -9,8 +9,28 @@ const Me = ExtensionUtils.getCurrentExtension();
 */
 
 class LoggerClass {
-    constructor() {
-        this.test = "Hello";
+    static instance() {
+        return this._instance || (this._instance = new this());
+    }
+
+    static log(...args) {
+        this.instance()._printLog("LOG", args);
+    }
+
+    static debug(...args) {
+        this.instance()._printLog("DEBUG", args);
+    }
+
+    static info(...args) {
+        this.instance()._printLog("INFO", args);
+    }
+
+    static error(...args) {
+        this.instance()._printLog("ERROR", args);
+    }
+
+    static critical(...args) {
+        this.instance()._printLog("**CRITICAL", args);
     }
 
     _callerInfo(level=3) {

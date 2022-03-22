@@ -78,7 +78,6 @@ const SettingRowOrder = Object.freeze({
 
 class PrefsApp {
     constructor() {
-        this._logger = new Logger;
         this._rows = {};
         this.main = new Gtk.Grid({
             margin_top: 10,
@@ -126,7 +125,7 @@ class PrefsApp {
     _hideRow(row) {
         const label = this.main.get_child_at(0, row);
         const input = this.main.get_child_at(1, row);
-        //this._logger.log(`${row}. label: ${label} input: ${input}`);
+        //Logger.log(`${row}. label: ${label} input: ${input}`);
         if (label) {
             this.main.remove(label);
         }
@@ -137,7 +136,7 @@ class PrefsApp {
 
     _showRow(row) {
         const { label, input } = this._rows[row];
-        //this._logger.log(`${row}. label: ${label} input: ${input}`);
+        //Logger.log(`${row}. label: ${label} input: ${input}`);
         if (!label.parent && !input.parent) {
             this.main.attach(label, 0, row, 1, 1);
             this.main.attach(input, 1, row, 1, 1);
@@ -379,7 +378,7 @@ class PrefsApp {
 
     updateControls() {
         const resetSchedule = this.schema.get_string(SettingKeys.RESET_SCHEDULE);
-        //this._logger.log(`resetSchedule: ${resetSchedule}`);
+        //Logger.log(`resetSchedule: ${resetSchedule}`);
         switch(resetSchedule) {
             default:
             case ResetSchedule.DAILY:
@@ -420,8 +419,7 @@ class PrefsApp {
 
 /** Initialize language/locale  */
 function init() {
-    const logger = new Logger;
-    logger.debug("init");
+    Logger.debug("init");
     const localeDir = Me.dir.get_child("locale");
     if (localeDir.query_exists(null)) {
         Gettext.bindtextdomain("network-stats", localeDir.get_path());
@@ -430,8 +428,7 @@ function init() {
 
 /** Build settings view */
 function buildPrefsWidget() {
-    const logger = new Logger;
-    logger.debug("buildPrefsWidget");
+    Logger.debug("buildPrefsWidget");
     const widget = new PrefsApp();
     if (isGtk3()) {
         widget.main.show_all();

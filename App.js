@@ -9,6 +9,13 @@ const { DeviceMonitor } = Me.imports.net.DeviceMonitor;
 const { Logger } = Me.imports.utils.Logger;
 
 class AppClass {
+    static instance() {
+        return this._instance || (this._instance = new this());
+    }
+
+    static deleteInstance() {
+        this._instance = undefined;
+    }
 
     constructor() {
         const logger = new Logger();
