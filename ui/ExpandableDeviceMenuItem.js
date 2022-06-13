@@ -242,7 +242,7 @@ class ExpandableDeviceMenuItemClass extends PopupSubMenuMenuItem {
         this._totalDataTitleLabel.set_text(`${_("Total data used")} [Σ] : `);
         this._totalDataValueLabel.set_text(`${totalData} -- ${_("Since last reseted")}`);
 
-        this._lastResetedTitleLabel.set_text(`${_("Last reseted at")} [⛿] : `);
+        this._lastResetedTitleLabel.set_text(`${_("Last reseted at")} [⚐] : `);
         this._lastResetedValueLabel.set_text(startTime);
 
         let symbol = "★";
