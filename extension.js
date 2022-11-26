@@ -8,6 +8,7 @@ const { initBrodcasters, deinitBrodcasters } = Me.imports.utils.Broadcasters;
 
 function init() {
     Logger.info(`initializing ${Me.metadata.name}`);
+    ExtensionUtils.initTranslations();
 }
 
 function enable() {

@@ -65,7 +65,7 @@ gnome-tweak-tool to enable it.
 ```
 ### launch a nested wayland session for debugging the extension
 ```
-./commands.sh launch_debug
+./commands.sh debug
 ```
 
 ## Known issues
@@ -92,8 +92,10 @@ still facing some error? report it by creating a bug.
 
 When reporting a bug, please include debugging output from `gnome-shell`.
 
-You can capture the logs with this command:
+You can capture the logs with one of these commands:
 ```
+journalctl -f -o cat GNOME_SHELL_EXTENSION_UUID=network-stats@gnome.noroadsleft.xyz
+
 journalctl /usr/bin/gnome-shell | grep network-stats
 
 journalctl -f -o cat /usr/bin/gnome-shell
