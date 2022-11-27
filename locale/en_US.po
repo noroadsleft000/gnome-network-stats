@@ -1,4 +1,4 @@
-#msgid ""
+msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "PO-Revision-Date: 2021-05-25 20:23+0530\n"

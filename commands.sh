@@ -16,6 +16,7 @@ help()
 
 build()
 {
+    echo "building..."
     #msgfmt *.po --output-file=*.mo
     glib-compile-schemas schemas
 }
@@ -24,6 +25,7 @@ install()
 {
     build
     pack
+    echo "installing..."
     gnome-extensions install --force network-stats@gnome.noroadsleft.xyz.shell-extension.zip
     enable
 }
@@ -31,22 +33,27 @@ install()
 uninstall()
 {
     disable
+    echo "uninstalling..."
     gnome-extensions uninstall network-stats@gnome.noroadsleft.xyz
 }
 
 enable()
 {
+    echo "enabling..."
     gnome-extensions enable network-stats@gnome.noroadsleft.xyz
 }
 
 disable()
 {
+    echo "disabling..."
     gnome-extensions disable network-stats@gnome.noroadsleft.xyz
 }
 
 pack()
 {
+    echo "packaging..."
     gnome-extensions pack \
+    --out-dir . \
     --force \
     --extra-source=App.js \
     --extra-source=AppController.js \
@@ -61,8 +68,9 @@ pack()
     --podir=locale
 }
 
-launch_debug()
+debug()
 {
+    echo "launching for debug..."
     install
     dbus-run-session -- gnome-shell --nested --wayland
 }
@@ -80,8 +88,8 @@ elif [ "$1" = "enable" ]; then
     disable
 elif [ "$1" = "pack" ]; then
     pack
-elif [ "$1" = "launch_debug" ]; then
-    launch_debug
+elif [ "$1" = "debug" ]; then
+    debug
 else
     help
 fi
