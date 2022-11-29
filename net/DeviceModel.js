@@ -1,11 +1,12 @@
+const { GLib } = imports.gi;
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
 
-const { logger } = Me.imports.utils.Logger;
 const { NetworkMonitor } = Me.imports.net.NetworkMonitor;
 const { DeviceMonitor } = Me.imports.net.DeviceMonitor;
 const { bytesSpeedToString } = Me.imports.utils.GenUtils;
 const { bytesToString } = Me.imports.utils.GenUtils;
+const { getDeviceResetMessageBroadcaster } = Me.imports.utils.Broadcasters;
 
 
 /*
@@ -15,41 +16,104 @@ const { bytesToString } = Me.imports.utils.GenUtils;
 
 class DeviceModelClass {
 
-    constructor(logger, deviceMonitor, networkMonitor) {
-        this._upload = 0;
-        this._download = 0;
+    constructor(logger, deviceMonitor, networkMonitor, appSettingsModel) {
         this._stats = {};
         this._statsText = {};
+        this._lastTime = undefined;
         this._logger = logger;
         this._deviceMonitor = deviceMonitor;
         this._networkMonitor = networkMonitor;
+        this._appSettingsModel = appSettingsModel;
+        this.init();
     }
 
-    getUploadSpeed(deviceName) {
-        if (this._stats[deviceName]) {
-            return this._stats[deviceName].upSpeed;
+    get networkMonitor() {
+        return this._networkMonitor;
+    }
+
+    get deviceMonitor() {
+        return this._deviceMonitor;
+    }
+
+    init() {
+        const now = new Date();
+        const {devicesInfoMap} = this._appSettingsModel;
+        const stats = {};
+        for (const [name, deviceInfo] of Object.entries(devicesInfoMap)) {
+            const {
+                resetedAt,
+                totalUpload = 0,
+                totalDownload = 0,
+            } = deviceInfo;
+            const totalData = totalUpload + totalDownload;
+            this._logger.info(`init - ${name} - ${resetedAt}`);
+            stats[name] = {
+                name,
+                totalUpload,
+                totalDownload,
+                totalData
+            };
+            if (resetedAt) {
+                stats[name].resetedAt = new Date(resetedAt) || now;
+            } else {
+                stats[name].resetedAt = now;
+            }
+            this._stats = stats;
         }
-        return 0;
+        getDeviceResetMessageBroadcaster().subscribe(this.resetDeviceStats.bind(this));
+    }
+
+    getStats() {
+        return this._stats;
+    }
+
+    getReadableStats() {
+        return this._statsText;
+    }
+
+    /** values in bytes */
+    getUploadSpeed(deviceName) {
+        const upSpeed = this._stats[deviceName].upSpeed || 0;
+        return upSpeed;
     }
 
     getDownloadSpeed(deviceName) {
-        if (this._stats[deviceName]) {
-            return this._stats[deviceName].downSpeed;
-        }
-        return 0;
+        const downSpeed = this._stats[deviceName].downSpeed || 0;
+        return downSpeed;
     }
 
     getTotalSpeed(deviceName) {
-        return this.getUploadSpeed(deviceName) + this.getDownloadSpeed(deviceName);
+        const speed = this._stats[deviceName].totalSpeed || 0;
+        return speed;
     }
 
     getTotalDataUsage(deviceName) {
-        if (this._stats[deviceName]) {
-            return this._stats[deviceName].totalData;
-        }
-        return 0;
+        const totalData = this._stats[deviceName].totalData || "";
+        return totalData;
     }
 
+    /** Human readable string format */
+    getUploadSpeedText(deviceName) {
+        const upSpeed = this._statsText[deviceName].upSpeed || "";
+        return upSpeed;
+    }
+
+    getDownloadSpeedText(deviceName) {
+        const downSpeed = this._statsText[deviceName].downSpeed || "";
+        return downSpeed;
+    }
+
+    getTotalSpeedText(deviceName) {
+        const totalSpeed = this._statsText[deviceName].totalSpeed || "";
+        return totalSpeed;
+    }
+
+    getTotalDataUsageText(deviceName) {
+        const totalData = this._statsText[deviceName].totalData || "";
+        return totalData;
+    }
+
+    /** Device methods */
     hasDevice(deviceName) {
         return this._deviceMonitor.hasDevice(deviceName);
     }
@@ -62,65 +126,84 @@ class DeviceModelClass {
         return this._deviceMonitor.getDevices();
     }
 
-    getStats() {
-        return this._stats;
+    /** Return time delta in milliseconds */
+    getTimeDelta() {
+        const newTime = GLib.get_monotonic_time() / 1000;
+        const timeDelta = newTime - (this._lastTime || newTime) + 1;
+        this._lastTime = newTime;
+        return timeDelta;
     }
 
-    getReadableStats() {
-        return this._statsText;
-    }
-
-    get networkMonitor() {
-        return this._networkMonitor;
-    }
-
-    get deviceMonitor() {
-        return this._deviceMonitor;
-    }
-
-    /* time in milliseconds */
-    update(time, mode = true) {
+    /* time in seconds */
+    update(bytesMode = true) {
         const {
             error,
             deviceLogs
         } = this._networkMonitor.getStats();
+        const timeDelta = this.getTimeDelta() / 1000;
 
-        //this._logger.debug(`defaultGateway: ${this._deviceMonitor.getActiveDeviceName()}`);
         if (!error) {
             const stats = {};
             const statsText = {};
-            for (const [, deviceLog] of Object.entries(deviceLogs)) {
+            for (const [name, deviceLog] of Object.entries(deviceLogs)) {
                 const {
-                    name,
-                    upDelta,
-                    downDelta,
-                    totalDelta,
-                    totalData,
-                    ["resetedAt"]: startTime,
+                    upload,
+                    download
                 } = deviceLog;
+
+                if (!this._stats[name]) {
+                    //new device detected
+                    this.initDeviceStats(name);
+                }
+
+                const {
+                    ["upload"]: oldUpload = upload,
+                    ["download"]: oldDownload = download,
+                    ["totalUpload"]: oldTotalUpload = 0,
+                    ["totalDownload"]: oldTotalDownload = 0,
+                    resetedAt
+                } = this._stats[name];
+
+                // delta
+                const upDelta = upload - oldUpload;
+                const downDelta = download - oldDownload;
+
+                // speeds
+                const upSpeed = upDelta / (timeDelta);
+                const downSpeed = downDelta / (timeDelta);
+                const totalSpeed = upSpeed + downSpeed;
+
+                // total data till now
+                const totalUpload = oldTotalUpload + upDelta;
+                const totalDownload = oldTotalDownload + downDelta;
+                const totalData = totalUpload + totalDownload;
+
                 const device = this._deviceMonitor.getDeviceByName(name);
                 if (device) {
+                    const { ip, type } = device;
                     stats[name] = {
                         name,
-                        ip: device.ip,
-                        type: device.type,
-                        upSpeed: upDelta / (time/1000),
-                        downSpeed: downDelta / (time/1000),
-                        totalSpeed: totalDelta /(time/1000),
-                        totalData: totalData,
-                        startTime: startTime,
+                        ip,
+                        type,
+                        upload,
+                        download,
+                        upSpeed,
+                        downSpeed,
+                        totalSpeed,
+                        totalUpload,
+                        totalDownload,
+                        resetedAt,
                     };
 
-                    const { type, ip, upSpeed, downSpeed, totalSpeed } = stats[name];
                     statsText[name] = {
                         name,
                         ip: ip,
                         type: type,
-                        upSpeed: bytesSpeedToString(upSpeed, mode),
-                        downSpeed: bytesSpeedToString(downSpeed, mode),
-                        totalSpeed: bytesSpeedToString(totalSpeed, mode),
+                        upSpeed: bytesSpeedToString(upSpeed, bytesMode),
+                        downSpeed: bytesSpeedToString(downSpeed, bytesMode),
+                        totalSpeed: bytesSpeedToString(totalSpeed, bytesMode),
                         totalData: bytesToString(totalData),
-                        startTime: startTime.toLocaleString(undefined, {
+                        startTime: resetedAt.toLocaleString(undefined, {
                             weekday: "short",
                             day: "2-digit",
                             month: "short",
@@ -141,8 +224,74 @@ class DeviceModelClass {
         }
     }
 
+    saveStats() {
+        const devicesInfo = { ...this._appSettingsModel.devicesInfoMap };
+        const deviceLogs = this.getStats();
+        for (const [name, stat] of Object.entries(deviceLogs)) {
+            devicesInfo[name].totalUpload = stat.totalUpload;
+            devicesInfo[name].totalDownload = stat.totalDownload;
+        }
+        this._appSettingsModel.devicesInfoMap = devicesInfo;
+    }
+
+    initDeviceStats(name) {
+        this._logger.info(`New device added: ${name}`);
+        const now = new Date();
+        const stat = {
+            totalUpload: 0,
+            totalDownload: 0,
+            resetedAt: now
+        };
+        this._stats[name] = stat;
+        const deviceLogs = {
+            totalUpload: 0,
+            totalDownload: 0,
+            resetedAt: now.toString()
+        };
+        this._appSettingsModel.replaceDeviceInfo(name, deviceLogs);
+    }
+
+    resetDeviceStats({name}) {
+        const now = new Date();
+        this._logger.info(`Resetting the device ${name} at ${now.toString()}`);
+        if (this._stats[name]) {
+            this._stats[name] = {
+                ...this._stats[name],
+                resetedAt: now,
+                totalUpload: 0,
+                totalDownload: 0
+            };
+            let deviceLogs = this._appSettingsModel.getDeviceInfo(name);
+            deviceLogs = {
+                ...deviceLogs,
+                totalUpload: 0,
+                totalDownload: 0,
+                resetedAt: now.toString()
+            };
+            this._appSettingsModel.replaceDeviceInfo(name, deviceLogs);
+        }
+    }
+
     resetAll() {
-        this._networkMonitor.resetAll();
+        const now = new Date();
+        const nowStr = now.toString();
+        this._logger.info(`Restting all devices at ${nowStr}`);
+        const infoMap = this._appSettingsModel.devicesInfoMap;
+        for (const name in this._stats) {
+            this._stats[name] = {
+                ...this._stats[name],
+                resetedAt: now,
+                totalDownload: 0,
+                totalUpload: 0,
+            };
+            infoMap[name] = {
+                ...infoMap[name],
+                resetedAt: nowStr,
+                totalDownload: 0,
+                totalUpload: 0
+            }
+        }
+        this._appSettingsModel.devicesInfoMap = infoMap;
     }
 }
 

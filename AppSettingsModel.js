@@ -13,6 +13,17 @@ const { getDayNumberForDayOfWeek } = Me.imports.utils.DateTimeUtils;
 const kRefreshInterval = 2 * 1000; // milliseconds
 const kSchemaName = "org.gnome.shell.extensions.network-stats";
 
+/**
+ * DevicesInfoMap
+ * {
+ *      "enp0s3": {
+ *          "initialReading":8850276,
+ *          "totalUpload": 12,
+ *          "totalDownload": 23,
+ *          "resetedAt":"Sat Nov 26 2022 10:32:41 GMT+0530 (India Standard Time)"
+ *       }
+ * }
+ */
 
 /*
 * AppSettingsModel represents application setttings and user prefrences.
@@ -90,6 +101,7 @@ class AppSettingsModelClass {
             this.schema.set_string(SettingKeys.PREFERED_DEVICE, this._preferedDeviceName);
         }
         const devicesJson = JSON.stringify(this._devicesInfoMap);
+        //this._logger.info("devicesInfoMap", devicesJson);
         if (!compareJsonStrings(this.schema.get_string(SettingKeys.DEVICES_INFO), devicesJson)) {
             this.schema.set_string(SettingKeys.DEVICES_INFO, devicesJson);
         }

@@ -14,23 +14,23 @@ class LoggerClass {
     }
 
     static log(...args) {
-        this.instance()._printLog("LOG", args);
+        this.instance()._printLog("LOG", ...args);
     }
 
     static debug(...args) {
-        this.instance()._printLog("DEBUG", args);
+        this.instance()._printLog("DEBUG", ...args);
     }
 
     static info(...args) {
-        this.instance()._printLog("INFO", args);
+        this.instance()._printLog("INFO", ...args);
     }
 
     static error(...args) {
-        this.instance()._printLog("ERROR", args);
+        this.instance()._printLog("ERROR", ...args);
     }
 
     static critical(...args) {
-        this.instance()._printLog("**CRITICAL", args);
+        this.instance()._printLog("**CRITICAL", ...args);
     }
 
     _callerInfo(level=3) {
@@ -55,23 +55,23 @@ class LoggerClass {
     }
 
     log(...args) {
-        this._printLog("LOG", args);
+        this._printLog("LOG", ...args);
     }
 
     debug(...args) {
-        this._printLog("DEBUG", args);
+        this._printLog("DEBUG", ...args);
     }
 
     info(...args) {
-        this._printLog("INFO", args);
+        this._printLog("INFO", ...args);
     }
 
     error(...args) {
-        this._printLog("ERROR", args);
+        this._printLog("ERROR", ...args);
     }
 
     critical(...args) {
-        this._printLog("**CRITICAL", args);
+        this._printLog("**CRITICAL", ...args);
     }
 };
 

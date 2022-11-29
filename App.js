@@ -22,8 +22,8 @@ class AppClass {
         const appSettingsModel = new AppSettingsModel(logger);
         appSettingsModel.init();
         const deviceMonitor = new DeviceMonitor(logger);
-        const networkMonitor = new NetworkMonitor(logger, appSettingsModel);
-        const deviceModel = new DeviceModel(logger, deviceMonitor, networkMonitor);
+        const networkMonitor = new NetworkMonitor(logger);
+        const deviceModel = new DeviceModel(logger, deviceMonitor, networkMonitor, appSettingsModel);
         this._appController = new AppController(logger, appSettingsModel, deviceModel);
     }
 

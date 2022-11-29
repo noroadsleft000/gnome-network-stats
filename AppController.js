@@ -48,6 +48,7 @@ class AppControllerClass {
         this._rightClickSubscribeHandle = undefined;
         this._appSettingsModel.unsubscribe(this._settingsSubscribeHandle);
         this._settingsSubscribeHandle = undefined;
+        this._deviceModel.saveStats();
         this._appSettingsModel.deinit();
         this.uninstallTimers();
     }
@@ -86,47 +87,41 @@ class AppControllerClass {
     }
 
     update() {
-        const { displayMode, refreshInterval, displayBytes } = this._appSettingsModel;
+        const { displayMode, displayBytes } = this._appSettingsModel;
         //this._logger.debug(`displayMode : ${displayMode}`);
-        this._deviceModel.update(refreshInterval, displayBytes);
+        this._deviceModel.update(displayBytes);
         const activeDevice = this._getActiveDeviceName();
         //this._logger.debug(`activeDevice: ${activeDevice}`);
         let titleStr = "----";
         switch(displayMode) {
             case DisplayMode.TOTAL_SPEED:
             {
-                const totalSpeed = this._deviceModel.getTotalSpeed(activeDevice);
-                const totalSpeedStr = bytesSpeedToString(totalSpeed, displayBytes);
+                const totalSpeedStr = this._deviceModel.getTotalSpeedText(activeDevice);
                 titleStr = `↕ ${totalSpeedStr}`;
                 break;
             }
             case DisplayMode.DOWNLOAD_SPEED:
             {
-                const download = this._deviceModel.getDownloadSpeed(activeDevice);
-                const downloadStr = bytesSpeedToString(download, displayBytes);
+                const downloadStr = this._deviceModel.getDownloadSpeedText(activeDevice);
                 titleStr = `↓ ${downloadStr}`;
                 break;
             }
             case DisplayMode.UPLOAD_SPEED:
             {
-                const upload = this._deviceModel.getUploadSpeed(activeDevice);
-                const uploadStr = bytesSpeedToString(upload, displayBytes);
+                const uploadStr = this._deviceModel.getUploadSpeedText(activeDevice);
                 titleStr = `↑ ${uploadStr}`;
                 break;
             }
             case DisplayMode.BOTH_SPEED:
             {
-                const download = this._deviceModel.getDownloadSpeed(activeDevice);
-                const downloadStr = bytesSpeedToString(download, displayBytes);
-                const upload = this._deviceModel.getUploadSpeed(activeDevice);
-                const uploadStr = bytesSpeedToString(upload, displayBytes);
+                const downloadStr = this._deviceModel.getDownloadSpeedText(activeDevice);
+                const uploadStr = this._deviceModel.getUploadSpeedText(activeDevice);
                 titleStr = `↓ ${downloadStr} ↑ ${uploadStr}`;
                 break;
             }
             case DisplayMode.TOTAL_DATA:
             {
-                const totalData = this._deviceModel.getTotalDataUsage(activeDevice);
-                const totalDataStr = bytesToString(totalData);
+                const totalDataStr = this._deviceModel.getTotalDataUsageText(activeDevice);
                 titleStr = `Σ ${totalDataStr}`;
                 break;
             }
@@ -173,6 +168,7 @@ class AppControllerClass {
         //this._logger.debug("every 1 minutes");
         try {
             this.resetIfRequired();
+            this._deviceModel.saveStats();
         } catch(err) {
             this._logger.error(`ERROR: ${err.toString()} TRACE: ${err.stack}`);
         }
