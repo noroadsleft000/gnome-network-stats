@@ -71,46 +71,54 @@ class DeviceModelClass {
         return this._statsText;
     }
 
+    getStatField(deviceName, field, defaultVal) {
+        const stat =  this._stats[deviceName];
+        if (stat) {
+            return stat[field] || defaultVal;
+        }
+        return defaultVal;
+    }
+
+    getStatTextField(deviceName, field, defaultVal) {
+        const stat =  this._statsText[deviceName];
+        if (stat) {
+            return stat[field] || defaultVal;
+        }
+        return defaultVal;
+    }
+
     /** values in bytes */
     getUploadSpeed(deviceName) {
-        const upSpeed = this._stats[deviceName].upSpeed || 0;
-        return upSpeed;
+        return this.getStatField(deviceName, "upSpeed", 0);
     }
 
     getDownloadSpeed(deviceName) {
-        const downSpeed = this._stats[deviceName].downSpeed || 0;
-        return downSpeed;
+        return this.getStatField(deviceName, "downSpeed", 0);
     }
 
     getTotalSpeed(deviceName) {
-        const speed = this._stats[deviceName].totalSpeed || 0;
-        return speed;
+        return this.getStatField(deviceName, "totalSpeed", 0);
     }
 
     getTotalDataUsage(deviceName) {
-        const totalData = this._stats[deviceName].totalData || "";
-        return totalData;
+        return this.getStatTextField(deviceName, "totalData", "");
     }
 
     /** Human readable string format */
     getUploadSpeedText(deviceName) {
-        const upSpeed = this._statsText[deviceName].upSpeed || "";
-        return upSpeed;
+        return this.getStatTextField(deviceName, "upSpeed", "");
     }
 
     getDownloadSpeedText(deviceName) {
-        const downSpeed = this._statsText[deviceName].downSpeed || "";
-        return downSpeed;
+        return this.getStatTextField(deviceName, "downSpeed", "");
     }
 
     getTotalSpeedText(deviceName) {
-        const totalSpeed = this._statsText[deviceName].totalSpeed || "";
-        return totalSpeed;
+        return this.getStatTextField(deviceName, "totalSpeed", "");
     }
 
     getTotalDataUsageText(deviceName) {
-        const totalData = this._statsText[deviceName].totalData || "";
-        return totalData;
+        return this.getStatTextField(deviceName, "totalData", "");
     }
 
     /** Device methods */
