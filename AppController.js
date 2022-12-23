@@ -143,6 +143,10 @@ class AppControllerClass {
     resetIfRequired() {
         const now = new Date();
         const activeDevice = this._getActiveDeviceName();
+        if (!activeDevice) {
+            this._logger.error(`No active connection: ${activeDevice}! try reset next minute`);
+            return;
+        }
         const lastResetedAt = this._appSettingsModel.getLastResetDateTime(activeDevice);
         const newResetTime = getNextResetTime(lastResetedAt, this._appSettingsModel);
         //this._logger.log(`oldResetTime: ${lastResetedAt}`);
