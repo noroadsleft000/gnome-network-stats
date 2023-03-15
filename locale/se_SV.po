@@ -1,0 +1,124 @@
+# Swedish translations for network-stats package.
+# Copyright (C) 2023 2021 No roads left
+# This file is distributed under the same license as the network-stats package.
+# No roads left noroadsleft000@gmail.com, 2021.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: network-stats 1.0\n"
+"Report-Msgid-Bugs-To: noroadsleft000@gmail.com\n"
+"POT-Creation-Date: 2022-03-07 21:42+0530\n"
+"PO-Revision-Date: 2023-03-15 20:57+0100\n"
+"Last-Translator:  <nurgkrak@gmail.com>\n"
+"Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
+"Language: sv\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ASCII\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Refresh Interval (ms)"
+msgstr "Uppdateringsintervall (ms)"
+
+msgid "What to show in status bar"
+msgstr "Vad som ska visas i statusfältet"
+
+msgid "Total speed"
+msgstr "Total hastighet"
+
+msgid "Upload speed"
+msgstr "Uppladdningshastighet"
+
+msgid "Download speed"
+msgstr "Nedladdningshastighet"
+
+msgid "Upload and download speed"
+msgstr "Uppladdnings- och nedladdningshastighet"
+
+msgid "Total data used"
+msgstr "Total använd data"
+
+msgid "When do you want to reset the stats?"
+msgstr "När vill du återställa statistiken?"
+
+msgid "Daily"
+msgstr "Dagligen"
+
+msgid "Weekly"
+msgstr "Veckovis"
+
+msgid "BiWeekly"
+msgstr "Varannan vecka"
+
+msgid "Monthly"
+msgstr "Månadsvis"
+
+msgid "Never"
+msgstr "Aldrig"
+
+msgid "Reset on day of week"
+msgstr "Återställ på veckodag"
+
+msgid "Monday"
+msgstr "Måndag"
+
+msgid "Tuesday"
+msgstr "Tisdag"
+
+msgid "Wednesday"
+msgstr "Onsdag"
+
+msgid "Thursday"
+msgstr "Torsdag"
+
+msgid "Friday"
+msgstr "Fredag"
+
+msgid "Saturday"
+msgstr "Lördag"
+
+msgid "Sunday"
+msgstr "Söndag"
+
+msgid "Reset on day of month"
+msgstr "Återställ på månadens dag"
+
+msgid "What time should we reset network stats"
+msgstr "Vilken tid ska nätverksstatistiken återställas?"
+
+msgid "Show speeds in bytes instead of bits"
+msgstr "Visa hastigheter i byte istället för bitar"
+
+msgid "Show icon in status bar (requires reload)"
+msgstr "Visa ikon i statusfältet (kräver omladdning)"
+
+msgid "Make Default"
+msgstr "Gör som standard"
+
+msgid "IP"
+msgstr "IP"
+
+msgid "Since last reset"
+msgstr "Sedan senaste återställning"
+
+msgid "Last reset at"
+msgstr "Senaste återställning kl"
+
+msgid "Yes"
+msgstr "Ja"
+
+msgid "No"
+msgstr "Nej"
+
+msgid "Default device"
+msgstr "Standardenhet"
+
+msgid "Device"
+msgstr "Enhet"
+
+msgid "Speed"
+msgstr "Hastighet"
+
+msgid "Data Used"
+msgstr "Använd data"
+
