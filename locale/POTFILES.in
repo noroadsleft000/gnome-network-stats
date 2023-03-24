@@ -1,3 +1,4 @@
+../App.js
 ../AppController.js
 ../AppSettingsModel.js
 ../extension.js
@@ -12,6 +13,7 @@
 ../ui/MainPanel.js
 ../ui/PopupView.js
 ../ui/TableView.js
+../utils/Broadcasters.js
 ../utils/Constants.js
 ../utils/DateTimeUtils.js
 ../utils/EventBroadcaster.js
