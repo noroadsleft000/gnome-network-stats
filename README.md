@@ -28,7 +28,8 @@ The latest development version can be installed manually with these commands:
 git clone https://github.com/noroadsleft000/gnome-network-stats.git
 
 cd gnome-network-stats
-./configure
+
+./scripts/configure
 
 make build
 

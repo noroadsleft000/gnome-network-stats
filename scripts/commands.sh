@@ -17,7 +17,7 @@ help()
 build()
 {
     echo "building..."
-    #msgfmt *.po --output-file=*.mo
+    msgfmt locale/*.po --output-file=*.mo
     glib-compile-schemas schemas
 }
 
