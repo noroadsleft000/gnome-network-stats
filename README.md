@@ -28,10 +28,11 @@ The latest development version can be installed manually with these commands:
 git clone https://github.com/noroadsleft000/gnome-network-stats.git
 
 cd gnome-network-stats
+./configure
 
-./commands.sh build
+make build
 
-./commands.sh install
+make install
 ```
 
 Then go to https://extensions.gnome.org/local/ to turn on the extension or use
@@ -41,31 +42,31 @@ gnome-tweak-tool to enable it.
 ## Commands
 ### build extension
 ```
-./commands.sh build
+make build
 ```
 ### install extension
 ```
-./commands.sh install
+make install
 ```
 ### uninstall extension
 ```
-./commands.sh uninstall
+make uninstall
 ```
 ### enable extension
 ```
-./commands.sh enable
+make enable
 ```
 ### disable extension
 ```
-./commands.sh disable
+make disable
 ```
 ### pack the extension to zip file
 ```
-./commands.sh pack
+make pack
 ```
 ### launch a nested wayland session for debugging the extension
 ```
-./commands.sh debug
+make debug
 ```
 
 ## Known issues
