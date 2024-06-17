@@ -1,9 +1,7 @@
 const Mainloop = imports.mainloop;
-const Me = imports.misc.extensionUtils.getCurrentExtension();
-const { ResetSchedule } = Me.imports.utils.Constants;
-const { DayOfWeek } = Me.imports.utils.Constants;
+import { DayOfWeek, ResetSchedule } from "./Constants.js";
 
-const kOneDayInMilliSeconds = (1000 * 60 * 60 * 24);
+export const kOneDayInMilliSeconds = (1000 * 60 * 60 * 24);
 
 /**
  * Registers a timeout handler to be executed in future.
@@ -11,7 +9,7 @@ const kOneDayInMilliSeconds = (1000 * 60 * 60 * 24);
  * @param {number} milliseconds - after which function should execute.
  * @returns handle to the registered handler
  */
-function setTimeout(func, milliseconds) {
+export function setTimeout(func, milliseconds) {
     return Mainloop.timeout_add(milliseconds, () => {
         func();
         return false;
@@ -22,7 +20,7 @@ function setTimeout(func, milliseconds) {
  * Remove the registered timeout
  * @param {number} handle - handle to timeout 
  */
-function clearTimeout(handle) {
+export function clearTimeout(handle) {
     Mainloop.source_remove(handle);
 }
 
@@ -31,7 +29,7 @@ function clearTimeout(handle) {
  * @param {DayOfWeek} day - Day of the week in english 
  * @returns index of day starting with sunday at zero.
  */
-function getDayNumberForDayOfWeek(day) {
+export function getDayNumberForDayOfWeek(day) {
     switch (day) {
         default:
         case DayOfWeek.SUNDAY:
@@ -59,7 +57,7 @@ function getDayNumberForDayOfWeek(day) {
  * @param {Date} refDate - date WRT which we want to compute next day.
  * @returns Date object for asked upcomming time.
  */
- function getNextTimeOfTheDay(hours, minutes, refDate = new Date()) {
+export function getNextTimeOfTheDay(hours, minutes, refDate = new Date()) {
     if (hours < refDate.getHours()
         || (hours === refDate.getHours() && minutes <= refDate.getMinutes())
     ) {
@@ -78,9 +76,9 @@ function getDayNumberForDayOfWeek(day) {
  * @param {Date} refDate - date WRT which we want to compute next day.
  * @returns Date object for asked day of week.
  */
-function getNextDayOfTheWeek(dayOfWeek, excludeToday = true, refDate = new Date()) {
-    refDate.setDate(refDate.getDate() + !!excludeToday + 
-                    (dayOfWeek + 7 - refDate.getDay() - + !!excludeToday) % 7);
+export function getNextDayOfTheWeek(dayOfWeek, excludeToday = true, refDate = new Date()) {
+    refDate.setDate(refDate.getDate() + !!excludeToday +
+        (dayOfWeek + 7 - refDate.getDay() - + !!excludeToday) % 7);
     return refDate;
 }
 
@@ -92,7 +90,7 @@ function getNextDayOfTheWeek(dayOfWeek, excludeToday = true, refDate = new Date(
  * @param {Date} refDate - date WRT which we want to compute next date.
  * @returns Date object for asked day of month.
  */
-function getNextDayOfTheMonth(dayOfMonth, excludeToday = true, refDate = new Date()) {
+export function getNextDayOfTheMonth(dayOfMonth, excludeToday = true, refDate = new Date()) {
     if (dayOfMonth < refDate.getDate()
         || (dayOfMonth === refDate.getDate() && excludeToday)
     ) {
@@ -111,7 +109,7 @@ function getNextDayOfTheMonth(dayOfMonth, excludeToday = true, refDate = new Dat
  * @param {number} year
  * @returns number of days in the asked month
  */
-function daysInThisMonth(month, year) {
+export function daysInThisMonth(month, year) {
     const now = new Date();
     month = month || now.getMonth();
     year = year || now.getFullYear();
@@ -123,7 +121,7 @@ function daysInThisMonth(month, year) {
  * @param {Date} lastResetDate
  * @returns {Date} object to upcomming reset time.
  */
- function getNextResetTime(lastResetDate, settings) {
+export function getNextResetTime(lastResetDate, settings) {
     let newResetDateTime = new Date();
 
     if (!lastResetDate) {
@@ -139,7 +137,7 @@ function daysInThisMonth(month, year) {
     } = settings;
 
     const lastResetDateCopy = new Date(lastResetDate.valueOf());
-    switch(resetSchedule) {
+    switch (resetSchedule) {
         default:
         case ResetSchedule.DAILY: {
             newResetDateTime = getNextTimeOfTheDay(resetHours, resetMinutes, lastResetDateCopy);

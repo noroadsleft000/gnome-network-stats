@@ -1,42 +1,14 @@
-const { Gio, GObject, Gtk } = imports.gi;
+import Gio from "gi://Gio";
+import GObject from "gi://GObject";
+import Gtk from "gi://Gtk";
+import { ExtensionPreferences } from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
+
+import { DisplayMode, ResetSchedule, DayOfWeek, SettingKeys, kSchemaName } from "./utils/Constants.js";
+import { setTimeout } from "./utils/DateTimeUtils.js";
+import { addChildToBox } from "./utils/GtkUtils.js";
+import { IndexMap } from "./utils/IndexMap.js";
+
 const Lang = imports.lang;
-const Pango = imports.gi.Pango;
-const Gettext = imports.gettext;
-const _ = Gettext.domain("network-stats").gettext;
-
-
-const Me = imports.misc.extensionUtils.getCurrentExtension();
-const { DisplayMode } = Me.imports.utils.Constants;
-const { ResetSchedule } = Me.imports.utils.Constants;
-const { DayOfWeek } = Me.imports.utils.Constants;
-const { SettingKeys } = Me.imports.utils.Constants;
-const { kSchemaName } = Me.imports.utils.Constants;
-const { setTimeout } = Me.imports.utils.DateTimeUtils;
-const { isGtk3, addChildToBox } = Me.imports.utils.GtkUtils;
-const { Logger } = Me.imports.utils.Logger;
-const { appSettingsModel } = Me.imports.AppSettingsModel;
-
-
-class IndexMap {
-    constructor(obj) {
-        this._reverseMap = {};
-        for (const key in obj) {
-            if (obj.hasOwnProperty(key)) {
-                this._reverseMap[obj[key]] = key;
-            }
-        }
-        this._forwardMap = obj;
-    }
-
-    getIndex(value) {
-        const index = this._reverseMap[value];
-        return index || -1;
-    }
-
-    getValue(index) {
-        return this._forwardMap[index];
-    }
-}
 
 const kDisplayModeMapping = new IndexMap({
     0: DisplayMode.TOTAL_SPEED,
@@ -76,8 +48,12 @@ const SettingRowOrder = Object.freeze({
     SHOW_ICON: 7
 });
 
-class PrefsApp {
-    constructor() {
+let _;
+
+export default class GnsPreferences extends ExtensionPreferences {
+
+    constructor(props) {
+        super(props);
         this._rows = {};
         this.main = new Gtk.Grid({
             margin_top: 10,
@@ -89,6 +65,7 @@ class PrefsApp {
             column_homogeneous: false,
             row_homogeneous: false
         });
+        _ = this.gettext.bind(this);
 
         this._createRefreshIntervalControl();
         this._createDisplayModeControl();
@@ -108,7 +85,7 @@ class PrefsApp {
         let inputWidget = input;
 
         if (input instanceof Gtk.Switch) {
-            inputWidget = new Gtk.Box({orientation: Gtk.Orientation.HORIZONTAL});
+            inputWidget = new Gtk.Box({ orientation: Gtk.Orientation.HORIZONTAL });
             addChildToBox(inputWidget, input);
         }
 
@@ -119,7 +96,7 @@ class PrefsApp {
         else {
             this.main.attach(inputWidget, 0, row, 2, 1);
         }
-        this._rows[row] = {label, input: inputWidget};
+        this._rows[row] = { label, input: inputWidget };
     }
 
     _hideRow(row) {
@@ -159,17 +136,17 @@ class PrefsApp {
             })
         });
         this._addRow(intervalLabel, this._intervalInput, SettingRowOrder.REFRESH_INTERVAL);
-        this.schema.bind(SettingKeys.REFRESH_INTERVAL, this._intervalInput, 'value', Gio.SettingsBindFlags.DEFAULT);
+        this.settings.bind(SettingKeys.REFRESH_INTERVAL, this._intervalInput, 'value', Gio.SettingsBindFlags.DEFAULT);
     }
 
     // 2. Display mode select drop down.
     _createDisplayModeControl() {
-        const displayModeLabel  = new Gtk.Label({
+        const displayModeLabel = new Gtk.Label({
             label: _("What to show in status bar"),
             hexpand: true,
             halign: Gtk.Align.END
         });
-        const displayMode = this.schema.get_string(SettingKeys.DISPLAY_MODE);
+        const displayMode = this.settings.get_string(SettingKeys.DISPLAY_MODE);
         const displayModeIndex = kDisplayModeMapping.getIndex(displayMode);
 
         const options = [
@@ -193,12 +170,12 @@ class PrefsApp {
 
     // 3. Reset schedule drop down.
     _createResetScheduleControl() {
-        const resetScheduleLabel  = new Gtk.Label({
+        const resetScheduleLabel = new Gtk.Label({
             label: _("When do you want to reset the stats ?"),
             hexpand: true,
             halign: Gtk.Align.END
         });
-        const resetSchedule = this.schema.get_string(SettingKeys.RESET_SCHEDULE);
+        const resetSchedule = this.settings.get_string(SettingKeys.RESET_SCHEDULE);
         const resetScheduleIndex = kResetScheduleMapping.getIndex(resetSchedule);
 
         const options = [
@@ -222,12 +199,12 @@ class PrefsApp {
 
     // 4. Reset on day of week, in case week is selected.
     _createResetDayOfWeekControl() {
-        const resetOnDayOfWeekLabel  = new Gtk.Label({
+        const resetOnDayOfWeekLabel = new Gtk.Label({
             label: _("Reset on day of week"),
             hexpand: true,
             halign: Gtk.Align.END
         });
-        const resetDayOfWeek = this.schema.get_string(SettingKeys.RESET_WEEK_DAY);
+        const resetDayOfWeek = this.settings.get_string(SettingKeys.RESET_WEEK_DAY);
         const resetDayOfWeekIndex = kDayOfWeekMapping.getIndex(resetDayOfWeek);
 
         const options = [
@@ -267,12 +244,12 @@ class PrefsApp {
             })
         });
         this._addRow(resetOnDayOfMonthLabel, this._resetOnDayOfMonthInput, SettingRowOrder.RESET_MONTH_DAY);
-        this.schema.bind(SettingKeys.RESET_MONTH_DAY, this._resetOnDayOfMonthInput, 'value', Gio.SettingsBindFlags.DEFAULT);
+        this.settings.bind(SettingKeys.RESET_MONTH_DAY, this._resetOnDayOfMonthInput, 'value', Gio.SettingsBindFlags.DEFAULT);
     }
 
     // 6. Reset time Spin button control.
     _createResetTimeControl() {
-        const resetTimeLabel  = new Gtk.Label({
+        const resetTimeLabel = new Gtk.Label({
             label: _("What time should we reset network stats"),
             hexpand: true,
             halign: Gtk.Align.END
@@ -304,14 +281,14 @@ class PrefsApp {
             orientation: Gtk.Orientation.VERTICAL
         });
 
-        const resetTimeWidget = new Gtk.Box({orientation: Gtk.Orientation.HORIZONTAL});
+        const resetTimeWidget = new Gtk.Box({ orientation: Gtk.Orientation.HORIZONTAL });
         addChildToBox(resetTimeWidget, this._resetHoursInput);
         addChildToBox(resetTimeWidget, timeSeparatorLabel);
         addChildToBox(resetTimeWidget, this._resetMinutesInput);
 
         this._addRow(resetTimeLabel, resetTimeWidget, SettingRowOrder.RESET_TIME);
-        this.schema.bind(SettingKeys.RESET_HOURS, this._resetHoursInput, 'value', Gio.SettingsBindFlags.DEFAULT);
-        this.schema.bind(SettingKeys.RESET_MINUTES, this._resetMinutesInput, 'value', Gio.SettingsBindFlags.DEFAULT);
+        this.settings.bind(SettingKeys.RESET_HOURS, this._resetHoursInput, 'value', Gio.SettingsBindFlags.DEFAULT);
+        this.settings.bind(SettingKeys.RESET_MINUTES, this._resetMinutesInput, 'value', Gio.SettingsBindFlags.DEFAULT);
     }
 
     // 7. Show numbers in bytes instead of bits
@@ -327,7 +304,7 @@ class PrefsApp {
             visible: true
         });
         this._addRow(unitLabel, this._unitSwitch, SettingRowOrder.DISPLAY_BYTES);
-        this.schema.bind(SettingKeys.DISPLAY_BYTES, this._unitSwitch, 'state', Gio.SettingsBindFlags.DEFAULT);
+        this.settings.bind(SettingKeys.DISPLAY_BYTES, this._unitSwitch, 'state', Gio.SettingsBindFlags.DEFAULT);
     }
 
     // 8. Show icon in status bar
@@ -343,13 +320,13 @@ class PrefsApp {
             visible: true
         });
         this._addRow(iconLabel, this._iconSwitch, SettingRowOrder.SHOW_ICON);
-        this.schema.bind(SettingKeys.SHOW_ICON, this._iconSwitch, 'state', Gio.SettingsBindFlags.DEFAULT);
+        this.settings.bind(SettingKeys.SHOW_ICON, this._iconSwitch, 'state', Gio.SettingsBindFlags.DEFAULT);
     }
 
     _createOptionsList(options) {
         const liststore = new Gtk.ListStore();
         liststore.set_column_types([GObject.TYPE_STRING])
-        for (let i = 0; i < options.length; i++ ) {
+        for (let i = 0; i < options.length; i++) {
             const option = options[i];
             const iter = liststore.append();
             liststore.set(iter, [0], [option.name]);
@@ -360,26 +337,26 @@ class PrefsApp {
     _onDisplayModeInputChanged(view) {
         const index = view.get_active();
         const mode = kDisplayModeMapping.getValue(index);
-        this.schema.set_string(SettingKeys.DISPLAY_MODE, mode);
+        this.settings.set_string(SettingKeys.DISPLAY_MODE, mode);
     }
 
     _onResetScheduleInputChanged(view) {
         const index = view.get_active();
         const mode = kResetScheduleMapping.getValue(index);
-        this.schema.set_string(SettingKeys.RESET_SCHEDULE, mode);
+        this.settings.set_string(SettingKeys.RESET_SCHEDULE, mode);
         this.updateControls();
     }
 
     _onResetDayOfWeekInputChanged(view) {
         const index = view.get_active();
         const mode = kDayOfWeekMapping.getValue(index);
-        this.schema.set_string(SettingKeys.RESET_WEEK_DAY, mode);
+        this.settings.set_string(SettingKeys.RESET_WEEK_DAY, mode);
     }
 
     updateControls() {
-        const resetSchedule = this.schema.get_string(SettingKeys.RESET_SCHEDULE);
+        const resetSchedule = this.settings.get_string(SettingKeys.RESET_SCHEDULE);
         //Logger.log(`resetSchedule: ${resetSchedule}`);
-        switch(resetSchedule) {
+        switch (resetSchedule) {
             default:
             case ResetSchedule.DAILY:
                 this._hideRow(SettingRowOrder.RESET_WEEK_DAY);
@@ -405,33 +382,14 @@ class PrefsApp {
         }
     }
 
-    get schema() {
+    get settings() {
         if (!this._schema) {
-            const schemaDir = Me.dir.get_child('schemas').get_path();
-            const schemaSource = Gio.SettingsSchemaSource.new_from_directory(schemaDir, Gio.SettingsSchemaSource.get_default(), false);
-            const schema = schemaSource.lookup(kSchemaName, false);
-            this._schema = new Gio.Settings({ settings_schema: schema });
+            this._schema = this.getSettings(kSchemaName);
         }
         return this._schema;
     }
-}
 
-
-/** Initialize language/locale  */
-function init() {
-    Logger.debug("init");
-    const localeDir = Me.dir.get_child("locale");
-    if (localeDir.query_exists(null)) {
-        Gettext.bindtextdomain("network-stats", localeDir.get_path());
+    getPreferencesWidget() {
+        return this.main;
     }
 }
-
-/** Build settings view */
-function buildPrefsWidget() {
-    Logger.debug("buildPrefsWidget");
-    const widget = new PrefsApp();
-    if (isGtk3()) {
-        widget.main.show_all();
-    }
-    return widget.main;
-};

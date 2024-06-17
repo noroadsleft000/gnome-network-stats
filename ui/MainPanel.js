@@ -1,12 +1,12 @@
-const Main = imports.ui.main;
+import * as Main from "resource:///org/gnome/shell/ui/main.js";
 
 /*
 * MainPanel class manager class for adding removing things from panel.
 */
 
-class MainPanelClass {
+export class MainPanel {
 
-    addChild(child){
+    addChild(child) {
         Main.panel._rightBox.insert_child_at_index(child, 0);
     }
 
@@ -22,5 +22,3 @@ class MainPanelClass {
         view.destroy();
     }
 }
-
-var MainPanel = MainPanelClass;

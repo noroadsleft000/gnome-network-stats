@@ -1,20 +1,14 @@
-const { GLib } = imports.gi;
-const ExtensionUtils = imports.misc.extensionUtils;
-const Me = ExtensionUtils.getCurrentExtension();
+import GLib from "gi://GLib";
 
-const { NetworkMonitor } = Me.imports.net.NetworkMonitor;
-const { DeviceMonitor } = Me.imports.net.DeviceMonitor;
-const { bytesSpeedToString } = Me.imports.utils.GenUtils;
-const { bytesToString } = Me.imports.utils.GenUtils;
-const { getDeviceResetMessageBroadcaster } = Me.imports.utils.Broadcasters;
-
+import { bytesSpeedToString, bytesToString } from "../utils/GenUtils.js";
+import { getDeviceResetMessageBroadcaster } from "../utils/Broadcasters.js";
 
 /*
 * Device model class responsible collecting network stats for all the network interfaces and stores them.
 * Device model is used by AppController and UI for fetching the stats details.
 */
 
-class DeviceModelClass {
+export class DeviceModel {
 
     constructor(logger, deviceMonitor, networkMonitor, appSettingsModel) {
         this._stats = {};
@@ -37,7 +31,7 @@ class DeviceModelClass {
 
     init() {
         const now = new Date();
-        const {devicesInfoMap} = this._appSettingsModel;
+        const { devicesInfoMap } = this._appSettingsModel;
         const stats = {};
         for (const [name, deviceInfo] of Object.entries(devicesInfoMap)) {
             const {
@@ -72,7 +66,7 @@ class DeviceModelClass {
     }
 
     getStatField(deviceName, field, defaultVal) {
-        const stat =  this._stats[deviceName];
+        const stat = this._stats[deviceName];
         if (stat) {
             return stat[field] || defaultVal;
         }
@@ -80,7 +74,7 @@ class DeviceModelClass {
     }
 
     getStatTextField(deviceName, field, defaultVal) {
-        const stat =  this._statsText[deviceName];
+        const stat = this._statsText[deviceName];
         if (stat) {
             return stat[field] || defaultVal;
         }
@@ -259,7 +253,7 @@ class DeviceModelClass {
         this._appSettingsModel.replaceDeviceInfo(name, deviceLogs);
     }
 
-    resetDeviceStats({name}) {
+    resetDeviceStats({ name }) {
         const now = new Date();
         this._logger.info(`Resetting the device ${name} at ${now.toString()}`);
         if (this._stats[name]) {
@@ -302,5 +296,3 @@ class DeviceModelClass {
         this._appSettingsModel.devicesInfoMap = infoMap;
     }
 }
-
-var DeviceModel = DeviceModelClass;

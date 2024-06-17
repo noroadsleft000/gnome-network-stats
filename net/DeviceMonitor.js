@@ -1,11 +1,10 @@
-const { GLib, GObject } = imports.gi;
+import GLib from "gi://GLib";
+import GObject from "gi://GObject";
+
 const ByteArray = imports.byteArray;
 const NetworkManager = imports.gi.NM;
 
-const ExtensionUtils = imports.misc.extensionUtils;
-const Me = ExtensionUtils.getCurrentExtension();
-const { DeviceType } = Me.imports.utils.Constants;
-
+import { DeviceType } from "../utils/Constants.js";
 
 
 /*
@@ -13,7 +12,7 @@ const { DeviceType } = Me.imports.utils.Constants;
 * It handles addtion and removal of devices at run time.
 */
 
-class DeviceMonitorClass {
+export class DeviceMonitor {
 
     constructor(logger) {
         this._logger = logger;
@@ -52,7 +51,7 @@ class DeviceMonitorClass {
                 case NetworkManager.DeviceType.WIFI:
                     return DeviceType.WIFI;
                 case NetworkManager.DeviceType.BT:
-                    return DeviceType.BLETOOTH;
+                    return DeviceType.BLUETOOTH;
                 case NetworkManager.DeviceType.OLPC_MESH:
                     return DeviceType.OLPCMESH;
                 case NetworkManager.DeviceType.WIMAX:
@@ -74,7 +73,7 @@ class DeviceMonitorClass {
         this._netMgrSignals.push(this._client.connect('connection-removed', this._connectionChanged.bind(this)));
         this._netMgrSignals.push(this._client.connect('active-connection-added', this._connectionChanged.bind(this)));
         this._netMgrSignals.push(this._client.connect('active-connection-removed', this._connectionChanged.bind(this)));
-        
+
         this._netMgrStateChangeSignals = [];
 
         this._loadDevices();
@@ -90,7 +89,7 @@ class DeviceMonitorClass {
     _loadDevices() {
         // disconnect "state-changed" signals of previously stored devices.
         this._disconnectDeviceStateChangeSignals();
-        
+
         const fileContent = GLib.file_get_contents('/proc/net/dev');
         const lines = ByteArray.toString(fileContent[1]).split("\n");
 
@@ -128,7 +127,7 @@ class DeviceMonitorClass {
         let fileContent = GLib.file_get_contents('/proc/net/route');
         let lines = ByteArray.toString(fileContent[1]).split("\n");
 
-         //first 2 lines are for header
+        //first 2 lines are for header
         for (const line of lines) {
             let lineText = line.replace(/^ */g, "");
             let params = lineText.split("\t");
@@ -199,6 +198,3 @@ class DeviceMonitorClass {
         return addresses;
     }
 }
-
-
-var DeviceMonitor = DeviceMonitorClass;

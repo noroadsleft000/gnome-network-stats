@@ -1,17 +1,14 @@
-const St = imports.gi.St;
-const Clutter = imports.gi.Clutter;
+import Clutter from "gi://Clutter";
+import St from "gi://St";
 
-const ExtensionUtils = imports.misc.extensionUtils;
-const Me = ExtensionUtils.getCurrentExtension();
-const { MainPanel } = Me.imports.ui.MainPanel;
-const { PopupView } = Me.imports.ui.PopupView;
-
+import { MainPanel } from "./MainPanel.js";
+import { PopupView } from "./PopupView.js";
 
 /*
 * AppView class is manager class for managing UI show/hide/enable/disable.
 */
 
-class AppViewClass {
+export class AppView {
 
     constructor(logger, appSettingsModel) {
         this._logger = logger;
@@ -35,7 +32,7 @@ class AppViewClass {
             y_align: Clutter.ActorAlign.CENTER,
             style_class: 'main-label'
         });
-    
+
         button.set_child(label);
         button.connect('button-press-event', this.showDropDown);
         this._label = label;
@@ -68,7 +65,7 @@ class AppViewClass {
         if (!this._popupView) {
             this._popupView = new PopupView(this._logger, this._appSettingsModel);
         }
-	    this._mainPanel.addToStatusArea(this._popupView);
+        this._mainPanel.addToStatusArea(this._popupView);
     }
 
     hide() {
@@ -78,5 +75,3 @@ class AppViewClass {
         }
     }
 }
-
-var AppView = AppViewClass;

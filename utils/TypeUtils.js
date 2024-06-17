@@ -1,7 +1,7 @@
 /**
  * Utility class to find out type of a value/object in Javascript
  */
-class TypeUtilsClass {
+export class TypeUtils {
 
     static isBoolean(value) {
         return typeof value === "boolean";
@@ -26,7 +26,7 @@ class TypeUtilsClass {
     static isSymbol(value) {
         return typeof value === "symbol";
     }
-    
+
     static isFunction(value) {
         return typeof value === "function";
     }
@@ -63,7 +63,7 @@ class TypeUtilsClass {
     static isTypeOf(value, typeName) {
         return this.typeOf(value) === typeName;
     }
-    
+
     static isArray(value) {
         return this.isTypeOf(value, "Array");
     }
@@ -72,5 +72,3 @@ class TypeUtilsClass {
         return this.isTypeOf(value, "Object");
     }
 };
-
-var TypeUtils = TypeUtilsClass;

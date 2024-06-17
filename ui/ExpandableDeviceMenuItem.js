@@ -1,22 +1,22 @@
-const { PopupSubMenuMenuItem } = imports.ui.popupMenu;
-const { Atk, Clutter, Gio, GObject, Graphene, Shell, St } = imports.gi;
+import Clutter from "gi://Clutter";
+import Gio from "gi://Gio";
+import St from "gi://St";
 
-const Me = imports.misc.extensionUtils.getCurrentExtension();
-const { getIconPath } = Me.imports.utils.GenUtils;
-const { logger } = Me.imports.utils.Logger;
-const Gettext = imports.gettext;
-const _ = Gettext.domain("network-stats").gettext;
+import { PopupSubMenuMenuItem } from 'resource:///org/gnome/shell/ui/popupMenu.js';
+import { gettext as _ } from 'resource:///org/gnome/shell/extensions/extension.js';
 
+import { getIconPath } from "../utils/GenUtils.js";
+import { registerGObjectClass } from "../utils/gjs.js";
 
 /*
 * ExpandableDeviceMenuItemClass class represents each interface item in dropdown UI.
 */
 
-class ExpandableDeviceMenuItemClass extends PopupSubMenuMenuItem {
+export class ExpandableDeviceMenuItem extends PopupSubMenuMenuItem {
     _init(device,
         {
             defaultDeviceName,
-            onResetClicked, 
+            onResetClicked,
             onMarkDefaultClicked,
         }
     ) {
@@ -228,7 +228,7 @@ class ExpandableDeviceMenuItemClass extends PopupSubMenuMenuItem {
         // details
         this._ipTitleLabel.set_text(`${_("IP")} [♁] : `);
         this._ipValueLabel.set_text(ip);
-        
+
         this._uploadSpeedTitleLabel.set_text(`${_("Upload speed")} [↑] : `);
         this._uploadSpeedValueLabel.set_text(upSpeed);
 
@@ -258,4 +258,4 @@ class ExpandableDeviceMenuItemClass extends PopupSubMenuMenuItem {
     }
 }
 
-var ExpandableDeviceMenuItem = GObject.registerClass(ExpandableDeviceMenuItemClass);
+registerGObjectClass(ExpandableDeviceMenuItem);

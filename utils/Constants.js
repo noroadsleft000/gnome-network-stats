@@ -1,16 +1,19 @@
-var kSchemaName = "org.gnome.shell.extensions.network-stats";
+export const kExtensionId = "network-stats@gnome.noroadsleft.xyz";
+export const kSchemaName = "org.gnome.shell.extensions.network-stats";
+export const kGtextDomain = "network-stats";
+export const kRefreshInterval = 2 * 1000; // milliseconds
 
-var DeviceType = Object.freeze({
+export const DeviceType = Object.freeze({
     ETHERNET: "ethernet",
     WIFI: "wifi",
-    BLETOOTH: "bt",
-    OLPCMESH : "olpcmesh",
+    BLUETOOTH: "bt",
+    OLPCMESH: "olpcmesh",
     WIMAX: "wimax",
     MODEM: "modem",
     NONE: "none"
 });
 
-var DisplayMode = Object.freeze({
+export const DisplayMode = Object.freeze({
     TOTAL_SPEED: "total_speed",
     UPLOAD_SPEED: "upload_speed",
     DOWNLOAD_SPEED: "download_speed",
@@ -19,7 +22,7 @@ var DisplayMode = Object.freeze({
     DEFAULT: "total_speed"
 });
 
-var ResetSchedule = Object.freeze({
+export const ResetSchedule = Object.freeze({
     DAILY: "daily",
     WEEKLY: "weekly",
     BIWEEKLY: "biweekly",
@@ -27,7 +30,7 @@ var ResetSchedule = Object.freeze({
     NEVER: "never"
 });
 
-var DayOfWeek = Object.freeze({
+export const DayOfWeek = Object.freeze({
     MONDAY: "monday",
     TUESDAY: "tuesday",
     WEDNESDAY: "wednesday",
@@ -38,7 +41,7 @@ var DayOfWeek = Object.freeze({
 });
 
 /* Sync these constants properly with schema file */
-var SettingKeys = Object.freeze({
+export const SettingKeys = Object.freeze({
     REFRESH_INTERVAL: "refresh-interval",
     DISPLAY_MODE: "display-mode",
     RESET_SCHEDULE: "reset-schedule",

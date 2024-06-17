@@ -1,7 +1,8 @@
-const { Gio, GLib } = imports.gi;
+import GLib from "gi://GLib";
+
 const ByteArray = imports.byteArray;
 
-class NetworkMonitorClass {
+export class NetworkMonitor {
 
     constructor(logger) {
         this._logger = logger;
@@ -37,5 +38,3 @@ class NetworkMonitorClass {
         };
     }
 }
-
-var NetworkMonitor = NetworkMonitorClass;

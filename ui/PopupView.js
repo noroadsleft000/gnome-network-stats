@@ -1,37 +1,27 @@
-const { Atk, Clutter, St } = imports.gi;
-const { GObject, Gio } = imports.gi;
+import Clutter from "gi://Clutter";
+import Gio from "gi://Gio";
+import St from "gi://St";
+import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
+import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
+import { gettext as _ } from 'resource:///org/gnome/shell/extensions/extension.js';
 
-const Lang = imports.lang;
-const PanelMenu = imports.ui.panelMenu;
-const PopupMenu = imports.ui.popupMenu;
-const { CheckBox } = imports.ui.checkBox;
+import { ExpandableDeviceMenuItem } from "./ExpandableDeviceMenuItem.js";
+import { DeviceMenuTitleItem } from "./DeviceMenuTitleItem.js";
 
-const ExtensionUtils = imports.misc.extensionUtils;
-const Me = ExtensionUtils.getCurrentExtension();
-
-const { getDeviceIcon, getIconPath } = Me.imports.utils.GenUtils;
-const { ExpandableMenuItem } = Me.imports.ui.ExpandableMenuItem;
-const { ExpandableDeviceMenuItem } = Me.imports.ui.ExpandableDeviceMenuItem;
-const { DeviceMenuTitleItem } = Me.imports.ui.DeviceMenuTitleItem;
-const { DeviceType } = Me.imports.utils.Constants;
-const { DisplayMode } = Me.imports.utils.Constants;
-const { getDeviceResetMessageBroadcaster } = Me.imports.utils.Broadcasters;
-const { getTitleClickedMessageBroadcaster } = Me.imports.utils.Broadcasters;
-
-const Gettext = imports.gettext;
-const _ = Gettext.domain("network-stats").gettext;
-
+import { getDeviceResetMessageBroadcaster, getTitleClickedMessageBroadcaster } from "../utils/Broadcasters.js";
+import { DisplayMode } from "../utils/Constants.js";
+import { registerGObjectClass } from "../utils/gjs.js";
+import { getDeviceIcon, getIconPath } from "../utils/GenUtils.js";
+import { ExtensionUtils } from "../utils/ExtensionUtils.js";
 
 /*
 * PopupViewClass class represents the UI for dropdown menu.
 */
 
-class PopupViewClass extends PanelMenu.Button {
+export class PopupView extends PanelMenu.Button {
 
-    // Constructor
-    /** @override */
-    _init(logger, appSettingsModel) {
-        super._init(0);
+    constructor(logger, appSettingsModel) {
+        super(0);
         this._logger = logger;
         this._appSettingsModel = appSettingsModel;
         this._menuItems = {};
@@ -51,11 +41,11 @@ class PopupViewClass extends PanelMenu.Button {
         this._mainIcon = mainIcon;
 
         const topBox = new St.BoxLayout();
-        topBox.add_actor(this._mainLabel);
+        topBox.add_child(this._mainLabel);
         if (this._appSettingsModel.showIcon === true) {
-            topBox.add_actor(this._mainIcon);
+            topBox.add_child(this._mainIcon);
         }
-        this.add_actor(topBox);
+        this.add_child(topBox);
 
         const upIcon = new St.Icon({
             gicon: Gio.icon_new_for_string(getIconPath("arrow_up_black_24dp.svg")),
@@ -157,9 +147,7 @@ class PopupViewClass extends PanelMenu.Button {
         });
 
         this._settings.connect('button-press-event', () => {
-            if (typeof ExtensionUtils.openPrefs === 'function') {
-                ExtensionUtils.openPrefs();
-            }
+            ExtensionUtils.openPreferences();
         });
 
         box.add_child(this._totalSpeed);
@@ -316,8 +304,7 @@ class PopupViewClass extends PanelMenu.Button {
     /** @override */
     vfunc_event(event) {
         if (event.type() == Clutter.EventType.TOUCH_BEGIN ||
-            event.type() == Clutter.EventType.BUTTON_PRESS)
-        {
+            event.type() == Clutter.EventType.BUTTON_PRESS) {
             if (event.get_button() == 3) {
                 // right click - just ignore it
                 return;
@@ -342,4 +329,4 @@ class PopupViewClass extends PanelMenu.Button {
     }
 }
 
-var PopupView = GObject.registerClass(PopupViewClass);
+registerGObjectClass(PopupView);

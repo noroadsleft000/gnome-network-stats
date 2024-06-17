@@ -1,11 +1,9 @@
-const ExtensionUtils = imports.misc.extensionUtils;
-const Me = ExtensionUtils.getCurrentExtension();
-const { EventBroadcaster } = Me.imports.utils.EventBroadcaster;
+import { EventBroadcaster } from "./EventBroadcaster.js";
 
-var deviceResetMessageBroadcaster;
-var titleClickedMessageBroadcaster;
+let deviceResetMessageBroadcaster;
+let titleClickedMessageBroadcaster;
 
-function initBrodcasters() {
+export function initBrodcasters() {
     if (!deviceResetMessageBroadcaster) {
         deviceResetMessageBroadcaster = new EventBroadcaster();
     }
@@ -14,7 +12,7 @@ function initBrodcasters() {
     }
 }
 
-function deinitBrodcasters() {
+export function deinitBrodcasters() {
     if (deviceResetMessageBroadcaster) {
         deviceResetMessageBroadcaster = undefined;
     }
@@ -23,10 +21,10 @@ function deinitBrodcasters() {
     }
 }
 
-function getDeviceResetMessageBroadcaster() {
+export function getDeviceResetMessageBroadcaster() {
     return deviceResetMessageBroadcaster;
 }
 
-function getTitleClickedMessageBroadcaster() {
+export function getTitleClickedMessageBroadcaster() {
     return titleClickedMessageBroadcaster;
 }

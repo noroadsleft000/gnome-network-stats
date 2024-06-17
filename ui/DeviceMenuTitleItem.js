@@ -1,20 +1,14 @@
-const { Clutter, St } = imports.gi;
-const { GObject, Gio } = imports.gi;
-const Lang = imports.lang;
-const PanelMenu = imports.ui.panelMenu;
-const PopupMenu = imports.ui.popupMenu;
+import Clutter from "gi://Clutter";
+import St from "gi://St";
 
-const ExtensionUtils = imports.misc.extensionUtils;
-const Me = ExtensionUtils.getCurrentExtension();
-
-const { logger } = Me.imports.utils.Logger;
-
+import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
+import { registerGObjectClass } from "../utils/gjs.js";
 
 /*
-* DeviceMenuTitleItemClass class is ui popup item for displaying table titles.
+* DeviceMenuTitleItem class is ui popup item for displaying table titles.
 */
 
-class DeviceMenuTitleItemClass extends PopupMenu.PopupBaseMenuItem {
+export class DeviceMenuTitleItem extends PopupMenu.PopupBaseMenuItem {
 
     _init(icon, name, speed, totalData) {
         super._init();
@@ -37,13 +31,13 @@ class DeviceMenuTitleItemClass extends PopupMenu.PopupBaseMenuItem {
         });
 
         if (this._icon != null) {
-            this.add(this._icon);
+            this.add_child(this._icon);
         } else {
-            this.add(new St.Label({ style_class: "icon-24" }));
+            this.add_child(new St.Label({ style_class: "icon-24" }));
         }
-        this.add(this._nameLabel);
-        this.add(this._speedLabel);
-        this.add(this._totalDataLabel);
+        this.add_child(this._nameLabel);
+        this.add_child(this._speedLabel);
+        this.add_child(this._totalDataLabel);
     }
 
     update(icon, name, speed, totalData) {
@@ -53,4 +47,4 @@ class DeviceMenuTitleItemClass extends PopupMenu.PopupBaseMenuItem {
     }
 }
 
-var DeviceMenuTitleItem = GObject.registerClass(DeviceMenuTitleItemClass);
+registerGObjectClass(DeviceMenuTitleItem);

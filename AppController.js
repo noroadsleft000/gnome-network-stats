@@ -1,16 +1,9 @@
 const Mainloop = imports.mainloop;
 
-const ExtensionUtils = imports.misc.extensionUtils;
-const Me = ExtensionUtils.getCurrentExtension();
-
-const { AppView } = Me.imports.ui.AppView;
-const { DeviceModel } = Me.imports.net.DeviceModel;
-
-const { DisplayMode } = Me.imports.utils.Constants;
-const { bytesSpeedToString } = Me.imports.utils.GenUtils;
-const { bytesToString } = Me.imports.utils.GenUtils;
-const { getNextResetTime } = Me.imports.utils.DateTimeUtils;
-const { getTitleClickedMessageBroadcaster } = Me.imports.utils.Broadcasters;
+import { AppView } from "./ui/AppView.js";
+import { DisplayMode } from "./utils/Constants.js";
+import { getNextResetTime } from "./utils/DateTimeUtils.js";
+import { getTitleClickedMessageBroadcaster } from "./utils/Broadcasters.js";
 
 const kOneMinuteInMilliSeconds = 60 * 1000;
 
@@ -19,7 +12,7 @@ const kOneMinuteInMilliSeconds = 60 * 1000;
 * refreshing view and pushing model updates to UI.
 */
 
-class AppControllerClass {
+export class AppController {
 
     constructor(logger, appSettingsModel, deviceModel) {
         this._logger = logger;
@@ -93,38 +86,38 @@ class AppControllerClass {
         const activeDevice = this._getActiveDeviceName();
         //this._logger.debug(`activeDevice: ${activeDevice}`);
         let titleStr = "----";
-        switch(displayMode) {
+        switch (displayMode) {
             case DisplayMode.TOTAL_SPEED:
-            {
-                const totalSpeedStr = this._deviceModel.getTotalSpeedText(activeDevice);
-                titleStr = `↕ ${totalSpeedStr}`;
-                break;
-            }
+                {
+                    const totalSpeedStr = this._deviceModel.getTotalSpeedText(activeDevice);
+                    titleStr = `↕ ${totalSpeedStr}`;
+                    break;
+                }
             case DisplayMode.DOWNLOAD_SPEED:
-            {
-                const downloadStr = this._deviceModel.getDownloadSpeedText(activeDevice);
-                titleStr = `↓ ${downloadStr}`;
-                break;
-            }
+                {
+                    const downloadStr = this._deviceModel.getDownloadSpeedText(activeDevice);
+                    titleStr = `↓ ${downloadStr}`;
+                    break;
+                }
             case DisplayMode.UPLOAD_SPEED:
-            {
-                const uploadStr = this._deviceModel.getUploadSpeedText(activeDevice);
-                titleStr = `↑ ${uploadStr}`;
-                break;
-            }
+                {
+                    const uploadStr = this._deviceModel.getUploadSpeedText(activeDevice);
+                    titleStr = `↑ ${uploadStr}`;
+                    break;
+                }
             case DisplayMode.BOTH_SPEED:
-            {
-                const downloadStr = this._deviceModel.getDownloadSpeedText(activeDevice);
-                const uploadStr = this._deviceModel.getUploadSpeedText(activeDevice);
-                titleStr = `↓ ${downloadStr} ↑ ${uploadStr}`;
-                break;
-            }
+                {
+                    const downloadStr = this._deviceModel.getDownloadSpeedText(activeDevice);
+                    const uploadStr = this._deviceModel.getUploadSpeedText(activeDevice);
+                    titleStr = `↓ ${downloadStr} ↑ ${uploadStr}`;
+                    break;
+                }
             case DisplayMode.TOTAL_DATA:
-            {
-                const totalDataStr = this._deviceModel.getTotalDataUsageText(activeDevice);
-                titleStr = `Σ ${totalDataStr}`;
-                break;
-            }
+                {
+                    const totalDataStr = this._deviceModel.getTotalDataUsageText(activeDevice);
+                    titleStr = `Σ ${totalDataStr}`;
+                    break;
+                }
         }
         this._appView.setTitleText(titleStr);
         this._appView.update(this._deviceModel);
@@ -162,7 +155,7 @@ class AppControllerClass {
         //this._logger.debug("tick");
         try {
             this.update();
-        } catch(err) {
+        } catch (err) {
             this._logger.error(`ERROR: ${err.toString()} TRACE: ${err.stack}`);
         }
         return true;
@@ -173,7 +166,7 @@ class AppControllerClass {
         try {
             this.resetIfRequired();
             this._deviceModel.saveStats();
-        } catch(err) {
+        } catch (err) {
             this._logger.error(`ERROR: ${err.toString()} TRACE: ${err.stack}`);
         }
         return true;
@@ -184,37 +177,37 @@ class AppControllerClass {
         this.installTimers();
     }
 
-    onRightClick({button}) {
+    onRightClick({ button }) {
         if (button === "right") {
             // cycle through the modes
             let { displayMode } = this._appSettingsModel;
-            switch(displayMode) {
+            switch (displayMode) {
                 default:
                 case DisplayMode.TOTAL_SPEED:
-                {
-                    displayMode = DisplayMode.DOWNLOAD_SPEED;
-                    break;
-                }
+                    {
+                        displayMode = DisplayMode.DOWNLOAD_SPEED;
+                        break;
+                    }
                 case DisplayMode.DOWNLOAD_SPEED:
-                {
-                    displayMode = DisplayMode.UPLOAD_SPEED;
-                    break;
-                }
+                    {
+                        displayMode = DisplayMode.UPLOAD_SPEED;
+                        break;
+                    }
                 case DisplayMode.UPLOAD_SPEED:
-                {
-                    displayMode = DisplayMode.BOTH_SPEED;
-                    break;
-                }
+                    {
+                        displayMode = DisplayMode.BOTH_SPEED;
+                        break;
+                    }
                 case DisplayMode.BOTH_SPEED:
-                {
-                    displayMode = DisplayMode.TOTAL_DATA;
-                    break;
-                }
+                    {
+                        displayMode = DisplayMode.TOTAL_DATA;
+                        break;
+                    }
                 case DisplayMode.TOTAL_DATA:
-                {
-                    displayMode = DisplayMode.TOTAL_SPEED;
-                    break;
-                }
+                    {
+                        displayMode = DisplayMode.TOTAL_SPEED;
+                        break;
+                    }
             }
             this._appSettingsModel.displayMode = displayMode;
             this.update();
@@ -222,5 +215,3 @@ class AppControllerClass {
     }
     // #endregion Event handlers
 }
-
-var AppController = AppControllerClass;

@@ -1,14 +1,11 @@
-const ExtensionUtils = imports.misc.extensionUtils;
-const Me = ExtensionUtils.getCurrentExtension();
+import { AppController } from "./AppController.js";
+import { AppSettingsModel } from "./AppSettingsModel.js";
+import { DeviceModel } from "./net/DeviceModel.js"
+import { NetworkMonitor } from "./net/NetworkMonitor.js";
+import { DeviceMonitor } from "./net/DeviceMonitor.js";
+import { Logger } from "./utils/Logger.js";
 
-const { AppController } = Me.imports.AppController;
-const { AppSettingsModel } = Me.imports.AppSettingsModel;
-const { DeviceModel } = Me.imports.net.DeviceModel;
-const { NetworkMonitor } = Me.imports.net.NetworkMonitor;
-const { DeviceMonitor } = Me.imports.net.DeviceMonitor;
-const { Logger } = Me.imports.utils.Logger;
-
-class AppClass {
+export class App {
     static instance() {
         return this._instance || (this._instance = new this());
     }
@@ -37,5 +34,3 @@ class AppClass {
         this._appController.deinit();
     }
 }
-
-var App = AppClass;
