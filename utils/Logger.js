@@ -10,6 +10,10 @@ export class Logger {
         return this._instance || (this._instance = new this());
     }
 
+    static releaseInstance() {
+        this._instance = undefined;
+    }
+
     static log(...args) {
         this.instance()._printLog("LOG", ...args);
     }

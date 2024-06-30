@@ -1,3 +1,4 @@
+import Adw from 'gi://Adw';
 import Gio from "gi://Gio";
 import GObject from "gi://GObject";
 import Gtk from "gi://Gtk";
@@ -81,6 +82,13 @@ export default class GnsPreferences extends ExtensionPreferences {
         }, 100);
     }
 
+    destruct() {
+        this._rows = undefined;
+        this._schema = undefined;
+        _ = undefined;
+        this.main = undefined;
+    }
+
     _addRow(label, input, row) {
         let inputWidget = input;
 
@@ -128,15 +136,15 @@ export default class GnsPreferences extends ExtensionPreferences {
             halign: Gtk.Align.END
         });
 
-        this._intervalInput = new Gtk.SpinButton({
+        const intervalInput = new Gtk.SpinButton({
             adjustment: new Gtk.Adjustment({
                 lower: 500,
                 upper: 5000,
                 step_increment: 100
             })
         });
-        this._addRow(intervalLabel, this._intervalInput, SettingRowOrder.REFRESH_INTERVAL);
-        this.settings.bind(SettingKeys.REFRESH_INTERVAL, this._intervalInput, 'value', Gio.SettingsBindFlags.DEFAULT);
+        this._addRow(intervalLabel, intervalInput, SettingRowOrder.REFRESH_INTERVAL);
+        this.settings.bind(SettingKeys.REFRESH_INTERVAL, intervalInput, 'value', Gio.SettingsBindFlags.DEFAULT);
     }
 
     // 2. Display mode select drop down.
@@ -157,15 +165,15 @@ export default class GnsPreferences extends ExtensionPreferences {
             { name: _("Total data used") },
         ];
 
-        this._displayModeInput = new Gtk.ComboBox({
+        const displayModeInput = new Gtk.ComboBox({
             model: this._createOptionsList(options),
             active: displayModeIndex,
         });
         const rendererText = new Gtk.CellRendererText();
-        this._displayModeInput.pack_start(rendererText, false);
-        this._displayModeInput.add_attribute(rendererText, "text", 0);
-        this._addRow(displayModeLabel, this._displayModeInput, SettingRowOrder.DISPLAY_MODE);
-        this._displayModeInput.connect('changed', Lang.bind(this, this._onDisplayModeInputChanged));
+        displayModeInput.pack_start(rendererText, false);
+        displayModeInput.add_attribute(rendererText, "text", 0);
+        this._addRow(displayModeLabel, displayModeInput, SettingRowOrder.DISPLAY_MODE);
+        displayModeInput.connect('changed', this._onDisplayModeInputChanged.bind(this));
     }
 
     // 3. Reset schedule drop down.
@@ -186,15 +194,15 @@ export default class GnsPreferences extends ExtensionPreferences {
             { name: _("Never") },
         ];
 
-        this._resetScheduleInput = new Gtk.ComboBox({
+        const resetScheduleInput = new Gtk.ComboBox({
             model: this._createOptionsList(options),
             active: resetScheduleIndex,
         });
         const rendererText = new Gtk.CellRendererText();
-        this._resetScheduleInput.pack_start(rendererText, false);
-        this._resetScheduleInput.add_attribute(rendererText, "text", 0);
-        this._addRow(resetScheduleLabel, this._resetScheduleInput, SettingRowOrder.RESET_SCHEDULE);
-        this._resetScheduleInput.connect('changed', Lang.bind(this, this._onResetScheduleInputChanged));
+        resetScheduleInput.pack_start(rendererText, false);
+        resetScheduleInput.add_attribute(rendererText, "text", 0);
+        this._addRow(resetScheduleLabel, resetScheduleInput, SettingRowOrder.RESET_SCHEDULE);
+        resetScheduleInput.connect('changed', this._onResetScheduleInputChanged.bind(this));
     }
 
     // 4. Reset on day of week, in case week is selected.
@@ -217,15 +225,15 @@ export default class GnsPreferences extends ExtensionPreferences {
             { name: _("Sunday") },
         ];
 
-        this._resetDayOfWeekInput = new Gtk.ComboBox({
+        const resetDayOfWeekInput = new Gtk.ComboBox({
             model: this._createOptionsList(options),
             active: resetDayOfWeekIndex,
         });
         const rendererText = new Gtk.CellRendererText();
-        this._resetDayOfWeekInput.pack_start(rendererText, false);
-        this._resetDayOfWeekInput.add_attribute(rendererText, "text", 0);
-        this._addRow(resetOnDayOfWeekLabel, this._resetDayOfWeekInput, SettingRowOrder.RESET_WEEK_DAY);
-        this._resetDayOfWeekInput.connect('changed', Lang.bind(this, this._onResetDayOfWeekInputChanged));
+        resetDayOfWeekInput.pack_start(rendererText, false);
+        resetDayOfWeekInput.add_attribute(rendererText, "text", 0);
+        this._addRow(resetOnDayOfWeekLabel, resetDayOfWeekInput, SettingRowOrder.RESET_WEEK_DAY);
+        resetDayOfWeekInput.connect('changed', this._onResetDayOfWeekInputChanged.bind(this));
     }
 
     // 5. Day of month when Month is selected in reset schedule.
@@ -236,15 +244,15 @@ export default class GnsPreferences extends ExtensionPreferences {
             halign: Gtk.Align.END
         });
 
-        this._resetOnDayOfMonthInput = new Gtk.SpinButton({
+        const resetOnDayOfMonthInput = new Gtk.SpinButton({
             adjustment: new Gtk.Adjustment({
                 lower: 1,
                 upper: 31,
                 step_increment: 1
             })
         });
-        this._addRow(resetOnDayOfMonthLabel, this._resetOnDayOfMonthInput, SettingRowOrder.RESET_MONTH_DAY);
-        this.settings.bind(SettingKeys.RESET_MONTH_DAY, this._resetOnDayOfMonthInput, 'value', Gio.SettingsBindFlags.DEFAULT);
+        this._addRow(resetOnDayOfMonthLabel, resetOnDayOfMonthInput, SettingRowOrder.RESET_MONTH_DAY);
+        this.settings.bind(SettingKeys.RESET_MONTH_DAY, resetOnDayOfMonthInput, 'value', Gio.SettingsBindFlags.DEFAULT);
     }
 
     // 6. Reset time Spin button control.
@@ -254,7 +262,7 @@ export default class GnsPreferences extends ExtensionPreferences {
             hexpand: true,
             halign: Gtk.Align.END
         });
-        this._resetHoursInput = new Gtk.SpinButton({
+        const resetHoursInput = new Gtk.SpinButton({
             wrap: true,
             numeric: true,
             adjustment: new Gtk.Adjustment({
@@ -270,7 +278,7 @@ export default class GnsPreferences extends ExtensionPreferences {
             halign: Gtk.Align.CENTER,
             use_markup: true
         })
-        this._resetMinutesInput = new Gtk.SpinButton({
+        const resetMinutesInput = new Gtk.SpinButton({
             wrap: true,
             numeric: true,
             adjustment: new Gtk.Adjustment({
@@ -282,13 +290,13 @@ export default class GnsPreferences extends ExtensionPreferences {
         });
 
         const resetTimeWidget = new Gtk.Box({ orientation: Gtk.Orientation.HORIZONTAL });
-        addChildToBox(resetTimeWidget, this._resetHoursInput);
+        addChildToBox(resetTimeWidget, resetHoursInput);
         addChildToBox(resetTimeWidget, timeSeparatorLabel);
-        addChildToBox(resetTimeWidget, this._resetMinutesInput);
+        addChildToBox(resetTimeWidget, resetMinutesInput);
 
         this._addRow(resetTimeLabel, resetTimeWidget, SettingRowOrder.RESET_TIME);
-        this.settings.bind(SettingKeys.RESET_HOURS, this._resetHoursInput, 'value', Gio.SettingsBindFlags.DEFAULT);
-        this.settings.bind(SettingKeys.RESET_MINUTES, this._resetMinutesInput, 'value', Gio.SettingsBindFlags.DEFAULT);
+        this.settings.bind(SettingKeys.RESET_HOURS, resetHoursInput, 'value', Gio.SettingsBindFlags.DEFAULT);
+        this.settings.bind(SettingKeys.RESET_MINUTES, resetMinutesInput, 'value', Gio.SettingsBindFlags.DEFAULT);
     }
 
     // 7. Show numbers in bytes instead of bits
@@ -299,12 +307,12 @@ export default class GnsPreferences extends ExtensionPreferences {
             halign: Gtk.Align.END
         });
 
-        this._unitSwitch = new Gtk.Switch({
+        const unitSwitch = new Gtk.Switch({
             halign: Gtk.Align.END,
             visible: true
         });
-        this._addRow(unitLabel, this._unitSwitch, SettingRowOrder.DISPLAY_BYTES);
-        this.settings.bind(SettingKeys.DISPLAY_BYTES, this._unitSwitch, 'state', Gio.SettingsBindFlags.DEFAULT);
+        this._addRow(unitLabel, unitSwitch, SettingRowOrder.DISPLAY_BYTES);
+        this.settings.bind(SettingKeys.DISPLAY_BYTES, unitSwitch, 'state', Gio.SettingsBindFlags.DEFAULT);
     }
 
     // 8. Show icon in status bar
@@ -315,12 +323,12 @@ export default class GnsPreferences extends ExtensionPreferences {
             halign: Gtk.Align.END
         });
 
-        this._iconSwitch = new Gtk.Switch({
+        const iconSwitch = new Gtk.Switch({
             halign: Gtk.Align.END,
             visible: true
         });
-        this._addRow(iconLabel, this._iconSwitch, SettingRowOrder.SHOW_ICON);
-        this.settings.bind(SettingKeys.SHOW_ICON, this._iconSwitch, 'state', Gio.SettingsBindFlags.DEFAULT);
+        this._addRow(iconLabel, iconSwitch, SettingRowOrder.SHOW_ICON);
+        this.settings.bind(SettingKeys.SHOW_ICON, iconSwitch, 'state', Gio.SettingsBindFlags.DEFAULT);
     }
 
     _createOptionsList(options) {
@@ -389,7 +397,18 @@ export default class GnsPreferences extends ExtensionPreferences {
         return this._schema;
     }
 
-    getPreferencesWidget() {
-        return this.main;
+    fillPreferencesWindow(window) {
+        window.connect("close-request", () => {
+            console.log("closing the window");
+            this.destruct();
+            console.log("destruct the objects");
+        });
+        const group = new Adw.PreferencesGroup();
+        group.add(this.main);
+
+        const page = new Adw.PreferencesPage();
+        page.add(group);
+
+        window.add(page);
     }
 }

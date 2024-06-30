@@ -1,11 +1,8 @@
 import GLib from "gi://GLib";
 import GObject from "gi://GObject";
-
-const ByteArray = imports.byteArray;
-const NetworkManager = imports.gi.NM;
+import NetworkManager from "gi://NM";
 
 import { DeviceType } from "../utils/Constants.js";
-
 
 /*
 * Device monitor class responsible maintaining active devices record.
@@ -16,6 +13,7 @@ export class DeviceMonitor {
 
     constructor(logger) {
         this._logger = logger;
+        this._textDecoder = new TextDecoder;
         this._client = NetworkManager.Client.new(null);
         this._devices = {};
         this._defaultGw = "";
@@ -91,7 +89,7 @@ export class DeviceMonitor {
         this._disconnectDeviceStateChangeSignals();
 
         const fileContent = GLib.file_get_contents('/proc/net/dev');
-        const lines = ByteArray.toString(fileContent[1]).split("\n");
+        const lines = this._textDecoder.decode(fileContent[1]).split("\n");
 
         const devices = [];
         for (let index = 2; index < lines.length - 1; ++index) {
@@ -125,7 +123,7 @@ export class DeviceMonitor {
 
     _updateDefaultDevice() {
         let fileContent = GLib.file_get_contents('/proc/net/route');
-        let lines = ByteArray.toString(fileContent[1]).split("\n");
+        let lines = this._textDecoder.decode(fileContent[1]).split("\n");
 
         //first 2 lines are for header
         for (const line of lines) {

@@ -10,7 +10,7 @@ export class App {
         return this._instance || (this._instance = new this());
     }
 
-    static deleteInstance() {
+    static releaseInstance() {
         this._instance = undefined;
     }
 

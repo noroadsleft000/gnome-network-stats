@@ -14,13 +14,11 @@ export default class GnsExtension extends Extension {
 
     init() {
         Logger.info(`initializing ${this.metadata.name}`);
-        ExtensionUtils.initTranslations();
     }
 
     enable() {
         GnsExtension.instance = this;
         Logger.info(`enabling ${this.metadata.name}`);
-        this.initTranslations("network-stats");
         initBrodcasters();
         App.instance().start();
     }
@@ -29,7 +27,9 @@ export default class GnsExtension extends Extension {
         Logger.info(`disabling ${this.metadata.name}`);
         App.instance().stop();
         deinitBrodcasters();
-        App.deleteInstance();
+        App.releaseInstance();
+        Logger.releaseInstance();
+        GnsExtension.instance = undefined;
     }
 }
 

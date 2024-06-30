@@ -1,5 +1,4 @@
-const Mainloop = imports.mainloop;
-
+import GLib from "gi://GLib";
 import { AppView } from "./ui/AppView.js";
 import { DisplayMode } from "./utils/Constants.js";
 import { getNextResetTime } from "./utils/DateTimeUtils.js";
@@ -48,17 +47,17 @@ export class AppController {
 
     installTimers() {
         const { refreshInterval } = this._appSettingsModel;
-        this._refreshTimeout = Mainloop.timeout_add(refreshInterval, this.onRefreshTimeout.bind(this));
-        this._minuteTimeout = Mainloop.timeout_add(kOneMinuteInMilliSeconds, this.onEveryMinute.bind(this));
+        this._refreshTimeout = GLib.timeout_add(GLib.G_PRIORITY_DEFAULT, refreshInterval, this.onRefreshTimeout.bind(this));
+        this._minuteTimeout = GLib.timeout_add(GLib.G_PRIORITY_DEFAULT, kOneMinuteInMilliSeconds, this.onEveryMinute.bind(this));
     }
 
     uninstallTimers() {
         if (this._refreshTimeout) {
-            Mainloop.source_remove(this._refreshTimeout);
+            GLib.source_remove(this._refreshTimeout);
             this._refreshTimeout = undefined;
         }
         if (this._minuteTimeout) {
-            Mainloop.source_remove(this._minuteTimeout);
+            GLib.source_remove(this._minuteTimeout);
             this._minuteTimeout = undefined;
         }
     }

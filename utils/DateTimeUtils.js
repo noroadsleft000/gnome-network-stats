@@ -1,4 +1,4 @@
-const Mainloop = imports.mainloop;
+import GLib from "gi://GLib";
 import { DayOfWeek, ResetSchedule } from "./Constants.js";
 
 export const kOneDayInMilliSeconds = (1000 * 60 * 60 * 24);
@@ -10,7 +10,7 @@ export const kOneDayInMilliSeconds = (1000 * 60 * 60 * 24);
  * @returns handle to the registered handler
  */
 export function setTimeout(func, milliseconds) {
-    return Mainloop.timeout_add(milliseconds, () => {
+    return GLib.timeout_add(GLib.G_PRIORITY_DEFAULT, milliseconds, () => {
         func();
         return false;
     });
@@ -21,7 +21,7 @@ export function setTimeout(func, milliseconds) {
  * @param {number} handle - handle to timeout 
  */
 export function clearTimeout(handle) {
-    Mainloop.source_remove(handle);
+    GLib.source_remove(handle);
 }
 
 /**
