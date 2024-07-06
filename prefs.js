@@ -9,7 +9,6 @@ import { setTimeout } from "./utils/DateTimeUtils.js";
 import { addChildToBox } from "./utils/GtkUtils.js";
 import { IndexMap } from "./utils/IndexMap.js";
 
-const Lang = imports.lang;
 
 const kDisplayModeMapping = new IndexMap({
     0: DisplayMode.TOTAL_SPEED,
