@@ -3,8 +3,8 @@
 * EventBroadcaster class can be inherited to create a new type of event broadcaster.
 */
 
-class EventBroadcasterClass {
-    
+export class EventBroadcaster {
+
     constructor() {
         this._listeners = [];
     }
@@ -23,11 +23,10 @@ class EventBroadcasterClass {
         }
         return listener;
     }
-    
+
     broadcast(message) {
         for (const listener of this._listeners) {
             listener(message);
         }
     }
 }
-var EventBroadcaster = EventBroadcasterClass;

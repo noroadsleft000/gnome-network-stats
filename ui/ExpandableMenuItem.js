@@ -1,12 +1,11 @@
-const { PopupSubMenuMenuItem } = imports.ui.popupMenu;
-const { GObject } = imports.gi;
-
+import { PopupSubMenuMenuItem } from 'resource:///org/gnome/shell/ui/popupMenu.js';
+import { registerGObjectClass } from "../utils/gjs.js";
 
 /*
 * ExpandableMenuItemClass class for creating expandable menu item.
 */
 
-class ExpandableMenuItemClass extends PopupSubMenuMenuItem {
+export class ExpandableMenuItem extends PopupSubMenuMenuItem {
     _init(content) {
         super._init("", false);
         content.add_style_class_name("popup-menu-item");
@@ -14,4 +13,4 @@ class ExpandableMenuItemClass extends PopupSubMenuMenuItem {
     }
 }
 
-var ExpandableMenuItem = GObject.registerClass(ExpandableMenuItemClass);
+registerGObjectClass(ExpandableMenuItem);

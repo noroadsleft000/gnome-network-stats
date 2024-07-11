@@ -1,15 +1,15 @@
-const { Gio, GLib } = imports.gi;
-const ByteArray = imports.byteArray;
+import GLib from "gi://GLib";
 
-class NetworkMonitorClass {
+export class NetworkMonitor {
 
     constructor(logger) {
         this._logger = logger;
+        this._textDecoder = new TextDecoder;
     }
 
     getStats() {
         const fileContent = GLib.file_get_contents('/proc/net/dev');
-        const lines = ByteArray.toString(fileContent[1]).split("\n");
+        const lines = this._textDecoder.decode(fileContent[1]).split("\n");
 
         const deviceLogs = {};
         for (let index = 2; index < lines.length - 1; ++index) {
@@ -37,5 +37,3 @@ class NetworkMonitorClass {
         };
     }
 }
-
-var NetworkMonitor = NetworkMonitorClass;

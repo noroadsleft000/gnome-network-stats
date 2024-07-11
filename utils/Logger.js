@@ -1,16 +1,17 @@
 'use strict';
-
-const ExtensionUtils = imports.misc.extensionUtils;
-const Me = ExtensionUtils.getCurrentExtension();
-
+import { kExtensionId } from "./Constants.js";
 
 /*
 * Utility class for logging.
 */
 
-class LoggerClass {
+export class Logger {
     static instance() {
         return this._instance || (this._instance = new this());
+    }
+
+    static releaseInstance() {
+        this._instance = undefined;
     }
 
     static log(...args) {
@@ -33,16 +34,17 @@ class LoggerClass {
         this.instance()._printLog("**CRITICAL", ...args);
     }
 
-    _callerInfo(level=3) {
+    _callerInfo(level = 3) {
         let stack = (new Error()).stack;
         let caller = stack.split("\n")[level];
-
-        caller = caller.replace(Me.path + "/", "");
-
-        let [code, line, _] = caller.split(":");
-        let [func, file] = code.split(/\W*@/);
+        const index = caller.indexOf("@");
+        const func = caller.substring(0, index);
+        const filePath = caller.substring(index + 1);
+        const [, relfilePath = "unknown"] = filePath.split(kExtensionId + "/") || [];
+        let [file = "unknown", line = 0, col = 0] = relfilePath.split(":") || [];
 
         return {
+            col,
             line,
             func,
             file
@@ -51,7 +53,7 @@ class LoggerClass {
 
     _printLog(tag, ...args) {
         const { line, func, file } = this._callerInfo();
-        log(`${tag} ${file}::${func}(${line}) ${args}`);
+        console.log(`[network-stats] ${tag} ${file}::${func}(${line}) ${args}`);
     }
 
     log(...args) {
@@ -74,5 +76,3 @@ class LoggerClass {
         this._printLog("**CRITICAL", ...args);
     }
 };
-
-var Logger = LoggerClass;

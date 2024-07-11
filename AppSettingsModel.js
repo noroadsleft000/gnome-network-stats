@@ -1,17 +1,8 @@
-const { Gio, GObject } = imports.gi;
 
-const ExtensionUtils = imports.misc.extensionUtils;
-const Me = ExtensionUtils.getCurrentExtension();
-const { logger } = Me.imports.utils.Logger;
-const { DisplayMode } = Me.imports.utils.Constants;
-const { ResetSchedule } = Me.imports.utils.Constants;
-const { DayOfWeek } = Me.imports.utils.Constants;
-const { SettingKeys } = Me.imports.utils.Constants;
-const { compareJsonStrings } = Me.imports.utils.GenUtils;
-const { getDayNumberForDayOfWeek } = Me.imports.utils.DateTimeUtils;
-
-const kRefreshInterval = 2 * 1000; // milliseconds
-const kSchemaName = "org.gnome.shell.extensions.network-stats";
+import { DayOfWeek, DisplayMode, ResetSchedule, SettingKeys } from "./utils/Constants.js";
+import { kRefreshInterval, kSchemaName } from "./utils/Constants.js";
+import { compareJsonStrings } from "./utils/GenUtils.js";
+import { getExtension } from "./extension.js";
 
 /**
  * DevicesInfoMap
@@ -28,7 +19,7 @@ const kSchemaName = "org.gnome.shell.extensions.network-stats";
 /*
 * AppSettingsModel represents application setttings and user prefrences.
 */
-class AppSettingsModelClass {
+export class AppSettingsModel {
 
     constructor(logger) {
         this._logger = logger;
@@ -49,7 +40,7 @@ class AppSettingsModelClass {
 
     init() {
         this.load();
-        this._settingsC = this.schema.connect("changed", () => {
+        this._settingsC = this.settings.connect("changed", () => {
             // setting changed - get the new values
             this._logger.info("Prefrences/Settings value changed");
             this.load();
@@ -59,54 +50,51 @@ class AppSettingsModelClass {
 
     deinit() {
         if (this._settingsC) {
-            this.schema.disconnect(this._settingsC);
+            this.settings.disconnect(this._settingsC);
             this._settingsC = undefined;
         }
     }
 
-    get schema() {
+    get settings() {
         if (!this._schema) {
-            const schemaDir = Me.dir.get_child('schemas').get_path();
-            const schemaSource = Gio.SettingsSchemaSource.new_from_directory(schemaDir, Gio.SettingsSchemaSource.get_default(), false);
-            const schema = schemaSource.lookup(kSchemaName, false);
-            this._schema = new Gio.Settings({ settings_schema: schema });
+            this._schema = getExtension().getSettings(kSchemaName);
         }
         return this._schema;
     }
 
     load() {
-        this._refreshInterval = this.schema.get_int(SettingKeys.REFRESH_INTERVAL);
-        this._displayMode = this.schema.get_string(SettingKeys.DISPLAY_MODE);
-        this._resetSchedule = this.schema.get_string(SettingKeys.RESET_SCHEDULE);
-        this._resetDayOfWeek = this.schema.get_string(SettingKeys.RESET_WEEK_DAY);
-        this._resetDayOfMonth = this.schema.get_int(SettingKeys.RESET_MONTH_DAY);
-        this._resetHours = this.schema.get_int(SettingKeys.RESET_HOURS);
-        this._resetMinutes = this.schema.get_int(SettingKeys.RESET_MINUTES);
-        const str = this.schema.get_string(SettingKeys.DEVICES_INFO);
+        this._refreshInterval = this.settings.get_int(SettingKeys.REFRESH_INTERVAL);
+        this._displayMode = this.settings.get_string(SettingKeys.DISPLAY_MODE);
+        this._resetSchedule = this.settings.get_string(SettingKeys.RESET_SCHEDULE);
+        this._resetDayOfWeek = this.settings.get_string(SettingKeys.RESET_WEEK_DAY);
+        this._resetDayOfMonth = this.settings.get_int(SettingKeys.RESET_MONTH_DAY);
+        this._resetHours = this.settings.get_int(SettingKeys.RESET_HOURS);
+        this._resetMinutes = this.settings.get_int(SettingKeys.RESET_MINUTES);
+        const str = this.settings.get_string(SettingKeys.DEVICES_INFO);
         this._devicesInfoMap = JSON.parse(str);
-        this._preferedDeviceName = this.schema.get_string(SettingKeys.PREFERED_DEVICE);
-        this._displayBytes = this.schema.get_boolean(SettingKeys.DISPLAY_BYTES);
-        this._showIcon = this.schema.get_boolean(SettingKeys.SHOW_ICON);
+        this._preferedDeviceName = this.settings.get_string(SettingKeys.PREFERED_DEVICE);
+        this._displayBytes = this.settings.get_boolean(SettingKeys.DISPLAY_BYTES);
+        this._showIcon = this.settings.get_boolean(SettingKeys.SHOW_ICON);
         // this._logger.debug(`new values [ refreshInterval: ${this._refreshInterval} displayMode: ${this._displayMode} resetTime: ${this._resetHours} : ${this._resetMinutes}]`);
         // this._logger.debug(`deivicesInfoMap ${str}`);
     }
 
     save() {
         // write back the changed values.
-        if (this.schema.get_string(SettingKeys.DISPLAY_MODE) !== this._displayMode) {
-            this.schema.set_string(SettingKeys.DISPLAY_MODE, this._displayMode);
+        if (this.settings.get_string(SettingKeys.DISPLAY_MODE) !== this._displayMode) {
+            this.settings.set_string(SettingKeys.DISPLAY_MODE, this._displayMode);
         }
 
-        if (this.schema.get_string(SettingKeys.PREFERED_DEVICE) !== this._preferedDeviceName) {
-            this.schema.set_string(SettingKeys.PREFERED_DEVICE, this._preferedDeviceName);
+        if (this.settings.get_string(SettingKeys.PREFERED_DEVICE) !== this._preferedDeviceName) {
+            this.settings.set_string(SettingKeys.PREFERED_DEVICE, this._preferedDeviceName);
         }
         const devicesJson = JSON.stringify(this._devicesInfoMap);
         //this._logger.info("devicesInfoMap", devicesJson);
-        if (!compareJsonStrings(this.schema.get_string(SettingKeys.DEVICES_INFO), devicesJson)) {
-            this.schema.set_string(SettingKeys.DEVICES_INFO, devicesJson);
+        if (!compareJsonStrings(this.settings.get_string(SettingKeys.DEVICES_INFO), devicesJson)) {
+            this.settings.set_string(SettingKeys.DEVICES_INFO, devicesJson);
         }
-        if(this.schema.get_boolean(SettingKeys.DISPLAY_BYTES) !== this._displayBytes) {
-            this.schema.set_boolean(SettingKeys.DISPLAY_BYTES, this._displayBytes);
+        if (this.settings.get_boolean(SettingKeys.DISPLAY_BYTES) !== this._displayBytes) {
+            this.settings.set_boolean(SettingKeys.DISPLAY_BYTES, this._displayBytes);
         }
     }
 
@@ -219,5 +207,3 @@ class AppSettingsModelClass {
         return listener;
     }
 }
-
-var AppSettingsModel = AppSettingsModelClass;

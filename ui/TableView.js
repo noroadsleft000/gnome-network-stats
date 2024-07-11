@@ -1,16 +1,11 @@
-const { PopupSubMenuMenuItem } = imports.ui.popupMenu;
-const { Atk, Clutter, Gio, GObject, Graphene, Shell, St } = imports.gi;
-
-const ExtensionUtils = imports.misc.extensionUtils;
-const Me = ExtensionUtils.getCurrentExtension();
-
-const { logger } = Me.imports.utils.Logger;
+import St from "gi://St";
+import { registerGObjectClass } from "../utils/gjs.js";
 
 /*
 * TableViewClass class to create a table layout.
 */
 
-class TableViewClass extends St.BoxLayout {
+export class TableView extends St.BoxLayout {
     // constructor
     _init(props) {
         super._init(props);
@@ -32,4 +27,4 @@ class TableViewClass extends St.BoxLayout {
     }
 }
 
-var TableView = GObject.registerClass(TableViewClass);
+registerGObjectClass(TableView);

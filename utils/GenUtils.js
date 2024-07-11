@@ -1,8 +1,6 @@
-const ExtensionUtils = imports.misc.extensionUtils;
-const Me = ExtensionUtils.getCurrentExtension();
-const { DeviceType } = Me.imports.utils.Constants;
-const { TypeUtils } = Me.imports.utils.TypeUtils;
-
+import { DeviceType } from "./Constants.js";
+import { TypeUtils } from "./TypeUtils.js";
+import { ExtensionUtils } from "./ExtensionUtils.js";
 
 /**
  * Compares 2 POJO for equality
@@ -10,7 +8,7 @@ const { TypeUtils } = Me.imports.utils.TypeUtils;
  * @param {any} obj2
  * @returns - if objects/values are eaual returns true otherwise false
  */
-function areEqual(obj1, obj2) {
+export function areEqual(obj1, obj2) {
     if (TypeUtils.isObject(obj1) && TypeUtils.isObject(obj2)) {
         const keys1 = Object.keys(obj1);
         const keys2 = Object.keys(obj2);
@@ -42,12 +40,12 @@ function areEqual(obj1, obj2) {
  * @param {string} str2
  * @returns - true if they are equal otherwise false.
  */
-function compareJsonStrings(str1, str2) {
+export function compareJsonStrings(str1, str2) {
     try {
         const obj1 = JSON.parse(str1);
         const obj2 = JSON.parse(str2);
         return areEqual(obj1, obj2);
-    } catch(err) {
+    } catch (err) {
         // do nothing
     }
     return false;
@@ -60,7 +58,7 @@ function compareJsonStrings(str1, str2) {
  * @param {boolean} mode  false - bits mode,  true - bytes mode
  * @returns - string representation of data speed
  */
-function bytesSpeedToString(amount, mode = true) {
+export function bytesSpeedToString(amount, mode = true) {
 
     let unitsMap;
     if (mode == false) {
@@ -100,7 +98,7 @@ function bytesSpeedToString(amount, mode = true) {
  * @param {number} bytes
  * @returns data size human readable units
  */
-function bytesToString(bytes) {
+export function bytesToString(bytes) {
 
     const unitsMap = ["B", "KB", "MB", "GB", "TB"];
     if (!bytes || bytes === 0) {
@@ -122,33 +120,31 @@ function bytesToString(bytes) {
     return `${bytes.toFixed(digits)} ${unitsMap[unitIndex]}`;
 }
 
-
 /**
  * returns the icon relative path for given name
  * @param {string} name
  * @returns icon relative path.
  */
-function getIconPath(name) {
-    const currDir = Me.dir.get_path();
+export function getIconPath(name) {
+    const currDir = ExtensionUtils.getExtensionPath();
     return `${currDir}/assets/${name}`;
 }
-
 
 /**
  * Lookup and returns icon path for given deviceType
  * @param {string} deviceType
  * @returns icon relative path
  */
-function getDeviceIcon(deviceType) {
+export function getDeviceIcon(deviceType) {
     let path = "";
-    switch(deviceType) {
+    switch (deviceType) {
         case DeviceType.ETHERNET:
             path = getIconPath("ethernet_black_24dp.svg");
             break;
         case DeviceType.WIFI:
             path = getIconPath("wifi_black_24dp.svg");
             break;
-        case DeviceType.BLETOOTH:
+        case DeviceType.BLUETOOTH:
             path = getIconPath("bluetooth_black_24dp.svg");
             break;
         case DeviceType.MODEM:
@@ -160,4 +156,3 @@ function getDeviceIcon(deviceType) {
     }
     return path;
 }
-
