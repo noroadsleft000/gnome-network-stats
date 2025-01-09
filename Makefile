@@ -20,7 +20,7 @@ LOCAL_INSTALL=~/.local/share/gnome-shell/extensions/$(UUID)
 
 .PHONY: pack
 pack: $(OUTPUT)
-	echo "packaging..."
+	@echo "packaging..."
 	zip $(UUID).zip $(OUTPUT)
 
 $(POT_FILE): $(SRC_FILES)
@@ -39,45 +39,49 @@ locale/%/LC_MESSAGES/network-stats.mo: locale/%.po
 schemas/gschemas.compiled: $(SCHEMA_FILES)
 	glib-compile-schemas  schemas
 
+.PHONY: build
+build: pack
+	@echo "building..."
+
 .PHONY: install
 install: pack
-	echo "installing..."
+	@echo "installing..."
 	mkdir -p $(LOCAL_INSTALL)
 	rm -rf $(LOCAL_INSTALL)
 	unzip $(UUID).zip -d $(LOCAL_INSTALL)
 
 .PHONY: uninstall
 uninstall:
-	echo "uninstalling..."
+	@echo "uninstalling..."
 	gnome-extensions uninstall $(UUID)
 
 .PHONY: enable
 enable:
-	echo "enabling..."
+	@echo "enabling..."
 	gnome-extensions enable $(UUID)
 
 .PHONY: disable
 disable:
-	echo "disabling..."
+	@echo "disabling..."
 	gnome-extensions disable $(UUID)
 
 .PHONY: reset
 reset:
-	echo "reloading..."
+	@echo "reloading..."
 	gnome-extensions reset $(UUID)
 
 .PHONY: debug
 debug: install
-	echo "starting debug session..."
+	@echo "starting debug session..."
 	dbus-run-session -- gnome-shell --nested --wayland
 
 .PHONY: help
 help:
-	echo "Command usage : "
-	echo "-------------------------------------------------------"
-	echo "./commands.sh build           --  build the extension"
-	echo "./commands.sh install         --  install the extension"
-	echo "./commands.sh enable          --  enable the extension"
-	echo "./commands.sh disable         --  disable the extension"
-	echo "./commands.sh pack            --  package the extension"
-	echo "./commands.sh debug    		--  launch nested session to debug the extension"
+	@echo "Command usage : "
+	@echo "-------------------------------------------------------"
+	@echo "make build           --  build the extension"
+	@echo "make install         --  install the extension"
+	@echo "make enable          --  enable the extension"
+	@echo "make disable         --  disable the extension"
+	@echo "make pack            --  package the extension"
+	@echo "make debug    	    --  launch nested session to debug the extension"
