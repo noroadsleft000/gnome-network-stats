@@ -1,0 +1,124 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR 2021 No roads left
+# This file is distributed under the same license as the network-stats package.
+# No roads left noroadsleft000@gmail.com, 2021.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: network-stats 1.0\n"
+"Report-Msgid-Bugs-To: noroadsleft000@gmail.com\n"
+"POT-Creation-Date: 2022-03-07 21:42+0530\n"
+"PO-Revision-Date: 2025-06-10 06:36+1000\n"
+"Last-Translator: Ser82-png <asvmail.as@gmail.com>\n"
+"Language-Team: LANGUAGE noroadsleft000@gmail.com\n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
+"X-Generator: Poedit 3.0.1\n"
+
+msgid "Refresh Interval (ms)"
+msgstr "Интервал обновления (мс)"
+
+msgid "What to show in status bar"
+msgstr "Что показывать в строке состояния"
+
+msgid "Total speed"
+msgstr "Общая скорость"
+
+msgid "Upload speed"
+msgstr "Скорость отправки"
+
+msgid "Download speed"
+msgstr "Скорость получения"
+
+msgid "Upload and download speed"
+msgstr "Скорость отправки и получения"
+
+msgid "Total data used"
+msgstr "Общее количество переданных данных"
+
+msgid "When do you want to reset the stats ?"
+msgstr "Когда вы хотите сбрасывать статистику?"
+
+msgid "Daily"
+msgstr "Ежедневно"
+
+msgid "Weekly"
+msgstr "Еженедельно"
+
+msgid "BiWeekly"
+msgstr "Раз в две недели"
+
+msgid "Monthly"
+msgstr "Ежемесячно"
+
+msgid "Never"
+msgstr "Никогда"
+
+msgid "Reset on day of week"
+msgstr "Сброс по дню недели"
+
+msgid "Monday"
+msgstr "Понедельник"
+
+msgid "Tuesday"
+msgstr "Вторник"
+
+msgid "Wednesday"
+msgstr "Среда"
+
+msgid "Thursday"
+msgstr "Четверг"
+
+msgid "Friday"
+msgstr "Пятница"
+
+msgid "Saturday"
+msgstr "Суббота"
+
+msgid "Sunday"
+msgstr "Воскресенье"
+
+msgid "Reset on day of month"
+msgstr "Сброс в день месяца"
+
+msgid "What time should we reset network stats"
+msgstr "В какое время сбрасывать сетевую статистику"
+
+msgid "Show speeds in bytes instead of bits"
+msgstr "Показывать скорость в байтах, а не в битах"
+
+msgid "Show icon in status bar (requires reload)"
+msgstr "Показывать значок в строке состояния (требуется перезагрузка)"
+
+msgid "Make Default"
+msgstr "Установить по умолчанию"
+
+msgid "IP"
+msgstr "IP"
+
+msgid "Since last reset"
+msgstr "С момента последнего сброса"
+
+msgid "Last reset at"
+msgstr "Последний сброс в"
+
+msgid "Yes"
+msgstr "Да"
+
+msgid "No"
+msgstr "Нет"
+
+msgid "Default device"
+msgstr "Устройство по умолчанию"
+
+msgid "Device"
+msgstr "Устройство"
+
+msgid "Speed"
+msgstr "Скорость"
+
+msgid "Data Used"
+msgstr "Передано данных"
