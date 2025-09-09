@@ -34,8 +34,10 @@ export class AppSettingsModel {
         this._resetMinutes = 0;
         this._preferedDeviceName = undefined;
         this._devicesInfoMap = {};
+        this._statusFontSize = 0;
         this._displayBytes = true;
-        this._showIcon = true;
+        this._statusShowIcon = true;
+        this._resetAllStats = false;
     }
 
     init() {
@@ -74,7 +76,9 @@ export class AppSettingsModel {
         this._devicesInfoMap = JSON.parse(str);
         this._preferedDeviceName = this.settings.get_string(SettingKeys.PREFERED_DEVICE);
         this._displayBytes = this.settings.get_boolean(SettingKeys.DISPLAY_BYTES);
-        this._showIcon = this.settings.get_boolean(SettingKeys.SHOW_ICON);
+        this._statusFontSize = this.settings.get_int(SettingKeys.STATUS_FONT_SIZE);
+        this._statusShowIcon = this.settings.get_boolean(SettingKeys.STATUS_SHOW_ICON);
+        this._resetAllStats = this.settings.get_boolean(SettingKeys.RESET_ALL_STATS);
         // this._logger.debug(`new values [ refreshInterval: ${this._refreshInterval} displayMode: ${this._displayMode} resetTime: ${this._resetHours} : ${this._resetMinutes}]`);
         // this._logger.debug(`deivicesInfoMap ${str}`);
     }
@@ -93,8 +97,8 @@ export class AppSettingsModel {
         if (!compareJsonStrings(this.settings.get_string(SettingKeys.DEVICES_INFO), devicesJson)) {
             this.settings.set_string(SettingKeys.DEVICES_INFO, devicesJson);
         }
-        if (this.settings.get_boolean(SettingKeys.DISPLAY_BYTES) !== this._displayBytes) {
-            this.settings.set_boolean(SettingKeys.DISPLAY_BYTES, this._displayBytes);
+        if (this.settings.get_boolean(SettingKeys.RESET_ALL_STATS) !== this._resetAllStats) {
+            this.settings.set_boolean(SettingKeys.RESET_ALL_STATS, this._resetAllStats);
         }
     }
 
@@ -144,8 +148,17 @@ export class AppSettingsModel {
         return this._displayBytes;
     }
 
-    get showIcon() {
-        return this._showIcon;
+    get statusShowIcon() {
+        return this._statusShowIcon;
+    }
+
+    get resetAllStats() {
+        return this._resetAllStats;
+    }
+
+    clearResetAllStats() {
+        this._resetAllStats = false;
+        this.save();
     }
 
     getResetTime() {
@@ -172,6 +185,10 @@ export class AppSettingsModel {
     set devicesInfoMap(info) {
         this._devicesInfoMap = { ...this._devicesInfoMap, ...info };
         this.save();
+    }
+
+    get statusFontSize() {
+        return this._statusFontSize;
     }
 
     getDeviceInfo(name) {

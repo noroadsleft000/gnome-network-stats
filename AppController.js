@@ -33,6 +33,7 @@ export class AppController {
         this._settingsSubscribeHandle = this.onSettingChanged.bind(this);
         this._appSettingsModel.subscribe(this._settingsSubscribeHandle);
         this.installTimers();
+        this._appView.setTitleTextSize(this._appSettingsModel.statusFontSize);
     }
 
     deinit() {
@@ -174,6 +175,11 @@ export class AppController {
     onSettingChanged() {
         this.uninstallTimers();
         this.installTimers();
+        this._appView.setTitleTextSize(this._appSettingsModel.statusFontSize);
+        if (this._appSettingsModel.resetAllStats) {
+            this._appSettingsModel.clearResetAllStats();
+            this._deviceModel.resetAll();
+        }
     }
 
     onRightClick({ button }) {

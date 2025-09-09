@@ -15,6 +15,7 @@ export class AppView {
         this._appSettingsModel = appSettingsModel;
         this._mainPanel = new MainPanel();
         this.createLayout();
+        this._statusFontSize = 0;
     }
 
     createLayout() {
@@ -54,6 +55,14 @@ export class AppView {
         this._label.set_text(text);
         if (this._popupView) {
             this._popupView.setTitleText(text);
+        }
+    }
+
+    setTitleTextSize(size) {
+        if (this._statusFontSize !== size && size >= 10) {
+            this._statusFontSize = size;
+            this._label.style += `font-size: ${size}`;
+            this._popupView.setTitleTextSize(size);
         }
     }
 
