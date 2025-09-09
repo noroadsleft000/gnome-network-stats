@@ -1,7 +1,7 @@
 export const kExtensionId = "network-stats@gnome.noroadsleft.xyz";
 export const kSchemaName = "org.gnome.shell.extensions.network-stats";
 export const kGtextDomain = "network-stats";
-export const kRefreshInterval = 2 * 1000; // milliseconds
+export const kRefreshInterval = 2 * 1000; // seconds
 
 export const DeviceType = Object.freeze({
     ETHERNET: "ethernet",
@@ -52,5 +52,7 @@ export const SettingKeys = Object.freeze({
     DEVICES_INFO: "devices-info",
     PREFERED_DEVICE: "prefered-device",
     DISPLAY_BYTES: "display-bytes",
-    SHOW_ICON: "show-icon"
+    STATUS_SHOW_ICON: "show-icon",
+    STATUS_FONT_SIZE: "status-font-size",
+    RESET_ALL_STATS: "reset-all-stats"
 });

@@ -44,8 +44,10 @@ const SettingRowOrder = Object.freeze({
     RESET_WEEK_DAY: 3,
     RESET_MONTH_DAY: 4,
     RESET_TIME: 5,
-    DISPLAY_BYTES: 6,
-    SHOW_ICON: 7
+    RESET_ALL_STATS: 6,
+    STATUS_FONT_SIZE: 7,
+    DISPLAY_BYTES: 8,
+    STATUS_SHOW_ICON: 9
 });
 
 let _;
@@ -73,6 +75,8 @@ export default class GnsPreferences extends ExtensionPreferences {
         this._createResetDayOfWeekControl();
         this._createResetMonthdayControl();
         this._createResetTimeControl();
+        this._createResetAllInterfacesControl();
+        this._createMainLabelFontSizeControl();
         this._createUnitToggleControl();
         this._createIconToggleControl();
 
@@ -298,7 +302,21 @@ export default class GnsPreferences extends ExtensionPreferences {
         this.settings.bind(SettingKeys.RESET_MINUTES, resetMinutesInput, 'value', Gio.SettingsBindFlags.DEFAULT);
     }
 
-    // 7. Show numbers in bytes instead of bits
+    // 7. Main label font size control.
+    _createResetAllInterfacesControl() {
+        const resetAllLabel = new Gtk.Label({
+            label: _("Reset all interfaces"),
+            hexpand: true,
+            halign: Gtk.Align.END
+        });
+
+        const resetAllButton = new Gtk.Button({ label: _("Reset now") });
+        resetAllButton.connect('clicked', this._onResetAllInterfacesClicked.bind(this));
+        this._addRow(resetAllLabel, resetAllButton, SettingRowOrder.RESET_ALL_STATS);
+    }
+
+
+    // 8. Show numbers in bytes instead of bits
     _createUnitToggleControl() {
         const unitLabel = new Gtk.Label({
             label: _("Show speeds in bytes instead of bits"),
@@ -314,7 +332,7 @@ export default class GnsPreferences extends ExtensionPreferences {
         this.settings.bind(SettingKeys.DISPLAY_BYTES, unitSwitch, 'state', Gio.SettingsBindFlags.DEFAULT);
     }
 
-    // 8. Show icon in status bar
+    // 9. Show icon in status bar
     _createIconToggleControl() {
         const iconLabel = new Gtk.Label({
             label: _("Show icon in status bar (requires reload)"),
@@ -326,8 +344,27 @@ export default class GnsPreferences extends ExtensionPreferences {
             halign: Gtk.Align.END,
             visible: true
         });
-        this._addRow(iconLabel, iconSwitch, SettingRowOrder.SHOW_ICON);
-        this.settings.bind(SettingKeys.SHOW_ICON, iconSwitch, 'state', Gio.SettingsBindFlags.DEFAULT);
+        this._addRow(iconLabel, iconSwitch, SettingRowOrder.STATUS_SHOW_ICON);
+        this.settings.bind(SettingKeys.STATUS_SHOW_ICON, iconSwitch, 'state', Gio.SettingsBindFlags.DEFAULT);
+    }
+
+    // 10. Main label font size control.
+    _createMainLabelFontSizeControl() {
+        const fontSizeLabel = new Gtk.Label({
+            label: _("Font size (status label)"),
+            hexpand: true,
+            halign: Gtk.Align.END
+        });
+
+        const fontSizeInput = new Gtk.SpinButton({
+            adjustment: new Gtk.Adjustment({
+                lower: 10,
+                upper: 48,
+                step_increment: 1
+            })
+        });
+        this._addRow(fontSizeLabel, fontSizeInput, SettingRowOrder.STATUS_FONT_SIZE);
+        this.settings.bind(SettingKeys.STATUS_FONT_SIZE, fontSizeInput, 'value', Gio.SettingsBindFlags.DEFAULT);
     }
 
     _createOptionsList(options) {
@@ -358,6 +395,10 @@ export default class GnsPreferences extends ExtensionPreferences {
         const index = view.get_active();
         const mode = kDayOfWeekMapping.getValue(index);
         this.settings.set_string(SettingKeys.RESET_WEEK_DAY, mode);
+    }
+
+    _onResetAllInterfacesClicked(_view) {
+        this.settings.set_boolean(SettingKeys.RESET_ALL_STATS, true);
     }
 
     updateControls() {

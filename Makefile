@@ -37,6 +37,7 @@ locale/%/LC_MESSAGES/network-stats.mo: locale/%.po
 	msgfmt $< -o $@
 
 schemas/gschemas.compiled: $(SCHEMA_FILES)
+	@echo "compiling schema..."
 	glib-compile-schemas  schemas
 
 .PHONY: build

@@ -42,7 +42,7 @@ export class PopupView extends PanelMenu.Button {
 
         const topBox = new St.BoxLayout();
         topBox.add_child(this._mainLabel);
-        if (this._appSettingsModel.showIcon === true) {
+        if (this._appSettingsModel.statusShowIcon === true) {
             topBox.add_child(this._mainIcon);
         }
         this.add_child(topBox);
@@ -299,6 +299,10 @@ export class PopupView extends PanelMenu.Button {
 
     setTitleText(text) {
         this._mainLabel.set_text(text);
+    }
+
+    setTitleTextSize(size) {
+        this._mainLabel.style = `font-size: ${size}px`;
     }
 
     /** @override */
