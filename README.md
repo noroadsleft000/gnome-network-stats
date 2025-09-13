@@ -29,7 +29,9 @@ git clone https://github.com/noroadsleft000/gnome-network-stats.git
 
 cd gnome-network-stats
 
-./scripts/configure
+pnpm install
+
+./scripts/configure.sh
 
 make build
 
@@ -40,7 +42,7 @@ Then go to https://extensions.gnome.org/local/ to turn on the extension or use
 gnome-tweak-tool to enable it.
 
 
-## Commands
+## Make commands
 ### build extension
 ```
 make build
