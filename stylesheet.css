@@ -11,7 +11,7 @@
 
 .h-line {
     height: 1px;
-    background: #BBB;
+    background: #bbb;
 }
 
 .icon-16 {
@@ -64,22 +64,22 @@
 
 .ns-button {
     padding: 6px;
-    border: 1px solid #BBB;
+    border: 1px solid #bbb;
     background: #f9f9f9;
     cursor: pointer;
 }
 
 .ns-button:hover {
-    background: #CCC;
+    background: #ccc;
 }
 
 .ns-button:active {
-    background: #AAA;
+    background: #aaa;
 }
 
 .ns-action-button {
     padding: 6px;
-    border: 1px solid #BBB;
+    border: 1px solid #bbb;
     background: #f9f9f9;
     width: 16px;
     height: 16px;
@@ -87,15 +87,15 @@
 }
 
 .ns-action-button:hover {
-    background: #CCC;
+    background: #ccc;
 }
 
 .ns-action-button:active {
-    background: #AAA;
+    background: #aaa;
 }
 
 .ns-action-button-down {
-    background: #BBB;
+    background: #bbb;
 }
 
 .ns-text-button {
