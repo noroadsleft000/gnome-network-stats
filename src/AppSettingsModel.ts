@@ -1,9 +1,10 @@
+import Gio from "gi://Gio";
 import { DayOfWeek, DisplayMode, ResetSchedule, SettingKeys } from "./utils/Constants.js";
 import { kRefreshInterval, kSchemaName } from "./utils/Constants.js";
 import { compareJsonStrings } from "./utils/GenUtils.js";
 import { getExtension } from "../extension.js";
 import type { Logger } from "./utils/Logger.ts";
-import type { DeviceInfo } from "./net/DeviceModel.js";
+import type { DeviceReading } from "./net/DeviceModel.js";
 
 /**
  * DevicesInfoMap
@@ -17,7 +18,7 @@ import type { DeviceInfo } from "./net/DeviceModel.js";
  * }
  */
 
-export type DevicesInfoMap = Record<string, DeviceInfo>;
+export type DevicesInfoMap = Record<string, DeviceReading>;
 
 export type ListenerFunc = () => void;
 
@@ -25,8 +26,8 @@ export type ListenerFunc = () => void;
  * AppSettingsModel represents application setttings and user prefrences.
  */
 export class AppSettingsModel {
-    private _schema: any | undefined;
-    private _settingsC: any | undefined;
+    private _schema: Gio.Settings | undefined;
+    private _settingsC: number | undefined;
     private _settingListeners: ListenerFunc[] = [];
     private _refreshInterval = kRefreshInterval;
     private _displayMode = DisplayMode.DEFAULT;
@@ -55,13 +56,13 @@ export class AppSettingsModel {
     }
 
     deinit() {
-        if (this._settingsC) {
+        if (this._settingsC !== undefined) {
             this.settings.disconnect(this._settingsC);
             this._settingsC = undefined;
         }
     }
 
-    get settings() {
+    get settings(): Gio.Settings {
         if (!this._schema) {
             this._schema = getExtension().getSettings(kSchemaName);
         }
@@ -73,9 +74,9 @@ export class AppSettingsModel {
      */
     load() {
         this._refreshInterval = this.settings.get_int(SettingKeys.REFRESH_INTERVAL);
-        this._displayMode = this.settings.get_string(SettingKeys.DISPLAY_MODE);
-        this._resetSchedule = this.settings.get_string(SettingKeys.RESET_SCHEDULE);
-        this._resetDayOfWeek = this.settings.get_string(SettingKeys.RESET_WEEK_DAY);
+        this._displayMode = this.settings.get_string(SettingKeys.DISPLAY_MODE) as DisplayMode;
+        this._resetSchedule = this.settings.get_string(SettingKeys.RESET_SCHEDULE) as ResetSchedule;
+        this._resetDayOfWeek = this.settings.get_string(SettingKeys.RESET_WEEK_DAY) as DayOfWeek;
         this._resetDayOfMonth = this.settings.get_int(SettingKeys.RESET_MONTH_DAY);
         this._resetHours = this.settings.get_int(SettingKeys.RESET_HOURS);
         this._resetMinutes = this.settings.get_int(SettingKeys.RESET_MINUTES);
@@ -100,7 +101,7 @@ export class AppSettingsModel {
         }
 
         if (this.settings.get_string(SettingKeys.PREFERED_DEVICE) !== this._preferedDeviceName) {
-            this.settings.set_string(SettingKeys.PREFERED_DEVICE, this._preferedDeviceName);
+            this.settings.set_string(SettingKeys.PREFERED_DEVICE, this._preferedDeviceName ?? "");
         }
         const devicesJson = JSON.stringify(this._devicesInfoMap);
         //this._logger.info("devicesInfoMap", devicesJson);
@@ -205,12 +206,12 @@ export class AppSettingsModel {
         return this._devicesInfoMap[name] || {};
     }
 
-    replaceDeviceInfo(name: string, info: DeviceInfo) {
+    replaceDeviceInfo(name: string, info: DeviceReading) {
         this._devicesInfoMap[name] = info;
         this.save();
     }
 
-    updateDeviceInfo(name: string, info: DeviceInfo) {
+    updateDeviceInfo(name: string, info: DeviceReading) {
         this._devicesInfoMap[name] = { ...this.devicesInfoMap[name], ...info };
         this.save();
     }

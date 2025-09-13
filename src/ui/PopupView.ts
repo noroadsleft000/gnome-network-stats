@@ -16,6 +16,7 @@ import { getDeviceIcon, getIconPath } from "../utils/GenUtils.js";
 import { ExtensionUtils } from "../utils/ExtensionUtils.js";
 import type { AppSettingsModel, ListenerFunc } from "../AppSettingsModel.ts";
 import type { Logger } from "../utils/Logger.ts";
+import { DeviceStatsText } from "../net/DeviceModel.js";
 
 /*
  * PopupViewClass class represents the UI for dropdown menu.
@@ -33,7 +34,10 @@ export class PopupView extends PanelMenuButton {
     private _settings: St.Button;
     private _settingsListener?: ListenerFunc;
 
-    constructor(private _logger: Logger, private _appSettingsModel: AppSettingsModel) {
+    constructor(
+        private _logger: Logger,
+        private _appSettingsModel: AppSettingsModel
+    ) {
         super(0, "PopupView");
         this._menuItems = {};
 
@@ -207,7 +211,12 @@ export class PopupView extends PanelMenuButton {
         popupMenuSection2.actor.add_child(this.createSeparator());
         this.popupMenu.addMenuItem(popupMenuSection2);
 
-        const titleMenuItem = new DeviceMenuTitleItem(null, _("Device"), _("Speed"), _("Data Used"));
+        const titleMenuItem = new DeviceMenuTitleItem(
+            null,
+            _("Device"),
+            _("Speed"),
+            _("Data Used")
+        );
         const popupMenuSection3 = new PopupMenuSection();
         popupMenuSection3.actor.add_child(titleMenuItem);
         this.popupMenu.addMenuItem(popupMenuSection3);
@@ -237,7 +246,7 @@ export class PopupView extends PanelMenuButton {
         this.toggleButtonState(this._dataUsage, displayMode == DisplayMode.TOTAL_DATA);
     }
 
-    onMainButtonClicked(_button: any, event: any): void {
+    onMainButtonClicked(_button: St.Button, event: Clutter.Event): void {
         //this._logger.debug(event);
         const broadcaster = Broadcasters.titleClickedMessageBroadcaster;
         if (broadcaster) {
@@ -284,12 +293,12 @@ export class PopupView extends PanelMenuButton {
         return outerBox;
     }
 
-    updateItem(device: any): void {
+    updateItem(device: DeviceStatsText): void {
         let menuItem = this._menuItems[device.name];
         const iconPath = getDeviceIcon(device.type);
-        device.iconPath = iconPath;
+        const extendedDeviceStats = { ...device, iconPath };
         if (!menuItem) {
-            menuItem = new ExpandableDeviceMenuItem(device, {
+            menuItem = new ExpandableDeviceMenuItem(extendedDeviceStats, {
                 defaultDeviceName: this._appSettingsModel.preferedDeviceName,
                 onResetClicked: this.onResetClicked.bind(this, device.name),
                 onMarkDefaultClicked: this.onMarkDefaultClicked.bind(this, device.name)
@@ -323,11 +332,14 @@ export class PopupView extends PanelMenuButton {
     }
 
     /** @override */
-    vfunc_event(event: any): any {
-        if (event.type() == Clutter.EventType.TOUCH_BEGIN || event.type() == Clutter.EventType.BUTTON_PRESS) {
+    vfunc_event(event: Clutter.Event): boolean {
+        if (
+            event.type() == Clutter.EventType.TOUCH_BEGIN ||
+            event.type() == Clutter.EventType.BUTTON_PRESS
+        ) {
             if (event.get_button() == 3) {
                 // right click - just ignore it
-                return;
+                return true;
             }
         }
         return super.vfunc_event(event);

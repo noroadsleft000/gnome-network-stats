@@ -5,32 +5,38 @@
     "type": "module",
     "private": true,
     "scripts": {
-      "setup": "./scripts/configure.sh",
-      "build": "make build",
-      "debug": "make debug",
-      "install-ext": "make install",
-      "uninstall-ext": "make uninstall",
-      "pack": "make pack",
-      "enable": "make enable",
-      "disable": "make disable"
+        "setup": "./scripts/configure.sh",
+        "build": "make build",
+        "debug": "make debug",
+        "install-ext": "make install",
+        "uninstall-ext": "make uninstall",
+        "pack": "make pack",
+        "enable": "make enable",
+        "disable": "make disable",
+        "lint": "eslint .",
+        "lint:fix": "eslint . --fix",
+        "format": "prettier . --check",
+        "format:fix": "prettier . --write"
     },
     "devDependencies": {
-      "eslint": "9.35.0",
-      "eslint-plugin-jsdoc": "54.5.0",
-      "typescript": "5.9.2",
-      "@girs/gjs": "4.0.0-beta.36",
-      "@girs/gio-2.0": "2.84.4-4.0.0-beta.36",
-      "@girs/gnome-shell": "48.0.4"
+        "eslint": "9.35.0",
+        "prettier": "3.6.2",
+        "@typescript-eslint/parser": "8.43.0",
+        "@typescript-eslint/eslint-plugin": "8.43.0",
+        "typescript": "5.9.2",
+        "@girs/gjs": "4.0.0-beta.36",
+        "@girs/gio-2.0": "2.84.4-4.0.0-beta.36",
+        "@girs/gnome-shell": "48.0.4"
     },
     "repository": {
-      "type": "git",
-      "url": "git+https://github.com/noroadsleft000/gnome-network-stats.git"
+        "type": "git",
+        "url": "git+https://github.com/noroadsleft000/gnome-network-stats.git"
     },
     "author": "No roads left <noroadsleft000@gmail.com>",
     "license": "MIT",
     "bugs": {
-      "url": "https://github.com/noroadsleft000/gnome-network-stats.git/issues"
+        "url": "https://github.com/noroadsleft000/gnome-network-stats.git/issues"
     },
     "homepage": "https://github.com/noroadsleft000/gnome-network-stats.git#readme",
     "sideEffects": false
-  }
+}

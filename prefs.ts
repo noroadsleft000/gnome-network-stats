@@ -5,7 +5,13 @@ import Gtk from "gi://Gtk";
 import { ExtensionMetadata } from "@girs/gnome-shell/extensions/extension";
 import { ExtensionPreferences } from "resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js";
 
-import { DisplayMode, ResetSchedule, DayOfWeek, SettingKeys, kSchemaName } from "./src/utils/Constants.js";
+import {
+    DisplayMode,
+    ResetSchedule,
+    DayOfWeek,
+    SettingKeys,
+    kSchemaName
+} from "./src/utils/Constants.js";
 import { setTimeout } from "./src/utils/DateTimeUtils.js";
 import { addChildToBox } from "./src/utils/GtkUtils.js";
 import { ReverseMap } from "./src/utils/ReverseMap.js";
@@ -58,7 +64,9 @@ interface RowEntry {
     input: InstanceType<typeof Gtk.Widget>;
 }
 
-let _: any;
+type GetTextFunc = (_in: string) => string;
+
+let _: GetTextFunc;
 
 export default class GnsPreferences extends ExtensionPreferences {
     private _rows: Partial<Record<SettingRowOrder, RowEntry>>;
@@ -101,6 +109,7 @@ export default class GnsPreferences extends ExtensionPreferences {
         this._schema = undefined;
         // @ts-ignore
         this.main = undefined;
+        // @ts-ignore
         _ = undefined;
     }
 
@@ -109,7 +118,7 @@ export default class GnsPreferences extends ExtensionPreferences {
 
         if (input instanceof Gtk.Switch) {
             inputWidget = new Gtk.Box({ orientation: Gtk.Orientation.HORIZONTAL });
-            addChildToBox(inputWidget, input);
+            addChildToBox(<Gtk.Box>inputWidget, input);
         }
 
         if (label) {
@@ -161,7 +170,12 @@ export default class GnsPreferences extends ExtensionPreferences {
             })
         });
         this._addRow(intervalLabel, intervalInput, SettingRowOrder.REFRESH_INTERVAL);
-        this.settings.bind(SettingKeys.REFRESH_INTERVAL, intervalInput, "value", Gio.SettingsBindFlags.DEFAULT);
+        this.settings.bind(
+            SettingKeys.REFRESH_INTERVAL,
+            intervalInput,
+            "value",
+            Gio.SettingsBindFlags.DEFAULT
+        );
     }
 
     // 2. Display mode select drop down.
@@ -268,8 +282,17 @@ export default class GnsPreferences extends ExtensionPreferences {
                 step_increment: 1
             })
         });
-        this._addRow(resetOnDayOfMonthLabel, resetOnDayOfMonthInput, SettingRowOrder.RESET_MONTH_DAY);
-        this.settings.bind(SettingKeys.RESET_MONTH_DAY, resetOnDayOfMonthInput, "value", Gio.SettingsBindFlags.DEFAULT);
+        this._addRow(
+            resetOnDayOfMonthLabel,
+            resetOnDayOfMonthInput,
+            SettingRowOrder.RESET_MONTH_DAY
+        );
+        this.settings.bind(
+            SettingKeys.RESET_MONTH_DAY,
+            resetOnDayOfMonthInput,
+            "value",
+            Gio.SettingsBindFlags.DEFAULT
+        );
     }
 
     // 6. Reset time Spin button control.
@@ -312,8 +335,18 @@ export default class GnsPreferences extends ExtensionPreferences {
         addChildToBox(resetTimeWidget, resetMinutesInput);
 
         this._addRow(resetTimeLabel, resetTimeWidget, SettingRowOrder.RESET_TIME);
-        this.settings.bind(SettingKeys.RESET_HOURS, resetHoursInput, "value", Gio.SettingsBindFlags.DEFAULT);
-        this.settings.bind(SettingKeys.RESET_MINUTES, resetMinutesInput, "value", Gio.SettingsBindFlags.DEFAULT);
+        this.settings.bind(
+            SettingKeys.RESET_HOURS,
+            resetHoursInput,
+            "value",
+            Gio.SettingsBindFlags.DEFAULT
+        );
+        this.settings.bind(
+            SettingKeys.RESET_MINUTES,
+            resetMinutesInput,
+            "value",
+            Gio.SettingsBindFlags.DEFAULT
+        );
     }
 
     // 7. Main label font size control.
@@ -342,7 +375,12 @@ export default class GnsPreferences extends ExtensionPreferences {
             visible: true
         });
         this._addRow(unitLabel, unitSwitch, SettingRowOrder.DISPLAY_BYTES);
-        this.settings.bind(SettingKeys.DISPLAY_BYTES, unitSwitch, "state", Gio.SettingsBindFlags.DEFAULT);
+        this.settings.bind(
+            SettingKeys.DISPLAY_BYTES,
+            unitSwitch,
+            "state",
+            Gio.SettingsBindFlags.DEFAULT
+        );
     }
 
     // 9. Show icon in status bar
@@ -358,7 +396,12 @@ export default class GnsPreferences extends ExtensionPreferences {
             visible: true
         });
         this._addRow(iconLabel, iconSwitch, SettingRowOrder.STATUS_SHOW_ICON);
-        this.settings.bind(SettingKeys.STATUS_SHOW_ICON, iconSwitch, "state", Gio.SettingsBindFlags.DEFAULT);
+        this.settings.bind(
+            SettingKeys.STATUS_SHOW_ICON,
+            iconSwitch,
+            "state",
+            Gio.SettingsBindFlags.DEFAULT
+        );
     }
 
     // 10. Main label font size control.
@@ -377,10 +420,15 @@ export default class GnsPreferences extends ExtensionPreferences {
             })
         });
         this._addRow(fontSizeLabel, fontSizeInput, SettingRowOrder.STATUS_FONT_SIZE);
-        this.settings.bind(SettingKeys.STATUS_FONT_SIZE, fontSizeInput, "value", Gio.SettingsBindFlags.DEFAULT);
+        this.settings.bind(
+            SettingKeys.STATUS_FONT_SIZE,
+            fontSizeInput,
+            "value",
+            Gio.SettingsBindFlags.DEFAULT
+        );
     }
 
-    _createOptionsList(options: any) {
+    _createOptionsList(options: Array<{ name: string }>) {
         const liststore = new Gtk.ListStore();
         liststore.set_column_types([GObject.TYPE_STRING]);
         for (let i = 0; i < options.length; i++) {

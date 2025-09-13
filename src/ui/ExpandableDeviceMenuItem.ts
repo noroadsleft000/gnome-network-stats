@@ -2,15 +2,20 @@ import Clutter from "gi://Clutter";
 import Gio from "gi://Gio";
 import St from "gi://St";
 
-import { PopupSubMenuMenuItem } from 'resource:///org/gnome/shell/ui/popupMenu.js';
-import { gettext as _ } from 'resource:///org/gnome/shell/extensions/extension.js';
+import { PopupSubMenuMenuItem } from "resource:///org/gnome/shell/ui/popupMenu.js";
+import { gettext as _ } from "resource:///org/gnome/shell/extensions/extension.js";
 
 import { getIconPath } from "../utils/GenUtils.js";
 import { registerGObjectClass } from "../utils/gjs.js";
+import { DeviceStatsText } from "../net/DeviceModel.js";
+
+export interface ExtendedDeviceStats extends DeviceStatsText {
+    iconPath: string;
+}
 
 /*
-* ExpandableDeviceMenuItemClass class represents each interface item in dropdown UI.
-*/
+ * ExpandableDeviceMenuItemClass class represents each interface item in dropdown UI.
+ */
 
 interface DeviceMenuOptions {
     defaultDeviceName?: string;
@@ -41,18 +46,11 @@ export class ExpandableDeviceMenuItem extends PopupSubMenuMenuItem {
     private _makeDefaultValueLabel: St.Label;
     private _makeDefaultButton: St.Button;
 
-    constructor(device: any, options: DeviceMenuOptions) {
+    constructor(device: ExtendedDeviceStats, options: DeviceMenuOptions) {
         super("", false);
-        const {
-            defaultDeviceName,
-            onResetClicked,
-            onMarkDefaultClicked,
-        } = options;
-        
+        const { defaultDeviceName, onResetClicked, onMarkDefaultClicked } = options;
 
-        const {
-            iconPath,
-        } = device;
+        const { iconPath } = device;
 
         // header
         const box = new St.BoxLayout({ style_class: "popup-menu-item" });
@@ -61,7 +59,7 @@ export class ExpandableDeviceMenuItem extends PopupSubMenuMenuItem {
 
         this._icon = new St.Icon({
             gicon: Gio.icon_new_for_string(iconPath),
-            style_class: 'icon-24',
+            style_class: "icon-24"
         });
         this._nameLabel = new St.Label({
             text: "",
@@ -92,10 +90,7 @@ export class ExpandableDeviceMenuItem extends PopupSubMenuMenuItem {
             text: "",
             style_class: "text-item text-left"
         });
-        this.addNewRowWithItems([
-            this._ipTitleLabel,
-            this._ipValueLabel
-        ]);
+        this.addNewRowWithItems([this._ipTitleLabel, this._ipValueLabel]);
 
         // Upload speed
         this._uploadSpeedTitleLabel = new St.Label({
@@ -106,10 +101,7 @@ export class ExpandableDeviceMenuItem extends PopupSubMenuMenuItem {
             text: "",
             style_class: "text-item text-left"
         });
-        this.addNewRowWithItems([
-            this._uploadSpeedTitleLabel,
-            this._uploadSpeedValueLabel
-        ]);
+        this.addNewRowWithItems([this._uploadSpeedTitleLabel, this._uploadSpeedValueLabel]);
 
         // Download speed
         this._downloadSpeedTitleLabel = new St.Label({
@@ -120,10 +112,7 @@ export class ExpandableDeviceMenuItem extends PopupSubMenuMenuItem {
             text: "",
             style_class: "text-item text-left"
         });
-        this.addNewRowWithItems([
-            this._downloadSpeedTitleLabel,
-            this._downloadSpeedValueLabel
-        ]);
+        this.addNewRowWithItems([this._downloadSpeedTitleLabel, this._downloadSpeedValueLabel]);
 
         // Total speed
         this._totalSpeedTitleLabel = new St.Label({
@@ -134,10 +123,7 @@ export class ExpandableDeviceMenuItem extends PopupSubMenuMenuItem {
             text: "",
             style_class: "text-item text-left"
         });
-        this.addNewRowWithItems([
-            this._totalSpeedTitleLabel,
-            this._totalSpeedValueLabel
-        ]);
+        this.addNewRowWithItems([this._totalSpeedTitleLabel, this._totalSpeedValueLabel]);
 
         // Data used since last reset
         this._totalDataTitleLabel = new St.Label({
@@ -148,12 +134,9 @@ export class ExpandableDeviceMenuItem extends PopupSubMenuMenuItem {
         this._totalDataValueLabel = new St.Label({
             text: "",
             style_class: "text-item text-left",
-            y_align: Clutter.ActorAlign.CENTER,
+            y_align: Clutter.ActorAlign.CENTER
         });
-        this.addNewRowWithItems([
-            this._totalDataTitleLabel,
-            this._totalDataValueLabel
-        ]);
+        this.addNewRowWithItems([this._totalDataTitleLabel, this._totalDataValueLabel]);
 
         // Reseted At
         this._lastResetedTitleLabel = new St.Label({
@@ -168,11 +151,11 @@ export class ExpandableDeviceMenuItem extends PopupSubMenuMenuItem {
 
         const resetIcon = new St.Icon({
             gicon: Gio.icon_new_for_string(getIconPath("restart_alt_black_24dp.svg")),
-            style_class: 'icon-16',
+            style_class: "icon-16"
         });
 
         const resetButton = new St.Button({
-            style_class: 'ci-action-btn ns-button',
+            style_class: "ci-action-btn ns-button",
             can_focus: true,
             child: resetIcon,
             x_align: Clutter.ActorAlign.END,
@@ -180,7 +163,7 @@ export class ExpandableDeviceMenuItem extends PopupSubMenuMenuItem {
             y_expand: true
         });
 
-        resetButton.connect('button-press-event', onResetClicked);
+        resetButton.connect("button-press-event", onResetClicked);
         this._resetButton = resetButton;
         this.addNewRowWithItems([
             this._lastResetedTitleLabel,
@@ -200,11 +183,11 @@ export class ExpandableDeviceMenuItem extends PopupSubMenuMenuItem {
         });
 
         const makeDefaultLabel = new St.Label({
-            text: _("Make Default"),
+            text: _("Make Default")
         });
 
         const makeDefaultButton = new St.Button({
-            style_class: 'ns-button ns-text-button',
+            style_class: "ns-button ns-text-button",
             can_focus: true,
             child: makeDefaultLabel,
             x_align: Clutter.ActorAlign.END,
@@ -213,7 +196,7 @@ export class ExpandableDeviceMenuItem extends PopupSubMenuMenuItem {
             y_expand: true
         });
 
-        makeDefaultButton.connect('button-press-event', onMarkDefaultClicked);
+        makeDefaultButton.connect("button-press-event", onMarkDefaultClicked);
         this._makeDefaultButton = makeDefaultButton;
         this.addNewRowWithItems([
             this._makeDefaultTitleLabel,
@@ -224,7 +207,7 @@ export class ExpandableDeviceMenuItem extends PopupSubMenuMenuItem {
         this.update(device, defaultDeviceName);
     }
 
-    addNewRowWithItems(items: any[]): St.BoxLayout {
+    addNewRowWithItems(items: St.Widget[]): St.BoxLayout {
         const box = new St.BoxLayout({
             style_class: "popup-menu-item",
             vertical: false
@@ -236,7 +219,7 @@ export class ExpandableDeviceMenuItem extends PopupSubMenuMenuItem {
         return box;
     }
 
-    update(device: any, defaultDeviceName?: string): void {
+    update(device: DeviceStatsText, defaultDeviceName?: string): void {
         const {
             //iconPath,
             name,
@@ -245,7 +228,7 @@ export class ExpandableDeviceMenuItem extends PopupSubMenuMenuItem {
             totalSpeed,
             totalData,
             ip,
-            startTime,
+            startTime
         } = device;
 
         //this._icon.set_gicon(iconPath);
@@ -262,7 +245,6 @@ export class ExpandableDeviceMenuItem extends PopupSubMenuMenuItem {
 
         this._downloadSpeedTitleLabel.set_text(`${_("Download speed")} [↓] : `);
         this._downloadSpeedValueLabel.set_text(downSpeed);
-
 
         this._totalSpeedTitleLabel.set_text(`${_("Total speed")} [↕] : `);
         this._totalSpeedValueLabel.set_text(totalSpeed);

@@ -63,11 +63,11 @@ export class TypeUtils {
         return this.typeOf(value) === typeName;
     }
 
-    static isArray<T extends Array<unknown>>(value: T): boolean {
+    static isArray<T>(value: T): boolean {
         return this.isTypeOf(value, "Array");
     }
 
-    static isObject<T extends Object>(value: T): boolean {
+    static isObject<T>(value: T): boolean {
         return this.isTypeOf(value, "Object");
     }
 }

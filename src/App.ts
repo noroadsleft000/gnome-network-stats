@@ -1,12 +1,11 @@
 import { AppController } from "./AppController.js";
 import { AppSettingsModel } from "./AppSettingsModel.js";
-import { DeviceModel } from "./net/DeviceModel.js"
+import { DeviceModel } from "./net/DeviceModel.js";
 import { NetworkMonitor } from "./net/NetworkMonitor.js";
 import { DeviceMonitor } from "./net/DeviceMonitor.js";
 import { Logger } from "./utils/Logger.js";
 
 export class App {
-
     static _instance?: App;
 
     static instance() {
@@ -25,7 +24,12 @@ export class App {
         appSettingsModel.init();
         const deviceMonitor = new DeviceMonitor(logger);
         const networkMonitor = new NetworkMonitor(logger);
-        const deviceModel = new DeviceModel(logger, deviceMonitor, networkMonitor, appSettingsModel);
+        const deviceModel = new DeviceModel(
+            logger,
+            deviceMonitor,
+            networkMonitor,
+            appSettingsModel
+        );
         this._appController = new AppController(logger, appSettingsModel, deviceModel);
     }
 

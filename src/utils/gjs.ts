@@ -5,10 +5,12 @@ import GObject from "gi://GObject";
  * @param target - UI component Class
  * @returns object
  */
-export function registerGObjectClass(target: any): any {
+export function registerGObjectClass<T>(target: T): T {
     if (Object.prototype.hasOwnProperty.call(target, "metaInfo")) {
+        // @ts-ignore
         return GObject.registerClass(target.metaInfo, target);
     } else {
+        // @ts-ignore
         return GObject.registerClass(target);
     }
 }

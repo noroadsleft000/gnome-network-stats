@@ -1,3 +1,4 @@
+import type { Button } from "@girs/gnome-shell/ui/panelMenu";
 import St from "gi://St";
 import * as Main from "resource:///org/gnome/shell/ui/main.js";
 
@@ -6,7 +7,6 @@ import * as Main from "resource:///org/gnome/shell/ui/main.js";
  */
 
 export class MainPanel {
-
     get rightBox(): St.Widget {
         if ("_rightBox" in Main.panel) {
             return Main.panel["_rightBox"] as St.Widget;
@@ -22,11 +22,11 @@ export class MainPanel {
         this.rightBox.remove_child(child);
     }
 
-    addToStatusArea(view: any): void {
+    addToStatusArea(view: Button): void {
         Main.panel.addToStatusArea("NetworkStatsStatusView", view, 0, "right");
     }
 
-    removeFromStatusArea(view: St.Widget): void {
+    removeFromStatusArea(view: Button): void {
         view.destroy();
     }
 }

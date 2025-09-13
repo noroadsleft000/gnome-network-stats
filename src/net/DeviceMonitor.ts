@@ -1,42 +1,44 @@
 import GLib from "gi://GLib";
 import GObject from "gi://GObject";
-import NetworkManager from "gi://NM";
+import NM from "gi://NM";
 
 import { DeviceType } from "../utils/Constants.js";
 import type { Logger } from "../utils/Logger.js";
 
-export interface Device {
+type NMDevice = NM.Device;
+
+export interface DeviceInfo {
     name: string;
     type: string;
     ip: string;
-    device: any;
+    device: NMDevice;
 }
 
 export interface SignalConnection {
-    device: any;
+    device: NMDevice;
     signal: number;
 }
 
 /*
-* Device monitor class responsible maintaining active devices record.
-* It handles addtion and removal of devices at run time.
-*/
+ * Device monitor class responsible maintaining active devices record.
+ * It handles addtion and removal of devices at run time.
+ */
 
 export class DeviceMonitor {
     private _textDecoder: TextDecoder;
-    private _client: NetworkManager.Client;
-    private _devices: Record<string, Device> = {};
+    private _client: NM.Client;
+    private _devices: Record<string, DeviceInfo> = {};
     private _defaultGw: string = "";
     private _netMgrSignals: number[] = [];
     private _netMgrStateChangeSignals: SignalConnection[] = [];
 
     constructor(private _logger: Logger) {
-        this._textDecoder = new TextDecoder;
-        this._client = NetworkManager.Client.new(null);
+        this._textDecoder = new TextDecoder();
+        this._client = NM.Client.new(null);
         this.init();
     }
 
-    getDevices(): Record<string, Device> {
+    getDevices(): Record<string, DeviceInfo> {
         return this._devices;
     }
 
@@ -44,7 +46,7 @@ export class DeviceMonitor {
         return this._devices[name] !== undefined;
     }
 
-    getDeviceByName(name: string): Device | undefined {
+    getDeviceByName(name: string): DeviceInfo | undefined {
         return this._devices[name];
     }
 
@@ -57,20 +59,20 @@ export class DeviceMonitor {
         return this.getDeviceTypeFromDevice(device);
     }
 
-    getDeviceTypeFromDevice(device: any): string {
+    getDeviceTypeFromDevice(device: NMDevice): string {
         if (device) {
             switch (device.device_type) {
-                case NetworkManager.DeviceType.ETHERNET:
+                case NM.DeviceType.ETHERNET:
                     return DeviceType.ETHERNET;
-                case NetworkManager.DeviceType.WIFI:
+                case NM.DeviceType.WIFI:
                     return DeviceType.WIFI;
-                case NetworkManager.DeviceType.BT:
+                case NM.DeviceType.BT:
                     return DeviceType.BLUETOOTH;
-                case NetworkManager.DeviceType.OLPC_MESH:
+                case NM.DeviceType.OLPC_MESH:
                     return DeviceType.OLPCMESH;
-                case NetworkManager.DeviceType.WIMAX:
+                case NM.DeviceType.WIMAX:
                     return DeviceType.WIMAX;
-                case NetworkManager.DeviceType.MODEM:
+                case NM.DeviceType.MODEM:
                     return DeviceType.MODEM;
                 default:
                     return DeviceType.NONE;
@@ -80,12 +82,24 @@ export class DeviceMonitor {
     }
 
     init(): void {
-        this._netMgrSignals.push(this._client.connect('any-device-added', this._deviceChanged.bind(this)));
-        this._netMgrSignals.push(this._client.connect('any-device-removed', this._deviceChanged.bind(this)));
-        this._netMgrSignals.push(this._client.connect('connection-added', this._connectionChanged.bind(this)));
-        this._netMgrSignals.push(this._client.connect('connection-removed', this._connectionChanged.bind(this)));
-        this._netMgrSignals.push(this._client.connect('active-connection-added', this._connectionChanged.bind(this)));
-        this._netMgrSignals.push(this._client.connect('active-connection-removed', this._connectionChanged.bind(this)));
+        this._netMgrSignals.push(
+            this._client.connect("any-device-added", this._deviceChanged.bind(this))
+        );
+        this._netMgrSignals.push(
+            this._client.connect("any-device-removed", this._deviceChanged.bind(this))
+        );
+        this._netMgrSignals.push(
+            this._client.connect("connection-added", this._connectionChanged.bind(this))
+        );
+        this._netMgrSignals.push(
+            this._client.connect("connection-removed", this._connectionChanged.bind(this))
+        );
+        this._netMgrSignals.push(
+            this._client.connect("active-connection-added", this._connectionChanged.bind(this))
+        );
+        this._netMgrSignals.push(
+            this._client.connect("active-connection-removed", this._connectionChanged.bind(this))
+        );
 
         this._loadDevices();
     }
@@ -101,7 +115,7 @@ export class DeviceMonitor {
         // disconnect "state-changed" signals of previously stored devices.
         this._disconnectDeviceStateChangeSignals();
 
-        const fileContent = GLib.file_get_contents('/proc/net/dev');
+        const fileContent = GLib.file_get_contents("/proc/net/dev");
         const lines = this._textDecoder.decode(fileContent[1]).split("\n");
 
         const devices: string[] = [];
@@ -111,8 +125,7 @@ export class DeviceMonitor {
             const fields = line.split(/[^A-Za-z0-9_-]+/);
             const deviceName = fields[0];
 
-            if (deviceName == "lo")
-                continue;
+            if (deviceName == "lo") continue;
 
             devices.push(deviceName);
         }
@@ -135,14 +148,15 @@ export class DeviceMonitor {
     }
 
     private _updateDefaultDevice(): void {
-        let fileContent = GLib.file_get_contents('/proc/net/route');
-        let lines = this._textDecoder.decode(fileContent[1]).split("\n");
+        const fileContent = GLib.file_get_contents("/proc/net/route");
+        const lines = this._textDecoder.decode(fileContent[1]).split("\n");
 
         //first 2 lines are for header
         for (const line of lines) {
-            let lineText = line.replace(/^ */g, "");
-            let params = lineText.split("\t");
-            if (params.length != 11) // ignore empty lines
+            const lineText = line.replace(/^ */g, "");
+            const params = lineText.split("\t");
+            if (params.length != 11)
+                // ignore empty lines
                 continue;
             // So store up/down values
             if (params[1] == "00000000") {
@@ -153,8 +167,11 @@ export class DeviceMonitor {
     }
 
     private _connectDeviceStateChangeSignals(): void {
-        for (const [_key, item] of Object.entries(this._devices)) {
-            const signalId = item.device.connect('state-changed', this._deviceStateChanged.bind(this));
+        for (const item of Object.values(this._devices)) {
+            const signalId = item.device.connect(
+                "state-changed",
+                this._deviceStateChanged.bind(this)
+            );
             this._netMgrStateChangeSignals.push({ device: item.device, signal: signalId });
         }
     }
@@ -179,13 +196,11 @@ export class DeviceMonitor {
         this._loadDevices();
     }
 
-    private _getIPAddress(device: any, family: number): string[] {
-        let addresses: string[] = [];
-        let ipConfig: any;
-        if (family == GLib.SYSDEF_AF_INET)
-            ipConfig = device.get_ip4_config();
-        else
-            ipConfig = device.get_ip6_config();
+    private _getIPAddress(device: NMDevice, family: number): string[] {
+        const addresses: string[] = [];
+        let ipConfig: NM.IPConfig | null = null;
+        if (family == GLib.SYSDEF_AF_INET) ipConfig = device.get_ip4_config();
+        else ipConfig = device.get_ip6_config();
 
         if (ipConfig == null) {
             this._logger.info(`No config found for device '${device.get_iface()}'`);
@@ -200,7 +215,7 @@ export class DeviceMonitor {
             return addresses;
         }
 
-        for (let netAddress of netMgrAddresses) {
+        for (const netAddress of netMgrAddresses) {
             const addr = netAddress.get_address();
             //const prefix = netAddress.get_prefix();
             addresses.push(addr);

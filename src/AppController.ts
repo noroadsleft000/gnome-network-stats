@@ -162,7 +162,7 @@ export class AppController {
             this._logger.error(`ERROR: ${error?.toString()} TRACE: ${error?.stack}`);
         }
         return true;
-    }
+    };
 
     onEveryMinute = () => {
         //this._logger.debug("every 1 minutes");
@@ -174,7 +174,7 @@ export class AppController {
             this._logger.error(`ERROR: ${error?.toString()} TRACE: ${error?.stack}`);
         }
         return true;
-    }
+    };
 
     onSettingChanged = () => {
         this.uninstallTimers();
@@ -184,7 +184,7 @@ export class AppController {
             this._appSettingsModel.clearResetAllStats();
             this._deviceModel.resetAll();
         }
-    }
+    };
 
     onRightClick = ({ button }: { button: string }) => {
         if (button === "right") {

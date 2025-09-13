@@ -8,21 +8,24 @@ import { ExtensionUtils } from "./ExtensionUtils.js";
  * @param obj2 - Second object to compare
  * @returns if objects/values are equal returns true otherwise false
  */
-export function areEqual(obj1: any, obj2: any): boolean {
+export function areEqual(obj1: unknown, obj2: unknown): boolean {
     if (TypeUtils.isObject(obj1) && TypeUtils.isObject(obj2)) {
+        // @ts-ignore
         const keys1 = Object.keys(obj1);
+        // @ts-ignore
         const keys2 = Object.keys(obj2);
         if (keys1.length === keys2.length) {
-            for (let key of keys1) {
+            for (const key of keys1) {
+                // @ts-ignore
                 if (!areEqual(obj1[key], obj2[key])) {
                     return false;
                 }
             }
             return true;
         }
-    } else if (TypeUtils.isArray(obj1) && TypeUtils.isArray(obj2)) {
+    } else if (Array.isArray(obj1) && Array.isArray(obj2)) {
         if (obj1.length !== obj2.length) {
-            for (let index in obj1) {
+            for (const index in obj1) {
                 if (areEqual(obj1[index], obj2[index])) {
                     return false;
                 }
@@ -44,7 +47,8 @@ export function compareJsonStrings(str1: string, str2: string): boolean {
         const obj1 = JSON.parse(str1);
         const obj2 = JSON.parse(str2);
         return areEqual(obj1, obj2);
-    } catch (err) {
+    } catch (_err) {
+        _err;
         // do nothing
     }
     return false;

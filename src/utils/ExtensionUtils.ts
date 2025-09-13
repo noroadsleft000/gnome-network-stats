@@ -2,8 +2,8 @@ import GLib from "gi://GLib";
 import { getExtension } from "../../extension.js";
 
 export class ExtensionUtils {
-
-    static extensionLocalPath: string = ".local/share/gnome-shell/extensions/network-stats@gnome.noroadsleft.xyz";
+    static extensionLocalPath: string =
+        ".local/share/gnome-shell/extensions/network-stats@gnome.noroadsleft.xyz";
 
     static getExtensionPath_v0(): string {
         const homeDir = GLib.get_home_dir();

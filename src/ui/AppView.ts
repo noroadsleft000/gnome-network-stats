@@ -18,7 +18,10 @@ export class AppView {
     private _button: St.Bin;
     private _popupView: PopupView | undefined;
 
-    constructor(private _logger: Logger, private _appSettingsModel: AppSettingsModel) {
+    constructor(
+        private _logger: Logger,
+        private _appSettingsModel: AppSettingsModel
+    ) {
         this._mainPanel = new MainPanel();
         const { label, button } = this.createLayout();
         this._label = label;

@@ -1,4 +1,5 @@
 # gnome-network-stats
+
 Gnome extension for showing internet upload, download speed and per day data usage.
 
 <div>
@@ -8,12 +9,15 @@ Gnome extension for showing internet upload, download speed and per day data usa
 </div>
 
 ## Roadmap
+
 See details on <a href="TODO.md">Todo page</a>.
+
 ## Installation
 
 ### install from https://extensions.gnome.org
 
 The latest reviewed version can be found at
+
 <div>
 <a href="https://extensions.gnome.org/extension/4308/network-stats/" >
 <img src="assets/get-it-on-ge.svg" height="100" alt="Get it on GNOME Extensions">
@@ -41,51 +45,70 @@ make install
 Then go to https://extensions.gnome.org/local/ to turn on the extension or use
 gnome-tweak-tool to enable it.
 
-
 ## Make commands
+
 ### build extension
+
 ```
 make build
 ```
+
 ### install extension
+
 ```
 make install
 ```
+
 ### uninstall extension
+
 ```
 make uninstall
 ```
+
 ### enable extension
+
 ```
 make enable
 ```
+
 ### disable extension
+
 ```
 make disable
 ```
+
 ### pack the extension to zip file
+
 ```
 make pack
 ```
+
 ### launch a nested wayland session for debugging the extension
+
 ```
 make debug
 ```
 
 ## Known issues
+
 ### ERROR while updating extension from store.
+
 Universal solution of all problems `"Restart your machine"` will work. Or you can restart the gnome-shell alone.
 
 restart gnome-shell on X11:
+
 ```
 "Alt + F2", "r + Enter"
 ```
 
 restart gnome-shell on wayland or (ubuntu >= 21.10):
+
 ```
 busctl --user call org.gnome.Shell /org/gnome/Shell org.gnome.Shell Eval s 'Meta.restart("Restarting…")'
 ```
+
 kill gnome shell, works for both X11 and wayland:
+
 ```
 killall -9 gnome-shell
 ```
@@ -97,6 +120,7 @@ still facing some error? report it by creating a bug.
 When reporting a bug, please include debugging output from `gnome-shell`.
 
 You can capture the logs with one of these commands:
+
 ```
 journalctl -f -o cat GNOME_SHELL_EXTENSION_UUID=network-stats@gnome.noroadsleft.xyz
 
@@ -106,6 +130,7 @@ journalctl -f -o cat /usr/bin/gnome-shell
 ```
 
 ## Developer resources
+
 - [Gnome Javascript guide](https://gjs.guide)
 - [Basic Gnome extension guide](https://gjs.guide/extensions/development/creating.html#gnome-extensions-tool)
 - [Gnome JS API documentation](https://gjs-docs.gnome.org/)
@@ -113,9 +138,9 @@ journalctl -f -o cat /usr/bin/gnome-shell
 - [Gnome JS API source code](https://github.com/GNOME/gnome-shell/tree/main/js)
 
 ## Contibutors
+
 Contributions are always welcome, fork this repository make your changes.
 and then generate a pull request.
-
 
 ## License
 

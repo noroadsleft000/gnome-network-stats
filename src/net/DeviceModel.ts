@@ -22,14 +22,7 @@ export interface DeviceStats {
     resetedAt: Date;
 }
 
-export interface DeviceInfo {
-    initialReading: number;
-    resetedAt?: string;
-    totalUpload?: number;
-    totalDownload?: number;
-}
-
-interface DeviceStatsText {
+export interface DeviceStatsText {
     name: string;
     ip: string;
     type: string;
@@ -38,6 +31,13 @@ interface DeviceStatsText {
     totalSpeed: string;
     totalData: string;
     startTime: string;
+}
+
+export interface DeviceReading {
+    initialReading: number;
+    resetedAt?: string;
+    totalUpload?: number;
+    totalDownload?: number;
 }
 
 /*
@@ -62,11 +62,11 @@ export class DeviceModel {
         this.init();
     }
 
-    get networkMonitor(): any {
+    get networkMonitor(): NetworkMonitor {
         return this._networkMonitor;
     }
 
-    get deviceMonitor(): any {
+    get deviceMonitor(): DeviceMonitor {
         return this._deviceMonitor;
     }
 
@@ -89,7 +89,7 @@ export class DeviceModel {
                 resetedAt: now
             };
             if (resetedAt) {
-                stats[name].resetedAt = new Date(resetedAt) || now;
+                stats[name].resetedAt = new Date(resetedAt);
             }
             this._stats = stats;
         }
@@ -104,7 +104,11 @@ export class DeviceModel {
         return this._statsText;
     }
 
-    getStatField(deviceName: string, field: keyof DeviceStats, defaultVal: any): any {
+    getStatField<K extends keyof DeviceStats>(
+        deviceName: string,
+        field: K,
+        defaultVal: DeviceStats[K]
+    ): DeviceStats[K] {
         const stat = this._stats[deviceName];
         if (stat) {
             return stat[field] || defaultVal;
@@ -112,7 +116,11 @@ export class DeviceModel {
         return defaultVal;
     }
 
-    getStatTextField(deviceName: string, field: keyof DeviceStatsText, defaultVal: string): string {
+    getStatTextField<K extends keyof DeviceStatsText>(
+        deviceName: string,
+        field: K,
+        defaultVal: DeviceStatsText[K]
+    ): DeviceStatsText[K] {
         const stat = this._statsText[deviceName];
         if (stat) {
             return stat[field] || defaultVal;
@@ -163,7 +171,7 @@ export class DeviceModel {
         return this._deviceMonitor.getActiveDeviceName();
     }
 
-    getDevices(): any {
+    getDevices() {
         return this._deviceMonitor.getDevices();
     }
 
@@ -282,7 +290,7 @@ export class DeviceModel {
             resetedAt: now
         };
         this._stats[name] = stat;
-        const deviceLogs: DeviceInfo = {
+        const deviceLogs: DeviceReading = {
             initialReading: 0,
             totalUpload: 0,
             totalDownload: 0,

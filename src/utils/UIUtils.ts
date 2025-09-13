@@ -10,7 +10,7 @@ import { getIconPath } from "./GenUtils.js";
 export function createIcon(iconName: string): St.Icon {
     const icon = new St.Icon({
         gicon: Gio.icon_new_for_string(getIconPath(iconName)),
-        style_class: 'system-status-icon',
+        style_class: "system-status-icon"
     });
     return icon;
 }

@@ -2,7 +2,7 @@
  * EventBroadcaster class can be inherited to create a new type of event broadcaster.
  */
 
-export class EventBroadcaster<T = any> {
+export class EventBroadcaster<T = unknown> {
     private _listeners: Array<(message: T) => void>;
 
     constructor() {

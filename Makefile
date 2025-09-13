@@ -25,7 +25,7 @@ node_modules: package.json
 	pnpm install
 
 dist/extension.js dist/prefs.js: node_modules $(SRC_FILES)
-	./node_modules/.bin/tsc
+	npx tsc
 
 .PHONY: pack
 pack: $(OUTPUT)

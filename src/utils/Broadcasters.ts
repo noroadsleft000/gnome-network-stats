@@ -26,7 +26,7 @@ export class Broadcasters {
         this._deviceResetMessageBroadcaster = new EventBroadcaster<DeviceResetMessage>();
         this._titleClickedMessageBroadcaster = new EventBroadcaster<TitleClickedMessage>();
     }
-    
+
     destruct(): void {
         if (this._deviceResetMessageBroadcaster) {
             this._deviceResetMessageBroadcaster = undefined;

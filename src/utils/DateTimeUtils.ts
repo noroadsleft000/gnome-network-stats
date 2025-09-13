@@ -57,8 +57,15 @@ export function getDayNumberForDayOfWeek(day: string): number {
  * @param refDate - date WRT which we want to compute next day.
  * @returns Date object for asked upcomming time.
  */
-export function getNextTimeOfTheDay(hours: number, minutes: number, refDate: Date = new Date()): Date {
-    if (hours < refDate.getHours() || (hours === refDate.getHours() && minutes <= refDate.getMinutes())) {
+export function getNextTimeOfTheDay(
+    hours: number,
+    minutes: number,
+    refDate: Date = new Date()
+): Date {
+    if (
+        hours < refDate.getHours() ||
+        (hours === refDate.getHours() && minutes <= refDate.getMinutes())
+    ) {
         refDate.setDate(refDate.getDate() + 1);
     }
     refDate.setHours(hours);
@@ -74,8 +81,16 @@ export function getNextTimeOfTheDay(hours: number, minutes: number, refDate: Dat
  * @param refDate - date WRT which we want to compute next day.
  * @returns Date object for asked day of week.
  */
-export function getNextDayOfTheWeek(dayOfWeek: number, excludeToday: boolean = true, refDate: Date = new Date()): Date {
-    refDate.setDate(refDate.getDate() + Number(excludeToday) + ((dayOfWeek + 7 - refDate.getDay() - +!!excludeToday) % 7));
+export function getNextDayOfTheWeek(
+    dayOfWeek: number,
+    excludeToday: boolean = true,
+    refDate: Date = new Date()
+): Date {
+    refDate.setDate(
+        refDate.getDate() +
+            Number(excludeToday) +
+            ((dayOfWeek + 7 - refDate.getDay() - +!!excludeToday) % 7)
+    );
     return refDate;
 }
 

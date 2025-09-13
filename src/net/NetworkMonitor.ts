@@ -16,11 +16,11 @@ export class NetworkMonitor {
     private _textDecoder: TextDecoder;
 
     constructor(private _logger: Logger) {
-        this._textDecoder = new TextDecoder;
+        this._textDecoder = new TextDecoder();
     }
 
     getStats(): NetworkStats {
-        const fileContent = GLib.file_get_contents('/proc/net/dev');
+        const fileContent = GLib.file_get_contents("/proc/net/dev");
         const lines = this._textDecoder.decode(fileContent[1]).split("\n");
 
         const deviceLogs: Record<string, DeviceLog> = {};
@@ -30,8 +30,7 @@ export class NetworkMonitor {
             const fields = line.split(/[^A-Za-z0-9_-]+/);
             const deviceName = fields[0];
 
-            if (deviceName == "lo")
-                continue;
+            if (deviceName == "lo") continue;
 
             const sent = parseInt(fields[9]);
             const received = parseInt(fields[1]);

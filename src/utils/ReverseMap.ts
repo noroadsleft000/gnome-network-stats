@@ -1,7 +1,10 @@
 /**
  * ReverseMap helps you looks up keys based on values.
  */
-export class ReverseMap<KeyType extends string | number, ValueType extends string | number | symbol> {
+export class ReverseMap<
+    KeyType extends string | number,
+    ValueType extends string | number | symbol
+> {
     private _reverseMap: Partial<Record<ValueType, KeyType>>;
     private _forwardMap: Partial<Record<KeyType, ValueType>>;
 
@@ -11,7 +14,7 @@ export class ReverseMap<KeyType extends string | number, ValueType extends strin
         for (const key in obj) {
             // @ts-ignore
             const value = obj[key] as ValueType;
-            if (obj.hasOwnProperty(key)) {
+            if (Object.prototype.hasOwnProperty.call(obj, key)) {
                 this._reverseMap[value] = key as KeyType;
                 this._forwardMap[key as KeyType] = value as ValueType;
             }
@@ -22,7 +25,7 @@ export class ReverseMap<KeyType extends string | number, ValueType extends strin
         return this._reverseMap[value] ?? defaultIndex;
     }
 
-    getValue(index: KeyType): any {
-        return this._forwardMap[index];
+    getValue(index: KeyType): ValueType {
+        return this._forwardMap[index]!;
     }
 }

@@ -1,14 +1,13 @@
-'use strict';
+"use strict";
 
-import { Extension, gettext as _ } from 'resource:///org/gnome/shell/extensions/extension.js';
+import { Extension } from "resource:///org/gnome/shell/extensions/extension.js";
 
-import { Logger } from "./src/utils/Logger.js"
+import { Logger } from "./src/utils/Logger.js";
 import { App } from "./src/App.js";
 import { Broadcasters } from "./src/utils/Broadcasters.js";
-import { ExtensionMetadata } from '@girs/gnome-shell/extensions/extension';
+import { ExtensionMetadata } from "@girs/gnome-shell/extensions/extension";
 
 export default class GnsExtension extends Extension {
-
     static instance?: GnsExtension;
 
     constructor(props: ExtensionMetadata) {
@@ -36,10 +35,9 @@ export default class GnsExtension extends Extension {
     }
 }
 
-
 export function getExtension() {
     if (!GnsExtension.instance) {
-        throw new Error('extension is not loaded/enabled');
+        throw new Error("extension is not loaded/enabled");
     }
     return GnsExtension.instance;
 }
