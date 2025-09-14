@@ -7,7 +7,6 @@ import * as Main from "resource:///org/gnome/shell/ui/main.js";
  */
 
 export class MainPanel {
-
     /**
      * Gets the right box from the panel
      * @returns right box

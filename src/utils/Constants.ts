@@ -46,7 +46,7 @@ export enum DevicesListType {
     METERED = "metered",
     PREFERED = "prefered",
     NON_DUMMY = "non_dummy",
-    DEFAULT="all"
+    DEFAULT = "all"
 }
 
 /* Sync these constants properly with schema file */

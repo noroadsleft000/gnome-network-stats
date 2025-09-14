@@ -336,7 +336,7 @@ export class PopupView extends PanelMenuButton {
      * Clear all menu items
      */
     clearMenuItems(): void {
-        for (const [_key, value] of Object.entries(this._menuItems)) {
+        for (const value of Object.values(this._menuItems)) {
             value.destroy();
         }
         this._menuItems = {};
