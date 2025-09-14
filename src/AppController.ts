@@ -27,6 +27,9 @@ export class AppController {
         this._appView = new AppView(_logger, _appSettingsModel);
     }
 
+    /**
+     * Initializes the app controller
+     */
     init() {
         // TODO: remove update() call from here and move device reset time to DeviceMonitor.
         this.update();
@@ -37,6 +40,9 @@ export class AppController {
         this._appView.setTitleTextSize(this._appSettingsModel.statusFontSize);
     }
 
+    /**
+     * Deinitializes the app controller
+     */
     deinit() {
         Broadcasters.titleClickedMessageBroadcaster?.unsubscribe(this.onRightClick);
         this._appSettingsModel.unsubscribe(this.onSettingChanged);
@@ -45,6 +51,9 @@ export class AppController {
         this.uninstallTimers();
     }
 
+    /**
+     * Installs the timers, refresh timer and minute timer.
+     */
     installTimers() {
         const { refreshInterval } = this._appSettingsModel;
         this._refreshTimeout = GLib.timeout_add(
@@ -59,6 +68,9 @@ export class AppController {
         );
     }
 
+    /**
+     * Uninstalls the timers, refresh timer and minute timer.
+     */
     uninstallTimers() {
         if (this._refreshTimeout) {
             GLib.source_remove(this._refreshTimeout);
@@ -70,14 +82,24 @@ export class AppController {
         }
     }
 
+    /**
+     * Shows the app view
+     */
     show() {
         this._appView.show();
     }
 
+    /**
+     * Hides the app view
+     */
     hide() {
         this._appView.hide();
     }
 
+    /**
+     * Returns the active device name based on the user prefered device name.
+     * If the user prefered device is not available, returns the active device name.
+     */
     _getActiveDeviceName(): string {
         const userPreferedDevice = this._appSettingsModel.preferedDeviceName;
         if (userPreferedDevice && this._devicePresenter.hasDevice(userPreferedDevice)) {
@@ -86,6 +108,9 @@ export class AppController {
         return this._devicePresenter.getActiveDeviceName();
     }
 
+    /**
+     * Updates the app view with the updated view model from the device presenter.
+     */
     update() {
         const { displayMode, displayBytes } = this._appSettingsModel;
         //this._logger.debug(`displayMode : ${displayMode}`);
@@ -135,6 +160,9 @@ export class AppController {
         // this._logger.debug(`deviceName: ${activeDevice} upload: ${uploadStr} download: ${downloadStr} totalData: ${totalDataStr}`);
     }
 
+    /**
+     * Resets the network stats based on the reset schedule
+     */
     resetIfRequired() {
         const now = new Date();
         const activeDevice = this._getActiveDeviceName();
@@ -153,6 +181,9 @@ export class AppController {
     }
 
     // #region Event handlers
+    /**
+     * Refreshes the app view after every refresh interval
+     */
     onRefreshTimeout = () => {
         //this._logger.debug("tick");
         try {
@@ -164,6 +195,10 @@ export class AppController {
         return true;
     };
 
+    /**
+     * Resets the network stats if required, and saves the stats to the file
+     * every minute
+     */
     onEveryMinute = () => {
         //this._logger.debug("every 1 minutes");
         try {
@@ -176,6 +211,9 @@ export class AppController {
         return true;
     };
 
+    /**
+     * Handles the setting change event
+     */
     onSettingChanged = () => {
         this.uninstallTimers();
         this.installTimers();
@@ -186,6 +224,10 @@ export class AppController {
         }
     };
 
+    /**
+     * Handles the right click event, Cycles through the display modes.
+     * @param button - button clicked
+     */
     onRightClick = ({ button }: { button: string }) => {
         if (button === "right") {
             // cycle through the modes

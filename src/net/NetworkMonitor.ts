@@ -12,6 +12,10 @@ interface NetworkStats {
     deviceLogs: Record<string, DeviceLog>;
 }
 
+/**
+ * NetworkMonitor class is responsible for fetching the network stats from the system.
+ */
+
 export class NetworkMonitor {
     private _textDecoder: TextDecoder;
 
@@ -19,6 +23,10 @@ export class NetworkMonitor {
         this._textDecoder = new TextDecoder();
     }
 
+    /**
+     * Gets the network stats for all devices/interfaces
+     * @returns network stats
+     */
     getStats(): NetworkStats {
         const fileContent = GLib.file_get_contents("/proc/net/dev");
         const lines = this._textDecoder.decode(fileContent[1]).split("\n");

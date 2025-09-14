@@ -28,7 +28,7 @@ export default class GnsExtension extends Extension {
     disable() {
         Logger.info(`disabling ${this.metadata.name}`);
         App.instance().stop();
-        Broadcasters.getInstance().destruct();
+        Broadcasters.releaseInstance();
         App.releaseInstance();
         Logger.releaseInstance();
         GnsExtension.instance = undefined;

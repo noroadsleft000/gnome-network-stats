@@ -39,6 +39,9 @@ export class AppView {
         this._button = undefined;
     }
 
+    /**
+     * Creates the layout for the app view
+     */
     createLayout() {
         const button = new St.Bin({
             style_class: "panel-button",
@@ -60,6 +63,10 @@ export class AppView {
         return { label, button };
     }
 
+    /**
+     * Updates the popup view with the stats from the device model.
+     * @param deviceModel - DevicePresenter instance
+     */
     update(deviceModel: DevicePresenter): void {
         if (!this._popupView) {
             return;
@@ -108,10 +115,16 @@ export class AppView {
         }
     }
 
+    /**
+     * Shows the drop down menu
+     */
     showDropDown(): void {
         this._logger.debug("Show the drop down", this);
     }
 
+    /**
+     * Shows the popup view
+     */
     show(): void {
         if (!this._popupView) {
             this._popupView = new PopupView(this._logger, this._appSettingsModel);
@@ -119,6 +132,9 @@ export class AppView {
         this._mainPanel.addToStatusArea(this._popupView);
     }
 
+    /**
+     * Hides the popup view
+     */
     hide(): void {
         if (this._popupView) {
             this._popupView.destroy();
