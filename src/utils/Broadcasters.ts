@@ -13,7 +13,7 @@ export class Broadcasters {
     private _deviceResetMessageBroadcaster?: EventBroadcaster<DeviceResetMessage>;
     private _titleClickedMessageBroadcaster?: EventBroadcaster<TitleClickedMessage>;
 
-    static _instance: Broadcasters;
+    static _instance?: Broadcasters;
 
     static getInstance() {
         if (!this._instance) {
@@ -22,18 +22,18 @@ export class Broadcasters {
         return this._instance;
     }
 
+    static releaseInstance(): void {
+        if (!this._instance) {
+            return;
+        }
+        this._instance._deviceResetMessageBroadcaster?.destructor();
+        this._instance._titleClickedMessageBroadcaster?.destructor();
+        this._instance = undefined;
+    }
+
     constructor() {
         this._deviceResetMessageBroadcaster = new EventBroadcaster<DeviceResetMessage>();
         this._titleClickedMessageBroadcaster = new EventBroadcaster<TitleClickedMessage>();
-    }
-
-    destruct(): void {
-        if (this._deviceResetMessageBroadcaster) {
-            this._deviceResetMessageBroadcaster = undefined;
-        }
-        if (this._titleClickedMessageBroadcaster) {
-            this._titleClickedMessageBroadcaster = undefined;
-        }
     }
 
     static get deviceResetMessageBroadcaster() {

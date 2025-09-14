@@ -447,7 +447,9 @@ export default class GnsPreferences extends ExtensionPreferences {
             hexpand: true,
             halign: Gtk.Align.END
         });
-        const displayListType = this.settings.get_string(SettingKeys.DEVICES_LIST_TYPE) as DevicesListType;
+        const displayListType = this.settings.get_string(
+            SettingKeys.DEVICES_LIST_TYPE
+        ) as DevicesListType;
         const displayModeIndex = kDevicesListMapping.getKey(displayListType) ?? -1;
 
         const options = [
