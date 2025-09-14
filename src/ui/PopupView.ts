@@ -16,7 +16,7 @@ import { getDeviceIcon, getIconPath } from "../utils/GenUtils.js";
 import { ExtensionUtils } from "../utils/ExtensionUtils.js";
 import type { AppSettingsModel, ListenerFunc } from "../AppSettingsModel.ts";
 import type { Logger } from "../utils/Logger.ts";
-import { DeviceStatsText } from "../net/DeviceModel.js";
+import type { DeviceViewModel } from "../net/DevicePresenter.js";
 
 /*
  * PopupViewClass class represents the UI for dropdown menu.
@@ -93,8 +93,6 @@ export class PopupView extends PanelMenuButton {
             style_class: "system-status-icon"
         });
 
-        const box = new St.BoxLayout({ style_class: "view-item", vertical: false });
-
         this._totalSpeed = new St.Button({
             style_class: "ns-action-button",
             reactive: true,
@@ -165,13 +163,6 @@ export class PopupView extends PanelMenuButton {
             ExtensionUtils.openPreferences();
         });
 
-        box.add_child(this._totalSpeed);
-        box.add_child(this._downloadSpeed);
-        box.add_child(this._uploadSpeed);
-        box.add_child(this._bothSpeed);
-        box.add_child(this._dataUsage);
-        box.add_child(this._settings);
-
         this._totalSpeed.connect("button-press-event", () => {
             //this._logger.debug("total speed button pressed");
             this._appSettingsModel.displayMode = DisplayMode.TOTAL_SPEED;
@@ -199,38 +190,21 @@ export class PopupView extends PanelMenuButton {
         });
         this.updateGroupButtonsState();
 
-        const popupMenuSection0 = new PopupMenuSection();
-        popupMenuSection0.actor.add_child(box);
-        this.popupMenu.addMenuItem(popupMenuSection0);
-
-        const popupMenuSection1 = new PopupMenuSection();
-        popupMenuSection1.actor.add_child(new St.BoxLayout({ style_class: "v-spacer" }));
-        this.popupMenu.addMenuItem(popupMenuSection1);
-
-        const popupMenuSection2 = new PopupMenuSection();
-        popupMenuSection2.actor.add_child(this.createSeparator());
-        this.popupMenu.addMenuItem(popupMenuSection2);
-
-        const titleMenuItem = new DeviceMenuTitleItem(
-            null,
-            _("Device"),
-            _("Speed"),
-            _("Data Used")
-        );
-        const popupMenuSection3 = new PopupMenuSection();
-        popupMenuSection3.actor.add_child(titleMenuItem);
-        this.popupMenu.addMenuItem(popupMenuSection3);
-
-        const popupMenuSection4 = new PopupMenuSection();
-        popupMenuSection4.actor.add_child(this.createSeparator());
-        this.popupMenu.addMenuItem(popupMenuSection4);
-
-        // separator item
-        //this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
+        // connect to main button click event
         this.connect("button-press-event", this.onMainButtonClicked.bind(this));
+
+        // connect to app settings model change event
         this._settingsListener = this._appSettingsModel.subscribe(() => {
             this.updateGroupButtonsState();
         });
+        this.addDefaultMenuItems();
+    }
+
+    destructor() {
+        if (this._settingsListener) {
+            this._appSettingsModel.unsubscribe(this._settingsListener);
+            this._settingsListener = undefined;
+        }
     }
 
     get popupMenu() {
@@ -276,6 +250,42 @@ export class PopupView extends PanelMenuButton {
         }
     }
 
+    addDefaultMenuItems() {
+        const box = new St.BoxLayout({ style_class: "view-item", vertical: false });
+        box.add_child(this._totalSpeed);
+        box.add_child(this._downloadSpeed);
+        box.add_child(this._uploadSpeed);
+        box.add_child(this._bothSpeed);
+        box.add_child(this._dataUsage);
+        box.add_child(this._settings);
+
+        const popupMenuSection0 = new PopupMenuSection();
+        popupMenuSection0.actor.add_child(box);
+        this.popupMenu.addMenuItem(popupMenuSection0);
+
+        const popupMenuSection1 = new PopupMenuSection();
+        popupMenuSection1.actor.add_child(new St.BoxLayout({ style_class: "v-spacer" }));
+        this.popupMenu.addMenuItem(popupMenuSection1);
+
+        const popupMenuSection2 = new PopupMenuSection();
+        popupMenuSection2.actor.add_child(this.createSeparator());
+        this.popupMenu.addMenuItem(popupMenuSection2);
+
+        const titleMenuItem = new DeviceMenuTitleItem(
+            null,
+            _("Device"),
+            _("Speed"),
+            _("Data Used")
+        );
+        const popupMenuSection3 = new PopupMenuSection();
+        popupMenuSection3.actor.add_child(titleMenuItem);
+        this.popupMenu.addMenuItem(popupMenuSection3);
+
+        const popupMenuSection4 = new PopupMenuSection();
+        popupMenuSection4.actor.add_child(this.createSeparator());
+        this.popupMenu.addMenuItem(popupMenuSection4);
+    }
+
     createSeparator(): St.BoxLayout {
         const outerBox = new St.BoxLayout({
             style_class: "v-separator-cont",
@@ -293,7 +303,19 @@ export class PopupView extends PanelMenuButton {
         return outerBox;
     }
 
-    updateItem(device: DeviceStatsText): void {
+    /**
+     * Get all menu items
+     * @returns All menu items
+     */
+    menuItems(): Readonly<Record<string, ExpandableDeviceMenuItem>> {
+        return this._menuItems;
+    }
+
+    /**
+     * Update a menu item
+     * @param device - Device to update
+     */
+    updateItem(device: DeviceViewModel): void {
         let menuItem = this._menuItems[device.name];
         const iconPath = getDeviceIcon(device.type);
         const extendedDeviceStats = { ...device, iconPath };
@@ -308,6 +330,16 @@ export class PopupView extends PanelMenuButton {
         } else {
             menuItem.update(device, this._appSettingsModel.preferedDeviceName);
         }
+    }
+
+    /**
+     * Clear all menu items
+     */
+    clearMenuItems(): void {
+        for (const [_key, value] of Object.entries(this._menuItems)) {
+            value.destroy();
+        }
+        this._menuItems = {};
     }
 
     onResetClicked(name: string): void {
@@ -350,6 +382,11 @@ export class PopupView extends PanelMenuButton {
         if (this.menu) {
             this.menu.close();
         }
+        // this._uploadSpeed.unref();
+        // this._downloadSpeed.unref();
+        // this._totalSpeed.unref();
+        // this._bothSpeed.unref();
+        // this._dataUsage.unref();
         // @ts-ignore - forceful garbage collect
         this._uploadSpeed = undefined;
         // @ts-ignore - forceful garbage collect

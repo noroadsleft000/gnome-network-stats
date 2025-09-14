@@ -1,10 +1,10 @@
 import Gio from "gi://Gio";
-import { DayOfWeek, DisplayMode, ResetSchedule, SettingKeys } from "./utils/Constants.js";
+import { DayOfWeek, DevicesListType, DisplayMode, ResetSchedule, SettingKeys } from "./utils/Constants.js";
 import { kRefreshInterval, kSchemaName } from "./utils/Constants.js";
 import { compareJsonStrings } from "./utils/GenUtils.js";
 import { getExtension } from "../extension.js";
 import type { Logger } from "./utils/Logger.ts";
-import type { DeviceReading } from "./net/DeviceModel.js";
+import type { DeviceReading } from "./net/DevicePresenter.js";
 
 /**
  * DevicesInfoMap
@@ -31,6 +31,7 @@ export class AppSettingsModel {
     private _settingListeners: ListenerFunc[] = [];
     private _refreshInterval = kRefreshInterval;
     private _displayMode = DisplayMode.DEFAULT;
+    private _devicesListType = DevicesListType.DEFAULT;
     private _resetSchedule = ResetSchedule.DAILY;
     private _resetDayOfWeek = DayOfWeek.MONDAY;
     private _resetDayOfMonth = 1;
@@ -75,6 +76,7 @@ export class AppSettingsModel {
     load() {
         this._refreshInterval = this.settings.get_int(SettingKeys.REFRESH_INTERVAL);
         this._displayMode = this.settings.get_string(SettingKeys.DISPLAY_MODE) as DisplayMode;
+        this._devicesListType = this.settings.get_string(SettingKeys.DEVICES_LIST_TYPE) as DevicesListType;
         this._resetSchedule = this.settings.get_string(SettingKeys.RESET_SCHEDULE) as ResetSchedule;
         this._resetDayOfWeek = this.settings.get_string(SettingKeys.RESET_WEEK_DAY) as DayOfWeek;
         this._resetDayOfMonth = this.settings.get_int(SettingKeys.RESET_MONTH_DAY);
@@ -133,6 +135,10 @@ export class AppSettingsModel {
     set preferedDeviceName(deviceName: string) {
         this._preferedDeviceName = deviceName;
         this.save();
+    }
+
+    get devicesListType(): DevicesListType {
+        return this._devicesListType || DevicesListType.ALL;
     }
 
     get resetSchedule() {
@@ -216,6 +222,7 @@ export class AppSettingsModel {
         this.save();
     }
 
+    // pub-sub
     notifyListerners() {
         for (const listener of this._settingListeners) {
             listener();

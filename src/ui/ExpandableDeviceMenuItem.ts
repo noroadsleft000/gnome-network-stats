@@ -7,9 +7,9 @@ import { gettext as _ } from "resource:///org/gnome/shell/extensions/extension.j
 
 import { getIconPath } from "../utils/GenUtils.js";
 import { registerGObjectClass } from "../utils/gjs.js";
-import { DeviceStatsText } from "../net/DeviceModel.js";
+import { DeviceViewModel } from "../net/DevicePresenter.js";
 
-export interface ExtendedDeviceStats extends DeviceStatsText {
+export interface ExtendedDeviceStats extends DeviceViewModel {
     iconPath: string;
 }
 
@@ -219,7 +219,7 @@ export class ExpandableDeviceMenuItem extends PopupSubMenuMenuItem {
         return box;
     }
 
-    update(device: DeviceStatsText, defaultDeviceName?: string): void {
+    update(device: DeviceViewModel, defaultDeviceName?: string): void {
         const {
             //iconPath,
             name,

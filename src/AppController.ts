@@ -5,7 +5,7 @@ import { getNextResetTime } from "./utils/DateTimeUtils.js";
 import { Broadcasters } from "./utils/Broadcasters.js";
 import type { Logger } from "./utils/Logger.js";
 import type { AppSettingsModel } from "./AppSettingsModel.js";
-import type { DeviceModel } from "./net/DeviceModel.js";
+import type { DevicePresenter } from "./net/DevicePresenter.js";
 
 const kOneMinuteInMilliSeconds = 60 * 1000;
 
@@ -22,7 +22,7 @@ export class AppController {
     constructor(
         private _logger: Logger,
         private _appSettingsModel: AppSettingsModel,
-        private _deviceModel: DeviceModel
+        private _devicePresenter: DevicePresenter
     ) {
         this._appView = new AppView(_logger, _appSettingsModel);
     }
@@ -40,7 +40,7 @@ export class AppController {
     deinit() {
         Broadcasters.titleClickedMessageBroadcaster?.unsubscribe(this.onRightClick);
         this._appSettingsModel.unsubscribe(this.onSettingChanged);
-        this._deviceModel.saveStats();
+        this._devicePresenter.saveStats();
         this._appSettingsModel.deinit();
         this.uninstallTimers();
     }
@@ -80,54 +80,54 @@ export class AppController {
 
     _getActiveDeviceName(): string {
         const userPreferedDevice = this._appSettingsModel.preferedDeviceName;
-        if (userPreferedDevice && this._deviceModel.hasDevice(userPreferedDevice)) {
+        if (userPreferedDevice && this._devicePresenter.hasDevice(userPreferedDevice)) {
             return userPreferedDevice;
         }
-        return this._deviceModel.getActiveDeviceName();
+        return this._devicePresenter.getActiveDeviceName();
     }
 
     update() {
         const { displayMode, displayBytes } = this._appSettingsModel;
         //this._logger.debug(`displayMode : ${displayMode}`);
-        this._deviceModel.update(displayBytes);
+        this._devicePresenter.update(displayBytes);
         const activeDevice = this._getActiveDeviceName();
         //this._logger.debug(`activeDevice: ${activeDevice}`);
         let titleStr = "----";
         switch (displayMode) {
             case DisplayMode.TOTAL_SPEED: {
-                const totalSpeedStr = this._deviceModel.getTotalSpeedText(activeDevice);
+                const totalSpeedStr = this._devicePresenter.getTotalSpeedText(activeDevice);
                 titleStr = `↕ ${totalSpeedStr}`;
                 break;
             }
             case DisplayMode.DOWNLOAD_SPEED: {
-                const downloadStr = this._deviceModel.getDownloadSpeedText(activeDevice);
+                const downloadStr = this._devicePresenter.getDownloadSpeedText(activeDevice);
                 titleStr = `↓ ${downloadStr}`;
                 break;
             }
             case DisplayMode.UPLOAD_SPEED: {
-                const uploadStr = this._deviceModel.getUploadSpeedText(activeDevice);
+                const uploadStr = this._devicePresenter.getUploadSpeedText(activeDevice);
                 titleStr = `↑ ${uploadStr}`;
                 break;
             }
             case DisplayMode.BOTH_SPEED: {
-                const downloadStr = this._deviceModel.getDownloadSpeedText(activeDevice);
-                const uploadStr = this._deviceModel.getUploadSpeedText(activeDevice);
+                const downloadStr = this._devicePresenter.getDownloadSpeedText(activeDevice);
+                const uploadStr = this._devicePresenter.getUploadSpeedText(activeDevice);
                 titleStr = `↓ ${downloadStr} ↑ ${uploadStr}`;
                 break;
             }
             case DisplayMode.TOTAL_DATA: {
-                const totalDataStr = this._deviceModel.getTotalDataUsageText(activeDevice);
+                const totalDataStr = this._devicePresenter.getTotalDataUsageText(activeDevice);
                 titleStr = `Σ ${totalDataStr}`;
                 break;
             }
         }
         this._appView.setTitleText(titleStr);
-        this._appView.update(this._deviceModel);
+        this._appView.update(this._devicePresenter);
 
         // Debugging
-        // const upload = this._deviceModel.getUploadSpeed(activeDevice);
-        // const download = this._deviceModel.getDownloadSpeed(activeDevice);
-        // const totalData = this._deviceModel.getTotalDataUsage(activeDevice);
+        // const upload = this._devicePresenter.getUploadSpeed(activeDevice);
+        // const download = this._devicePresenter.getDownloadSpeed(activeDevice);
+        // const totalData = this._devicePresenter.getTotalDataUsage(activeDevice);
         // this._logger.debug(`upload: ${upload} download: ${download} totalData: ${totalData}`);
         // const uploadStr = bytesSpeedToString(upload, displayBytes);
         // const downloadStr = bytesSpeedToString(download, displayBytes);
@@ -148,7 +148,7 @@ export class AppController {
         //this._logger.log(`newResetTime: ${newResetTime}`);
         if (now.getTime() >= newResetTime.getTime()) {
             // crossed the mark, Time to reset network stats
-            this._deviceModel.resetAll();
+            this._devicePresenter.resetAll();
         }
     }
 
@@ -168,7 +168,7 @@ export class AppController {
         //this._logger.debug("every 1 minutes");
         try {
             this.resetIfRequired();
-            this._deviceModel.saveStats();
+            this._devicePresenter.saveStats();
         } catch (err) {
             const error = err as Error;
             this._logger.error(`ERROR: ${error?.toString()} TRACE: ${error?.stack}`);
@@ -182,7 +182,7 @@ export class AppController {
         this._appView.setTitleTextSize(this._appSettingsModel.statusFontSize);
         if (this._appSettingsModel.resetAllStats) {
             this._appSettingsModel.clearResetAllStats();
-            this._deviceModel.resetAll();
+            this._devicePresenter.resetAll();
         }
     };
 
