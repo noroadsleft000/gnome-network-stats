@@ -460,14 +460,15 @@ export class DevicePresenter {
     }
 
     /**
-     * Reset all devices stats.
+     * Reset all devices stats. Remove all the devices which are not active.
      * It updates the stats in memory and also in the settings.
      */
     resetAll(): void {
         const now = new Date();
         const nowStr = now.toString();
         this._logger.info(`Restting all devices at ${nowStr}`);
-        const infoMap = this._appSettingsModel.devicesInfoMap;
+        const oldInfoMap = this._appSettingsModel.devicesInfoMap;
+        const newInfoMap: Record<string, DeviceReading> = {};
         for (const name in this._stats) {
             this._stats[name] = {
                 ...this._stats[name],
@@ -475,13 +476,13 @@ export class DevicePresenter {
                 totalDownload: 0,
                 totalUpload: 0
             };
-            infoMap[name] = {
-                ...infoMap[name],
+            newInfoMap[name] = {
+                ...oldInfoMap[name],
                 resetedAt: nowStr,
                 totalDownload: 0,
                 totalUpload: 0
             };
         }
-        this._appSettingsModel.devicesInfoMap = infoMap;
+        this._appSettingsModel.devicesInfoMap = newInfoMap;
     }
 }
