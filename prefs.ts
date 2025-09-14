@@ -10,7 +10,8 @@ import {
     ResetSchedule,
     DayOfWeek,
     SettingKeys,
-    kSchemaName
+    kSchemaName,
+    DevicesListType
 } from "./src/utils/Constants.js";
 import { setTimeout } from "./src/utils/DateTimeUtils.js";
 import { addChildToBox } from "./src/utils/GtkUtils.js";
@@ -42,13 +43,23 @@ const DayOfWeekOrder = [
     DayOfWeek.SUNDAY
 ];
 
+const DevicesListOrder = [
+    DevicesListType.ALL,
+    DevicesListType.ACTIVE,
+    DevicesListType.METERED,
+    DevicesListType.PREFERED,
+    DevicesListType.NON_DUMMY
+];
+
 const kDisplayModeMapping = new ReverseMap<number, DisplayMode>(DisplayModeOrder);
+const kDevicesListMapping = new ReverseMap<number, DevicesListType>(DevicesListOrder);
 const kResetScheduleMapping = new ReverseMap<number, ResetSchedule>(ResetScheduleOrder);
 const kDayOfWeekMapping = new ReverseMap<number, DayOfWeek>(DayOfWeekOrder);
 
 enum SettingRowOrder {
     REFRESH_INTERVAL = 0,
     DISPLAY_MODE,
+    DEVICES_LIST_TYPE,
     RESET_SCHEDULE,
     RESET_WEEK_DAY,
     RESET_MONTH_DAY,
@@ -98,6 +109,7 @@ export default class GnsPreferences extends ExtensionPreferences {
         this._createMainLabelFontSizeControl();
         this._createUnitToggleControl();
         this._createIconToggleControl();
+        this._createDevicesListControl();
 
         setTimeout(() => {
             this.updateControls();
@@ -428,6 +440,35 @@ export default class GnsPreferences extends ExtensionPreferences {
         );
     }
 
+    // 11. Devices list select drop down.
+    _createDevicesListControl() {
+        const displayModeLabel = new Gtk.Label({
+            label: _("Show devices/interfaces"),
+            hexpand: true,
+            halign: Gtk.Align.END
+        });
+        const displayListType = this.settings.get_string(SettingKeys.DEVICES_LIST_TYPE) as DevicesListType;
+        const displayModeIndex = kDevicesListMapping.getKey(displayListType) ?? -1;
+
+        const options = [
+            { name: _("All") },
+            { name: _("Active") },
+            { name: _("Metered") },
+            { name: _("Prefered") },
+            { name: _("Non dummy") }
+        ];
+
+        const displayListInput = new Gtk.ComboBox({
+            model: this._createOptionsList(options),
+            active: displayModeIndex
+        });
+        const rendererText = new Gtk.CellRendererText();
+        displayListInput.pack_start(rendererText, false);
+        displayListInput.add_attribute(rendererText, "text", 0);
+        this._addRow(displayModeLabel, displayListInput, SettingRowOrder.DEVICES_LIST_TYPE);
+        displayListInput.connect("changed", this._onDevicesListInputChanged.bind(this));
+    }
+
     _createOptionsList(options: Array<{ name: string }>) {
         const liststore = new Gtk.ListStore();
         liststore.set_column_types([GObject.TYPE_STRING]);
@@ -437,6 +478,12 @@ export default class GnsPreferences extends ExtensionPreferences {
             liststore.set(iter, [0], [option.name]);
         }
         return liststore;
+    }
+
+    _onDevicesListInputChanged(view: Gtk.ComboBox) {
+        const index = view.get_active();
+        const value = kDevicesListMapping.getValue(index);
+        this.settings.set_string(SettingKeys.DEVICES_LIST_TYPE, value);
     }
 
     _onDisplayModeInputChanged(view: Gtk.ComboBox) {

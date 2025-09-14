@@ -40,6 +40,15 @@ export enum DayOfWeek {
     SUNDAY = "sunday"
 }
 
+export enum DevicesListType {
+    ALL = "all",
+    ACTIVE = "active",
+    METERED = "metered",
+    PREFERED = "prefered",
+    NON_DUMMY = "non_dummy",
+    DEFAULT="all"
+}
+
 /* Sync these constants properly with schema file */
 export enum SettingKeys {
     REFRESH_INTERVAL = "refresh-interval",
@@ -54,5 +63,6 @@ export enum SettingKeys {
     DISPLAY_BYTES = "display-bytes",
     STATUS_SHOW_ICON = "show-icon",
     STATUS_FONT_SIZE = "status-font-size",
-    RESET_ALL_STATS = "reset-all-stats"
+    RESET_ALL_STATS = "reset-all-stats",
+    DEVICES_LIST_TYPE = "devices-list-type"
 }

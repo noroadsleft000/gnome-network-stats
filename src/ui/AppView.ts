@@ -5,7 +5,7 @@ import { MainPanel } from "./MainPanel.js";
 import { PopupView } from "./PopupView.js";
 import type { Logger } from "../utils/Logger.js";
 import type { AppSettingsModel } from "../AppSettingsModel.js";
-import type { DeviceModel } from "../net/DeviceModel.js";
+import type { DevicePresenter } from "../net/DevicePresenter.js";
 
 /*
  * AppView class is manager class for managing UI show/hide/enable/disable.
@@ -17,6 +17,7 @@ export class AppView {
     private _label: St.Label;
     private _button: St.Bin;
     private _popupView: PopupView | undefined;
+    private _settingsChanged: boolean = false;
 
     constructor(
         private _logger: Logger,
@@ -26,6 +27,9 @@ export class AppView {
         const { label, button } = this.createLayout();
         this._label = label;
         this._button = button;
+        this._appSettingsModel.subscribe(() => {
+            this._settingsChanged = true;
+        });
     }
 
     destructor() {
@@ -56,12 +60,24 @@ export class AppView {
         return { label, button };
     }
 
-    update(deviceModel: DeviceModel): void {
+    update(deviceModel: DevicePresenter): void {
         if (!this._popupView) {
             return;
         }
 
-        const stats = deviceModel.getReadableStats();
+        const stats = deviceModel.getViewModel();
+        const menuItems = this._popupView.menuItems();
+        if (this._settingsChanged) {
+            this._settingsChanged = false;
+            const menuKeys = Object.keys(menuItems);
+            const statsKeys = Object.keys(stats);
+            if (
+                menuKeys.length !== statsKeys.length ||
+                menuKeys.some((key) => !statsKeys.includes(key))
+            ) {
+                this._popupView.clearMenuItems();
+            }
+        }
         for (const stat of Object.values(stats)) {
             this._popupView.updateItem(stat);
         }

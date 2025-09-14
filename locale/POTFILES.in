@@ -2,7 +2,7 @@
 ../AppController.js
 ../AppSettingsModel.js
 ../extension.js
-../net/DeviceModel.js
+../net/DevicePresenter.js
 ../net/DeviceMonitor.js
 ../net/NetworkMonitor.js
 ../prefs.js

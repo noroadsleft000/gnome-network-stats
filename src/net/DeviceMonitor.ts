@@ -11,6 +11,9 @@ export interface DeviceInfo {
     name: string;
     type: string;
     ip: string;
+    active: boolean;
+    metered: boolean;
+    dummy: boolean;
     device: NMDevice;
 }
 
@@ -38,28 +41,56 @@ export class DeviceMonitor {
         this.init();
     }
 
+    /**
+     * Returns the list of all devices.
+     * @returns list of all devices.
+     */
     getDevices(): Record<string, DeviceInfo> {
         return this._devices;
     }
 
+    /**
+     * Checks if a device is present in the list.
+     * @param name - Name of the device
+     * @returns true if device is present in the list.
+     */
     hasDevice(name: string): boolean {
         return this._devices[name] !== undefined;
     }
 
+    /**
+     * Returns the device info by name.
+     * @param name - Name of the device
+     * @returns device info if found, undefined otherwise.
+     */
     getDeviceByName(name: string): DeviceInfo | undefined {
         return this._devices[name];
     }
 
+    /**
+     * Returns the active device name.
+     * @returns active device name.
+     */
     getActiveDeviceName(): string {
         return this._defaultGw;
     }
 
+    /**
+     * Returns the device type by name.
+     * @param deviceName - Name of the device
+     * @returns device type.
+     */
     getDeviceTypeFromName(deviceName: string): string {
         const device = this._client.get_device_by_iface(deviceName);
-        return this.getDeviceTypeFromDevice(device);
+        return this.getDeviceType(device);
     }
 
-    getDeviceTypeFromDevice(device: NMDevice): string {
+    /**
+     * Returns the device type.
+     * @param device - Network device
+     * @returns device type.
+     */
+    getDeviceType(device: NMDevice): DeviceType {
         if (device) {
             switch (device.device_type) {
                 case NM.DeviceType.ETHERNET:
@@ -81,12 +112,66 @@ export class DeviceMonitor {
         return DeviceType.NONE;
     }
 
+    /**
+     * Checks if a device/connection is active.
+     * @param device - Network device
+     * @returns true if device is active
+     */
+    isActive(device: NM.Device) {
+        return device.get_state() === NM.DeviceState.ACTIVATED;
+    }
+
+    /**
+     * Checks if a connection is metered connection
+     * @param client - Netwoker manager connection
+     * @returns true if connection is metered connection.
+     */
+    isMetered(client: NM.Device) {
+        // Get metered property
+        const metered = client.get_metered();
+        // NM.Metered values:
+        // 0: UNKNOWN
+        // 1: YES
+        // 2: NO
+        // 3: GUESS_YES
+        // 4: GUESS_NO
+        return metered === NM.Metered.YES || metered === NM.Metered.GUESS_YES;
+    }
+
+    /**
+     * Checks if a device is dummy device
+     * @param device - Network device
+     * @returns true if device is dummy device
+     */
+    isDummy(device: NM.Device): boolean {
+        return device.get_device_type() === NM.DeviceType.DUMMY;
+    }
+
+    /**
+     * Checks if a device is loopback device
+     * @param device - Network device
+     * @returns true if device is loopback device
+     */
+    isLoopback(device: NM.Device) {
+        return device.get_device_type() === NM.DeviceType.LOOPBACK;
+    }
+
+    /**
+     * Initializes the device monitor.
+     * It connects to the network manager signals to get the device changes.
+     */
     init(): void {
         this._netMgrSignals.push(
             this._client.connect("any-device-added", this._deviceChanged.bind(this))
         );
         this._netMgrSignals.push(
             this._client.connect("any-device-removed", this._deviceChanged.bind(this))
+        );
+        this._netMgrSignals.push(
+            this._client.connect("device-added", this._deviceChanged.bind(this))
+        );
+        this._netMgrSignals.push(
+            this._client.connect("device-removed", this._deviceChanged.bind(this))
         );
         this._netMgrSignals.push(
             this._client.connect("connection-added", this._connectionChanged.bind(this))
@@ -100,10 +185,17 @@ export class DeviceMonitor {
         this._netMgrSignals.push(
             this._client.connect("active-connection-removed", this._connectionChanged.bind(this))
         );
+        this._netMgrSignals.push(
+            this._client.connect("notify::metered", this._deviceChanged.bind(this))
+        );
 
         this._loadDevices();
     }
 
+    /**
+     * Deinitializes the device monitor.
+     * It disconnects from the network manager signals.
+     */
     deinit(): void {
         this._netMgrSignals.forEach((sigId) => {
             this._client.disconnect(sigId);
@@ -111,6 +203,12 @@ export class DeviceMonitor {
         this._netMgrSignals = [];
     }
 
+    /**
+     * Loads the devices from the system.
+     * It disconnects "state-changed" signals of previously stored devices.
+     * It connects "state-changed" signals of new stored devices.
+     * It updates the default device.
+     */
     private _loadDevices(): void {
         // disconnect "state-changed" signals of previously stored devices.
         this._disconnectDeviceStateChangeSignals();
@@ -132,12 +230,18 @@ export class DeviceMonitor {
         for (const name of devices) {
             const deviceObj = this._client.get_device_by_iface(name);
             const addresses = this._getIPAddress(deviceObj, GLib.SYSDEF_AF_INET);
-            const type = this.getDeviceTypeFromDevice(deviceObj);
+            const type = this.getDeviceType(deviceObj);
+            const active = this.isActive(deviceObj);
+            const metered = this.isMetered(deviceObj);
+            const dummy = this.isDummy(deviceObj);
             this._devices[name] = {
                 name,
                 type,
                 device: deviceObj,
-                ip: addresses[0] || ""
+                ip: addresses[0] || "",
+                active,
+                metered,
+                dummy
             };
         }
 
@@ -147,6 +251,10 @@ export class DeviceMonitor {
         this._updateDefaultDevice();
     }
 
+    /**
+     * Updates the default device.
+     * It reads the default gateway from the system.
+     */
     private _updateDefaultDevice(): void {
         const fileContent = GLib.file_get_contents("/proc/net/route");
         const lines = this._textDecoder.decode(fileContent[1]).split("\n");
@@ -166,6 +274,9 @@ export class DeviceMonitor {
         this._logger.debug(`default gateway: ${this._defaultGw}`);
     }
 
+    /**
+     * Connects the device state change signals.
+     */
     private _connectDeviceStateChangeSignals(): void {
         for (const item of Object.values(this._devices)) {
             const signalId = item.device.connect(
@@ -176,6 +287,9 @@ export class DeviceMonitor {
         }
     }
 
+    /**
+     * Disconnects the device state change signals.
+     */
     private _disconnectDeviceStateChangeSignals(): void {
         this._netMgrStateChangeSignals.forEach((item) => {
             //item.device.disconnect(item.signal);
@@ -184,18 +298,36 @@ export class DeviceMonitor {
         this._netMgrStateChangeSignals = [];
     }
 
+    /**
+     * Handles the device state changed signal.
+     * It reloads the devices.
+     */
     private _deviceStateChanged(): void {
         this._loadDevices();
     }
 
+    /**
+     * Handles the device changed signal.
+     * It reloads the devices.
+     */
     private _deviceChanged(): void {
         this._loadDevices();
     }
 
+    /**
+     * Handles the connection changed signal.
+     * It reloads the devices.
+     */
     private _connectionChanged(): void {
         this._loadDevices();
     }
 
+    /**
+     * Returns the IP addresses of the device.
+     * @param device - Network device
+     * @param family - IP address family
+     * @returns IP addresses of the device.
+     */
     private _getIPAddress(device: NMDevice, family: number): string[] {
         const addresses: string[] = [];
         let ipConfig: NM.IPConfig | null = null;

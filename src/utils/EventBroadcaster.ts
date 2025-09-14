@@ -9,6 +9,10 @@ export class EventBroadcaster<T = unknown> {
         this._listeners = [];
     }
 
+    destructor() {
+        this._listeners = [];
+    }
+
     subscribe(listener: (message: T) => void): (message: T) => void {
         if (-1 == this._listeners.indexOf(listener)) {
             this._listeners.push(listener);
