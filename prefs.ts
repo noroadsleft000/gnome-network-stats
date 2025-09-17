@@ -12,10 +12,10 @@ import {
     SettingKeys,
     kSchemaName,
     DevicesListType
-} from "./src/utils/Constants.js";
-import { setTimeout } from "./src/utils/DateTimeUtils.js";
-import { addChildToBox } from "./src/utils/GtkUtils.js";
-import { ReverseMap } from "./src/utils/ReverseMap.js";
+} from "./lib/utils/Constants.js";
+import { setTimeout } from "./lib/utils/DateTimeUtils.js";
+import { addChildToBox } from "./lib/utils/GtkUtils.js";
+import { ReverseMap } from "./lib/utils/ReverseMap.js";
 
 const DisplayModeOrder = [
     DisplayMode.TOTAL_SPEED,

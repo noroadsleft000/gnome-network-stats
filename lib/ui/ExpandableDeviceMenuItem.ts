@@ -207,6 +207,11 @@ export class ExpandableDeviceMenuItem extends PopupSubMenuMenuItem {
         this.update(device, defaultDeviceName);
     }
 
+    /**
+     * Adds a new row to the menu with the given items.
+     * @param items - Array of St.Widget objects to add to the row.
+     * @returns The new row as a St.BoxLayout.
+     */
     addNewRowWithItems(items: St.Widget[]): St.BoxLayout {
         const box = new St.BoxLayout({
             style_class: "popup-menu-item",

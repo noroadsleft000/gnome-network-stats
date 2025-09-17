@@ -123,69 +123,120 @@ export class AppSettingsModel {
         }
     }
 
+    /**
+     * Returns the refresh interval in milliseconds.
+     */
     get refreshInterval() {
         return this._refreshInterval || kRefreshInterval;
     }
 
+    /**
+     * Returns the display mode @see DisplayMode
+     */
     get displayMode() {
         return this._displayMode || DisplayMode.DEFAULT;
     }
 
+    /**
+     * Sets the display mode @see DisplayMode
+     */
     set displayMode(mode) {
         this._displayMode = mode;
         this.save();
     }
 
+    /**
+     * Returns the prefered device name.
+     */
     get preferedDeviceName(): string | undefined {
         return this._preferedDeviceName;
     }
 
+    /**
+     * Sets the prefered device name.
+     */
     set preferedDeviceName(deviceName: string) {
         this._preferedDeviceName = deviceName;
         this.save();
     }
 
+    /**
+     * Returns the devices list type @see DevicesListType
+     */
     get devicesListType(): DevicesListType {
         return this._devicesListType || DevicesListType.ALL;
     }
 
+    /**
+     * Returns the reset schedule @see ResetSchedule
+     */
     get resetSchedule() {
         return this._resetSchedule;
     }
 
+    /**
+     * Returns the day of week when we want to reset the network stats.
+     */
     get resetDayOfWeek() {
         return this._resetDayOfWeek;
     }
 
+    /**
+     * Returns the day of month when we want to reset the network stats.
+     */
     get resetDayOfMonth() {
         return this._resetDayOfMonth;
     }
 
+    /**
+     * Returns the hours when we want to reset the network stats.
+     */
     get resetHours() {
         return this._resetHours;
     }
 
+    /**
+     * Returns the minutes when we want to reset the network stats.
+     */
     get resetMinutes() {
         return this._resetMinutes;
     }
 
+    /**
+     * Returns true if we want to display bytes instead of bits.
+     */
     get displayBytes() {
         return this._displayBytes;
     }
 
+    /**
+     * Returns true if we want to show speed icon in the status bar
+     */
     get statusShowIcon() {
         return this._statusShowIcon;
     }
 
+    /**
+     * Returns true if we want to reset all stats.
+     * This value is set from the reset-all-stats button in the settings.
+     * After reset, this value is cleared using clearResetAllStats() method.
+     */
     get resetAllStats() {
         return this._resetAllStats;
     }
 
+    /**
+     * Clears the reset all stats flag.
+     * This is called after the stats are reset.
+     */
     clearResetAllStats() {
         this._resetAllStats = false;
         this.save();
     }
 
+    /**
+     * Returns the reset time based on the reset schedule.
+     */
     getResetTime() {
         const date = new Date();
         date.setHours(this._resetHours);
@@ -194,6 +245,9 @@ export class AppSettingsModel {
         return date;
     }
 
+    /**
+     * Returns the last reset time for the given device.
+     */
     getLastResetDateTime(deviceName: string): Date | undefined {
         const { resetedAt } = this.getDeviceInfo(deviceName);
         let lastResetedAt: Date | undefined = undefined;
@@ -203,45 +257,72 @@ export class AppSettingsModel {
         return lastResetedAt;
     }
 
+    /**
+     * Returns the devices info map.
+     */
     get devicesInfoMap(): DevicesInfoMap {
         return this._devicesInfoMap;
     }
 
+    /**
+     * Sets the devices info map.
+     */
     set devicesInfoMap(info: DevicesInfoMap) {
         this._devicesInfoMap = { ...this._devicesInfoMap, ...info };
         this.save();
     }
 
+    /**
+     * Returns the status bar label font size.
+     * This label shows the total speed, download, upload, total data etc...
+     */
     get statusFontSize() {
         return this._statusFontSize;
     }
 
+    /**
+     * Returns the device info for the given device name.
+     */
     getDeviceInfo(name: string) {
         return this._devicesInfoMap[name] || {};
     }
 
+    /**
+     * Replaces the device info for the given device name.
+     */
     replaceDeviceInfo(name: string, info: DeviceReading) {
         this._devicesInfoMap[name] = info;
         this.save();
     }
 
+    /**
+     * Updates the device info for the given device name.
+     */
     updateDeviceInfo(name: string, info: DeviceReading) {
         this._devicesInfoMap[name] = { ...this.devicesInfoMap[name], ...info };
         this.save();
     }
 
-    // pub-sub
+    /**
+     * Notifies all the listeners about the setting change.
+     */
     notifyListerners() {
         for (const listener of this._settingListeners) {
             listener();
         }
     }
 
+    /**
+     * Subscribes to the setting change events.
+     */
     subscribe(listener: ListenerFunc) {
         this._settingListeners.push(listener);
         return listener;
     }
 
+    /**
+     * Unsubscribes from the setting change events.
+     */
     unsubscribe(listener: ListenerFunc) {
         const index = this._settingListeners.indexOf(listener);
         if (index != -1) {

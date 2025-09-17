@@ -6,11 +6,13 @@ import { registerGObjectClass } from "../utils/gjs.js";
  */
 
 export class TableView extends St.BoxLayout {
-    // constructor
     constructor(props?: Partial<St.BoxLayout.ConstructorProps>) {
         super(props);
     }
 
+    /**
+     * Adds a row to the table.
+     */
     addRow(...controls: St.Widget[]): void {
         const box = new St.BoxLayout({ vertical: false });
         for (const control of controls) {
@@ -19,6 +21,9 @@ export class TableView extends St.BoxLayout {
         this.add_child(box);
     }
 
+    /**
+     * Removes a row from the table.
+     */
     removeRow(index: number): void {
         const child = this.get_child_at_index(index);
         if (child) {

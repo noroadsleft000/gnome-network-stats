@@ -2,9 +2,9 @@
 
 import { Extension } from "resource:///org/gnome/shell/extensions/extension.js";
 
-import { Logger } from "./src/utils/Logger.js";
-import { App } from "./src/App.js";
-import { Broadcasters } from "./src/utils/Broadcasters.js";
+import { Logger } from "./lib/utils/Logger.js";
+import { App } from "./lib/App.js";
+import { Broadcasters } from "./lib/utils/Broadcasters.js";
 import { ExtensionMetadata } from "@girs/gnome-shell/extensions/extension";
 
 export default class GnsExtension extends Extension {

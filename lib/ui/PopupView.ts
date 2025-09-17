@@ -207,10 +207,16 @@ export class PopupView extends PanelMenuButton {
         }
     }
 
+    /**
+     * Returns the popup menu
+     */
     get popupMenu() {
         return this.menu as InstanceType<typeof PopupMenu>;
     }
 
+    /**
+     * Updates the group buttons state based on the app settings model
+     */
     updateGroupButtonsState(): void {
         const { displayMode } = this._appSettingsModel;
         this.toggleButtonState(this._totalSpeed, displayMode == DisplayMode.TOTAL_SPEED);
@@ -220,6 +226,11 @@ export class PopupView extends PanelMenuButton {
         this.toggleButtonState(this._dataUsage, displayMode == DisplayMode.TOTAL_DATA);
     }
 
+    /**
+     * Handles the main button click event
+     * @param _button - button that was clicked
+     * @param event - event that was triggered
+     */
     onMainButtonClicked(_button: St.Button, event: Clutter.Event): void {
         //this._logger.debug(event);
         const broadcaster = Broadcasters.titleClickedMessageBroadcaster;
@@ -234,6 +245,11 @@ export class PopupView extends PanelMenuButton {
         }
     }
 
+    /**
+     * Toggles the button state
+     * @param button - button to toggle
+     * @param value - optional value to set
+     */
     toggleButtonState(button: St.Button, value?: boolean): void {
         if (value != undefined) {
             if (value) {
@@ -250,6 +266,9 @@ export class PopupView extends PanelMenuButton {
         }
     }
 
+    /**
+     * Adds default top menu items to the popup menu
+     */
     addDefaultMenuItems() {
         const box = new St.BoxLayout({ style_class: "view-item", vertical: false });
         box.add_child(this._totalSpeed);
@@ -286,6 +305,10 @@ export class PopupView extends PanelMenuButton {
         this.popupMenu.addMenuItem(popupMenuSection4);
     }
 
+    /**
+     * Creates a horizontal separator actor
+     * @returns Separator actor
+     */
     createSeparator(): St.BoxLayout {
         const outerBox = new St.BoxLayout({
             style_class: "v-separator-cont",
@@ -342,6 +365,10 @@ export class PopupView extends PanelMenuButton {
         this._menuItems = {};
     }
 
+    /**
+     * Reset the given device
+     * @param name - device name
+     */
     onResetClicked(name: string): void {
         this._logger.info(`Reset the device : ${name}`);
         const broadcaster = Broadcasters.deviceResetMessageBroadcaster;
@@ -350,15 +377,27 @@ export class PopupView extends PanelMenuButton {
         }
     }
 
+    /**
+     * Mark the given device as default
+     * @param name - device name
+     */
     onMarkDefaultClicked(name: string): void {
         this._logger.info(`Mark the device "${name}" as default`);
         this._appSettingsModel.preferedDeviceName = name;
     }
 
+    /**
+     * Updates the top status bar text, place where we show speed, total data etc...
+     * @param text - text to display in status bar
+     */
     setTitleText(text: string): void {
         this._mainLabel.set_text(text);
     }
 
+    /**
+     * Updates the text size of top bar text, place where we show speed, total data etc...
+     * @param size - text size
+     */
     setTitleTextSize(size: number): void {
         this._mainLabel.style = `font-size: ${size}px`;
     }

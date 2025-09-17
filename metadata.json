@@ -6,5 +6,5 @@
     "gettext-domain": "network-stats",
     "shell-version": ["45", "46", "47", "48", "49"],
     "url": "https://github.com/noroadsleft000/gnome-network-stats",
-    "version": 31
+    "version": 32
 }
