@@ -1,5 +1,5 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR 2021 No roads left
+# Copyright (C) YEAR 2025 No roads left
 # This file is distributed under the same license as the network-stats package.
 # No roads left noroadsleft000@gmail.com, 2021.
 #
@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: network-stats 1.0\n"
 "Report-Msgid-Bugs-To: noroadsleft000@gmail.com\n"
-"POT-Creation-Date: 2022-03-07 21:42+0530\n"
+"POT-Creation-Date: 2025-09-26 00:21+0530\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: AidanWarner97 aidanlw@outlook.com\n"
 "Language-Team: LANGUAGE noroadsleft000@gmail.com\n"
@@ -17,13 +17,19 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "Refresh Interval (ms)"
+msgid "Device"
 msgstr ""
 
-msgid "What to show in status bar"
+msgid "Speed"
 msgstr ""
 
-msgid "Total speed"
+msgid "Data Used"
+msgstr ""
+
+msgid "Make Default"
+msgstr ""
+
+msgid "IP"
 msgstr ""
 
 msgid "Upload speed"
@@ -32,10 +38,34 @@ msgstr ""
 msgid "Download speed"
 msgstr ""
 
-msgid "Upload and download speed"
+msgid "Total speed"
 msgstr ""
 
 msgid "Total data used"
+msgstr ""
+
+msgid "Since last reset"
+msgstr ""
+
+msgid "Last reset at"
+msgstr ""
+
+msgid "Yes"
+msgstr ""
+
+msgid "No"
+msgstr ""
+
+msgid "Default device"
+msgstr ""
+
+msgid "Refresh Interval (ms)"
+msgstr ""
+
+msgid "What to show in status bar"
+msgstr ""
+
+msgid "Upload and download speed"
 msgstr ""
 
 msgid "When do you want to reset the stats ?"
@@ -86,38 +116,35 @@ msgstr ""
 msgid "What time should we reset network stats"
 msgstr ""
 
+msgid "Reset all interfaces"
+msgstr ""
+
+msgid "Reset now"
+msgstr ""
+
 msgid "Show speeds in bytes instead of bits"
 msgstr ""
 
 msgid "Show icon in status bar (requires reload)"
 msgstr ""
 
-msgid "Make Default"
+msgid "Font size (status label)"
 msgstr ""
 
-msgid "IP"
+msgid "Show devices/interfaces"
 msgstr ""
 
-msgid "Since last reset"
+msgid "All"
 msgstr ""
 
-msgid "Last reset at"
+msgid "Active"
 msgstr ""
 
-msgid "Yes"
+msgid "Metered"
 msgstr ""
 
-msgid "No"
+msgid "Prefered"
 msgstr ""
 
-msgid "Default device"
-msgstr ""
-
-msgid "Device"
-msgstr ""
-
-msgid "Speed"
-msgstr ""
-
-msgid "Data Used"
+msgid "Non dummy"
 msgstr ""
