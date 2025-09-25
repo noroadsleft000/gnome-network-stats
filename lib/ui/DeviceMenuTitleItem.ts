@@ -6,6 +6,7 @@ import { registerGObjectClass } from "../utils/gjs.js";
 
 /*
  * DeviceMenuTitleItem class is ui popup item for displaying table titles.
+ * This item is fixed at the top of the popup menu.
  */
 
 export class DeviceMenuTitleItem extends PopupMenu.PopupBaseMenuItem {
@@ -44,6 +45,13 @@ export class DeviceMenuTitleItem extends PopupMenu.PopupBaseMenuItem {
         this.add_child(this._totalDataLabel);
     }
 
+    /**
+     * Updates the title item with the given values.
+     * @param _icon - The icon to display.
+     * @param name - The name to display.
+     * @param speed - The speed to display.
+     * @param totalData - The total data to display.
+     */
     update(_icon: St.Icon | null, name: string, speed: string, totalData: string): void {
         this._nameLabel.set_text(name);
         this._speedLabel.set_text(speed);

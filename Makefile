@@ -7,8 +7,8 @@ GETTEXT_PACKAGE = $(PACKAGE)
 
 LANGUAGES=en_US nl se_SV ru
 DOC_FILES=README.md docs/TODO.md
-SRC_FILES= extension.ts prefs.ts $(shell find src -name "*.ts" 2>/dev/null)
-DIST_FILES=dist/extension.js dist/prefs.js $(shell find dist/src -name "*.js" 2>/dev/null) AUTHORS LICENSE
+SRC_FILES= extension.ts prefs.ts $(shell find lib -name "*.ts" 2>/dev/null)
+DIST_FILES=dist/extension.js dist/prefs.js $(shell find dist/lib -name "*.js" 2>/dev/null) AUTHORS LICENSE
 CONFIG_FILES=stylesheet.css metadata.json
 MO_FILES=$(foreach LANGUAGE, $(LANGUAGES), locale/$(LANGUAGE)/LC_MESSAGES/$(GETTEXT_PACKAGE).mo)
 SCHEMA_FILES=schemas/org.gnome.shell.extensions.network-stats.gschema.xml
