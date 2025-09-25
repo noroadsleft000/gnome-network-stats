@@ -10,14 +10,20 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-msgid "Refresh Interval (ms)"
-msgstr "Refresh Interval (ms)"
+msgid "Device"
+msgstr "Device"
 
-msgid "What to show in status bar"
-msgstr "What to show in status bar"
+msgid "Speed"
+msgstr "Speed"
 
-msgid "Total speed"
-msgstr "Total speed"
+msgid "Data Used"
+msgstr "Data Used"
+
+msgid "Make Default"
+msgstr "Make Default"
+
+msgid "IP"
+msgstr "IP"
 
 msgid "Upload speed"
 msgstr "Upload speed"
@@ -25,11 +31,35 @@ msgstr "Upload speed"
 msgid "Download speed"
 msgstr "Download speed"
 
-msgid "Upload and download speed"
-msgstr "Upload and download speed"
+msgid "Total speed"
+msgstr "Total speed"
 
 msgid "Total data used"
 msgstr "Total data used"
+
+msgid "Since last reset"
+msgstr "Since last reset"
+
+msgid "Last reset at"
+msgstr "Last reset at"
+
+msgid "Yes"
+msgstr "Yes"
+
+msgid "No"
+msgstr "No"
+
+msgid "Default device"
+msgstr "Default device"
+
+msgid "Refresh Interval (ms)"
+msgstr "Refresh Interval (ms)"
+
+msgid "What to show in status bar"
+msgstr "What to show in status bar"
+
+msgid "Upload and download speed"
+msgstr "Upload and download speed"
 
 msgid "When do you want to reset the stats ?"
 msgstr "When do you want to reset the stats ?"
@@ -79,39 +109,35 @@ msgstr "Reset on day of month"
 msgid "What time should we reset network stats"
 msgstr "What time should we reset network stats"
 
+msgid "Reset all interfaces"
+msgstr "Reset all interfaces"
+
+msgid "Reset now"
+msgstr "Reset now"
+
 msgid "Show speeds in bytes instead of bits"
 msgstr "Show speeds in bytes instead of bits"
 
 msgid "Show icon in status bar (requires reload)"
 msgstr "Show icon in status bar (requires reload)"
 
-msgid "Make Default"
-msgstr "Make Default"
+msgid "Font size (status label)"
+msgstr "Font size (status label)"
 
-msgid "IP"
-msgstr "IP"
+msgid "Show devices/interfaces"
+msgstr "Show devices/interfaces"
 
-msgid "Since last reset"
-msgstr "Since last reset"
+msgid "All"
+msgstr "All"
 
-msgid "Last reset at"
-msgstr "Last reset at"
+msgid "Active"
+msgstr "Active"
 
-msgid "Yes"
-msgstr "Yes"
+msgid "Metered"
+msgstr "Metered"
 
-msgid "No"
-msgstr "No"
+msgid "Prefered"
+msgstr "Prefered"
 
-msgid "Default device"
-msgstr "Default device"
-
-msgid "Device"
-msgstr "Device"
-
-msgid "Speed"
-msgstr "Speed"
-
-msgid "Data Used"
-msgstr "Data Used"
-
+msgid "Non dummy"
+msgstr "Non dummy"
