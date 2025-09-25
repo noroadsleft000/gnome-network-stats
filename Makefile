@@ -41,7 +41,7 @@ pack: $(OUTPUT)
 	
 	# copy compiled schema
 	@mkdir -p dist/schemas
-	@cp -r ${SCHEMA_COMPILED_FILES} dist/schemas
+	@cp -r schemas dist
 	
 	# Copy selective root files to dist/
 	@for file in $(EXTRA_FILES); do \
