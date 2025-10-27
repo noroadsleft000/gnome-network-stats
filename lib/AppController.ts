@@ -37,7 +37,6 @@ export class AppController {
         Broadcasters.titleClickedMessageBroadcaster?.subscribe(this.onRightClick);
         this._appSettingsModel.subscribe(this.onSettingChanged);
         this.installTimers();
-        this._appView.setTitleTextSize(this._appSettingsModel.statusFontSize);
     }
 
     /**
@@ -87,6 +86,8 @@ export class AppController {
      */
     show() {
         this._appView.show();
+        const sz = Math.max(10, this._appSettingsModel.statusFontSize || 14);
+        this._appView.setTitleTextSize(sz);
     }
 
     /**
