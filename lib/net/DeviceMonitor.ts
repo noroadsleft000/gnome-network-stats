@@ -224,25 +224,29 @@ export class DeviceMonitor {
             devices.push(deviceName);
         }
         for (const name of devices) {
-            const deviceObj = this._client.get_device_by_iface(name);
-            if (deviceObj == null) {
-                // Skip interfaces not managed by NetworkManager (e.g. Docker veth pairs)
-                continue;
+            try {
+                const deviceObj = this._client.get_device_by_iface(name);
+                if (deviceObj == null) {
+                    // Skip interfaces not managed by NetworkManager (e.g. Docker veth pairs)
+                    continue;
+                }
+                const addresses = this._getIPAddress(deviceObj, GLib.SYSDEF_AF_INET);
+                const type = this.getDeviceType(deviceObj);
+                const active = this.isActive(deviceObj);
+                const metered = this.isMetered(deviceObj);
+                const dummy = this.isDummy(deviceObj);
+                this._devices[name] = {
+                    name,
+                    type,
+                    device: deviceObj,
+                    ip: addresses[0] || "",
+                    active,
+                    metered,
+                    dummy
+                };
+            } catch (e) {
+                this._logger.info(`Skipping device '${name}': ${e}`);
             }
-            const addresses = this._getIPAddress(deviceObj, GLib.SYSDEF_AF_INET);
-            const type = this.getDeviceType(deviceObj);
-            const active = this.isActive(deviceObj);
-            const metered = this.isMetered(deviceObj);
-            const dummy = this.isDummy(deviceObj);
-            this._devices[name] = {
-                name,
-                type,
-                device: deviceObj,
-                ip: addresses[0] || "",
-                active,
-                metered,
-                dummy
-            };
         }
 
         // connect "state-changed" signals of new stored devices.
@@ -350,8 +354,14 @@ export class DeviceMonitor {
             return addresses;
         }
         let ipConfig: NM.IPConfig | null = null;
-        if (family == GLib.SYSDEF_AF_INET) ipConfig = device.get_ip4_config();
-        else ipConfig = device.get_ip6_config();
+        try {
+            if (family == GLib.SYSDEF_AF_INET) ipConfig = device.get_ip4_config();
+            else ipConfig = device.get_ip6_config();
+        } catch (e) {
+            this._logger.info(`Failed to get IP config for device '${device.get_iface()}': ${e}`);
+            addresses[0] = "-";
+            return addresses;
+        }
 
         if (ipConfig == null) {
             this._logger.info(`No config found for device '${device.get_iface()}'`);
