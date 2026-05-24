@@ -89,6 +89,14 @@ make pack
 make debug
 ```
 
+### version workaround
+
+If new gnome-shell version is not yet supported but you still want to use the extension
+
+```
+gsettings set org.gnome.shell disable-extension-version-validation true
+```
+
 ## Known issues
 
 ### ERROR while updating extension from store.

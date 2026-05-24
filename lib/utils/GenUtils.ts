@@ -126,28 +126,43 @@ export function getIconPath(name: string): string {
 }
 
 /**
+ * Returns the theme-specific icon path by replacing black/white with the current theme color.
+ * @param baseName - Base icon name (e.g. settings_black_24dp.svg)
+ * @param isDark - Whether the theme is dark
+ * @returns resolved icon relative path
+ */
+export function getThemeIconPath(baseName: string, isDark: boolean = true): string {
+    const colorSuffix = isDark ? "white" : "black";
+    const resolvedName = baseName.replace(/_(black|white)_/, `_${colorSuffix}_`);
+    return getIconPath(resolvedName);
+}
+
+/**
  * Lookup and returns icon path for given deviceType
  * @param deviceType - Type of device
+ * @param isDark - Whether the theme is dark
  * @returns icon relative path
  */
-export function getDeviceIcon(deviceType: string): string {
-    let path = "";
+export function getDeviceIcon(deviceType: string, isDark: boolean = true): string {
+    const colorSuffix = isDark ? "white" : "black";
+    let iconName = "";
     switch (deviceType) {
         case DeviceType.ETHERNET:
-            path = getIconPath("ethernet_black_24dp.svg");
+            iconName = `ethernet_black_24dp.svg`;
             break;
         case DeviceType.WIFI:
-            path = getIconPath("wifi_black_24dp.svg");
+            iconName = `wifi_black_24dp.svg`;
             break;
         case DeviceType.BLUETOOTH:
-            path = getIconPath("bluetooth_black_24dp.svg");
+            iconName = `bluetooth_black_24dp.svg`;
             break;
         case DeviceType.MODEM:
-            path = getIconPath("modem_black_24dp.svg");
+            iconName = `modem_24dp.svg`;
             break;
         default:
-            path = getIconPath("device_hub_black_24dp.svg");
+            iconName = `device_hub_black_24dp.svg`;
             break;
     }
-    return path;
+    const resolvedName = iconName.replace(/_(black|white)_/, `_${colorSuffix}_`);
+    return getIconPath(resolvedName);
 }

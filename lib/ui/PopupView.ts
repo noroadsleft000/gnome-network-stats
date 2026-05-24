@@ -12,7 +12,7 @@ import { DeviceMenuTitleItem } from "./DeviceMenuTitleItem.js";
 import { Broadcasters } from "../utils/Broadcasters.js";
 import { DisplayMode } from "../utils/Constants.js";
 import { registerGObjectClass } from "../utils/gjs.js";
-import { getDeviceIcon, getIconPath } from "../utils/GenUtils.js";
+import { getDeviceIcon, getIconPath, getThemeIconPath } from "../utils/GenUtils.js";
 import { ExtensionUtils } from "../utils/ExtensionUtils.js";
 import type { AppSettingsModel, ListenerFunc } from "../AppSettingsModel.ts";
 import type { Logger } from "../utils/Logger.ts";
@@ -33,6 +33,15 @@ export class PopupView extends PanelMenuButton {
     private _dataUsage: St.Button;
     private _settings: St.Button;
     private _settingsListener?: ListenerFunc;
+    private _gtkThemeId?: number;
+    private _interfaceSettings: Gio.Settings;
+    private _colorSchemeId?: number;
+    private _upIcon!: St.Icon;
+    private _downIcon!: St.Icon;
+    private _upDownIcon!: St.Icon;
+    private _bothSpeedIcon!: St.Icon;
+    private _settingIcon!: St.Icon;
+    private _totalIcon!: St.Icon;
 
     constructor(
         private _logger: Logger,
@@ -66,32 +75,38 @@ export class PopupView extends PanelMenuButton {
             gicon: Gio.icon_new_for_string(getIconPath("arrow_up_black_24dp.svg")),
             style_class: "system-status-icon"
         });
+        this._upIcon = upIcon;
 
         const downIcon = new St.Icon({
             gicon: Gio.icon_new_for_string(getIconPath("arrow_down_black_24dp.svg")),
             style_class: "system-status-icon"
         });
+        this._downIcon = downIcon;
 
         const upDownIcon = new St.Icon({
             gicon: Gio.icon_new_for_string(getIconPath("arrow_updown_black_24dp.svg")),
             style_class: "system-status-icon"
         });
+        this._upDownIcon = upDownIcon;
 
         const bothSpeedIcon = new St.Icon({
             gicon: Gio.icon_new_for_string(getIconPath("arrow_both_black_24dp.svg")),
             style_class: "system-status-icon"
         });
+        this._bothSpeedIcon = bothSpeedIcon;
 
         const settingIcon = new St.Icon({
             //icon_name: "emblem-system",
             gicon: Gio.icon_new_for_string(getIconPath("settings_black_24dp.svg")),
             style_class: "system-status-icon"
         });
+        this._settingIcon = settingIcon;
 
         const totalIcon = new St.Icon({
             gicon: Gio.icon_new_for_string(getIconPath("data_usage_black_24dp.svg")),
             style_class: "system-status-icon"
         });
+        this._totalIcon = totalIcon;
 
         this._totalSpeed = new St.Button({
             style_class: "ns-action-button",
@@ -198,6 +213,16 @@ export class PopupView extends PanelMenuButton {
             this.updateGroupButtonsState();
         });
         this.addDefaultMenuItems();
+
+        // theme settings & dynamic switching
+        this._interfaceSettings = new Gio.Settings({ schema_id: "org.gnome.desktop.interface" });
+        this._colorSchemeId = this._interfaceSettings.connect("changed::color-scheme", () => {
+            this.updateThemeClass();
+        });
+        this._gtkThemeId = this._interfaceSettings.connect("changed::gtk-theme", () => {
+            this.updateThemeClass();
+        });
+        this.updateThemeClass();
     }
 
     destructor() {
@@ -224,6 +249,67 @@ export class PopupView extends PanelMenuButton {
         this.toggleButtonState(this._downloadSpeed, displayMode == DisplayMode.DOWNLOAD_SPEED);
         this.toggleButtonState(this._bothSpeed, displayMode == DisplayMode.BOTH_SPEED);
         this.toggleButtonState(this._dataUsage, displayMode == DisplayMode.TOTAL_DATA);
+    }
+
+    /**
+     * Helper to check if theme is dark.
+     * @returns True if dark theme is preferred or active.
+     */
+    isDarkTheme(): boolean {
+        const colorScheme = this._interfaceSettings.get_string("color-scheme");
+        const gtkTheme = this._interfaceSettings.get_string("gtk-theme");
+
+        // GNOME Shell default is dark unless light scheme or a light theme is explicitly preferred
+        const isLight =
+            colorScheme === "prefer-light" ||
+            (gtkTheme.toLowerCase().includes("light") && colorScheme !== "prefer-dark");
+        return !isLight;
+    }
+
+    /**
+     * Updates the CSS theme class on the menu actor based on the system color scheme.
+     */
+    updateThemeClass(): void {
+        const isDark = this.isDarkTheme();
+
+        if (isDark) {
+            this.menu.actor.remove_style_class_name("theme-light");
+            this.menu.actor.add_style_class_name("theme-dark");
+        } else {
+            this.menu.actor.remove_style_class_name("theme-dark");
+            this.menu.actor.add_style_class_name("theme-light");
+        }
+
+        this.updateIcons(isDark);
+    }
+
+    /**
+     * Updates all menu and sub-menu icons to match dark/light theme.
+     * @param isDark - Whether the current theme is dark
+     */
+    updateIcons(isDark: boolean): void {
+        if (this._upIcon) {
+            this._upIcon.gicon = Gio.icon_new_for_string(getThemeIconPath("arrow_up_black_24dp.svg", isDark));
+        }
+        if (this._downIcon) {
+            this._downIcon.gicon = Gio.icon_new_for_string(getThemeIconPath("arrow_down_black_24dp.svg", isDark));
+        }
+        if (this._upDownIcon) {
+            this._upDownIcon.gicon = Gio.icon_new_for_string(getThemeIconPath("arrow_updown_black_24dp.svg", isDark));
+        }
+        if (this._bothSpeedIcon) {
+            this._bothSpeedIcon.gicon = Gio.icon_new_for_string(getThemeIconPath("arrow_both_black_24dp.svg", isDark));
+        }
+        if (this._settingIcon) {
+            this._settingIcon.gicon = Gio.icon_new_for_string(getThemeIconPath("settings_black_24dp.svg", isDark));
+        }
+        if (this._totalIcon) {
+            this._totalIcon.gicon = Gio.icon_new_for_string(getThemeIconPath("data_usage_black_24dp.svg", isDark));
+        }
+
+        for (const item of Object.values(this._menuItems)) {
+            item.updateTheme(isDark);
+        }
     }
 
     /**
@@ -340,7 +426,8 @@ export class PopupView extends PanelMenuButton {
      */
     updateItem(device: DeviceViewModel): void {
         let menuItem = this._menuItems[device.name];
-        const iconPath = getDeviceIcon(device.type);
+        const isDark = this.isDarkTheme();
+        const iconPath = getDeviceIcon(device.type, isDark);
         const extendedDeviceStats = { ...device, iconPath };
         if (!menuItem) {
             menuItem = new ExpandableDeviceMenuItem(extendedDeviceStats, {
@@ -348,6 +435,7 @@ export class PopupView extends PanelMenuButton {
                 onResetClicked: this.onResetClicked.bind(this, device.name),
                 onMarkDefaultClicked: this.onMarkDefaultClicked.bind(this, device.name)
             });
+            menuItem.updateTheme(isDark);
             this.popupMenu.addMenuItem(menuItem);
             this._menuItems[device.name] = menuItem;
         } else {
@@ -418,6 +506,10 @@ export class PopupView extends PanelMenuButton {
 
     /** @override */
     destroy(): void {
+        if (this._colorSchemeId) {
+            this._interfaceSettings.disconnect(this._colorSchemeId);
+            this._colorSchemeId = undefined;
+        }
         if (this.menu) {
             this.menu.close();
         }
