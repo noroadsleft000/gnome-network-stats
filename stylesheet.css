@@ -11,7 +11,7 @@
 
 .h-line {
     height: 1px;
-    background: #bbb;
+    background: rgba(255, 255, 255, 0.15); /* default dark fallback line color */
 }
 
 .icon-16 {
@@ -62,42 +62,142 @@
     text-align: right;
 }
 
+/* Default Fallback Style (Dark style by default since GNOME Shell menus are dark by default) */
 .ns-button {
     padding: 6px;
-    border: 1px solid #bbb;
-    background: #f9f9f9;
+    border: 1px solid #5a5a5d;
+    background: #48484b;
     cursor: pointer;
+    border-radius: 4px;
+    color: #ffffff;
 }
 
 .ns-button:hover {
-    background: #ccc;
+    background: #525255;
 }
 
 .ns-button:active {
-    background: #aaa;
+    background: #3e3e41;
 }
 
 .ns-action-button {
     padding: 6px;
-    border: 1px solid #bbb;
-    background: #f9f9f9;
+    border: 1px solid #5a5a5d;
+    background: #48484b;
     width: 16px;
     height: 16px;
     cursor: pointer;
+    border-radius: 4px;
 }
 
 .ns-action-button:hover {
-    background: #ccc;
+    background: #525255;
 }
 
 .ns-action-button:active {
-    background: #aaa;
+    background: #3e3e41;
 }
 
 .ns-action-button-down {
-    background: #bbb;
+    background: #3e3e41;
 }
 
 .ns-text-button {
     padding: 4px 6px;
+}
+
+.system-status-icon,
+.icon-16,
+.icon-24 {
+    color: #ffffff;
+}
+
+/* ========================================== */
+/* Light Theme Overrides                      */
+/* ========================================== */
+
+.theme-light .ns-button {
+    border: 1px solid #d2d2d5;
+    background: #e4e4e4;
+    color: #222222;
+}
+
+.theme-light .ns-button:hover {
+    background: #d9d9d9;
+}
+
+.theme-light .ns-button:active {
+    background: #c8c8c8;
+}
+
+.theme-light .ns-action-button {
+    border: 1px solid #d2d2d5;
+    background: #e4e4e4;
+}
+
+.theme-light .ns-action-button:hover {
+    background: #d9d9d9;
+}
+
+.theme-light .ns-action-button:active {
+    background: #c8c8c8;
+}
+
+.theme-light .ns-action-button-down {
+    background: #c8c8c8;
+}
+
+.theme-light .h-line {
+    background: rgba(0, 0, 0, 0.15);
+}
+
+.theme-light .system-status-icon,
+.theme-light .icon-16,
+.theme-light .icon-24 {
+    color: #222222;
+}
+
+/* ========================================== */
+/* Dark Theme Overrides                       */
+/* ========================================== */
+
+.theme-dark .ns-button {
+    border: 1px solid #5a5a5d;
+    background: #48484b;
+    color: #ffffff;
+}
+
+.theme-dark .ns-button:hover {
+    background: #525255;
+}
+
+.theme-dark .ns-button:active {
+    background: #3e3e41;
+}
+
+.theme-dark .ns-action-button {
+    border: 1px solid #5a5a5d;
+    background: #48484b;
+}
+
+.theme-dark .ns-action-button:hover {
+    background: #525255;
+}
+
+.theme-dark .ns-action-button:active {
+    background: #3e3e41;
+}
+
+.theme-dark .ns-action-button-down {
+    background: #3e3e41;
+}
+
+.theme-dark .h-line {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.theme-dark .system-status-icon,
+.theme-dark .icon-16,
+.theme-dark .icon-24 {
+    color: #ffffff;
 }

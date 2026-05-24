@@ -114,7 +114,20 @@ clean:
 .PHONY: debug
 debug: install
 	@echo "starting debug session..."
-	dbus-run-session -- gnome-shell --nested --wayland
+	export G_MESSAGES_DEBUG=all; \
+	export SHELL_DEBUG=all; \
+	SHELL_VERSION=$$(gnome-shell --version | cut -d' ' -f3); \
+	MAJOR_VERSION=$$(echo "$$SHELL_VERSION" | cut -d'.' -f1); \
+	if [ "$$MAJOR_VERSION" -ge 49 ]; then \
+		dbus-run-session gnome-shell --devkit --wayland; \
+	else \
+		dbus-run-session gnome-shell --nested --wayland; \
+	fi
+
+.PHONY: logout
+logout:
+	gnome-session-quit --logout --no-prompt
+
 
 .PHONY: help
 help:
