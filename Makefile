@@ -39,9 +39,9 @@ pack: $(OUTPUT)
 		cp $$mo_file dist/$$mo_file; \
 	done
 	
-	# copy compiled schema
+	# copy schema xml files
 	@mkdir -p dist/schemas
-	@cp -r schemas dist
+	@cp $(SCHEMA_FILES) dist/schemas/
 	
 	# Copy selective root files to dist/
 	@for file in $(EXTRA_FILES); do \
@@ -85,6 +85,7 @@ install: pack
 	mkdir -p $(LOCAL_INSTALL)
 	rm -rf $(LOCAL_INSTALL)
 	unzip $(UUID).zip -d $(LOCAL_INSTALL)
+	glib-compile-schemas $(LOCAL_INSTALL)/schemas
 
 .PHONY: uninstall
 uninstall:
