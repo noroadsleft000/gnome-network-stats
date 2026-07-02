@@ -115,7 +115,16 @@ export class DevicePresenter {
             }
             this._stats = stats;
         }
-        Broadcasters.deviceResetMessageBroadcaster?.subscribe(this.resetDeviceStats.bind(this));
+        Broadcasters.deviceResetMessageBroadcaster?.subscribe(this.resetDeviceStats);
+    }
+
+    /**
+     * Deinitializes the device presenter.
+     * It unsubscribes from broadcasters and deinitializes the device monitor.
+     */
+    deinit(): void {
+        Broadcasters.deviceResetMessageBroadcaster?.unsubscribe(this.resetDeviceStats);
+        this._deviceMonitor.deinit();
     }
 
     /**
@@ -438,7 +447,7 @@ export class DevicePresenter {
      * Reset the stats for a specific device.
      * It updates the stats in memory and also in the settings.
      */
-    resetDeviceStats({ name }: { name: string }): void {
+    resetDeviceStats = ({ name }: { name: string }): void => {
         const now = new Date();
         this._logger.info(`Resetting the device ${name} at ${now.toString()}`);
         if (this._stats[name]) {
@@ -457,7 +466,7 @@ export class DevicePresenter {
             };
             this._appSettingsModel.replaceDeviceInfo(name, deviceLogs);
         }
-    }
+    };
 
     /**
      * Reset all devices stats. Remove all the devices which are not active.
