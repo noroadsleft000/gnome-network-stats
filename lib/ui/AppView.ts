@@ -106,11 +106,12 @@ export class AppView {
      * @param size - text size
      */
     setTitleTextSize(size: number): void {
-        if (this._statusFontSize !== size && size >= 10) {
-            this._statusFontSize = size;
-            this._label.style += `font-size: ${size}px`;
+        if (size >= 10) {
+            const sz = Math.max(10, size || 14);
+            this._statusFontSize = sz;
+            this._label.style += `font-size: ${sz}px;`;
             if (this._popupView) {
-                this._popupView.setTitleTextSize(size);
+                this._popupView.setTitleTextSize(sz);
             }
         }
     }
