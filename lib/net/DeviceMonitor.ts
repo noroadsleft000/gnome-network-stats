@@ -34,6 +34,7 @@ export class DeviceMonitor {
     private _defaultGw: string = "";
     private _netMgrSignals: number[] = [];
     private _netMgrStateChangeSignals: SignalConnection[] = [];
+    private _reloadTimeout: number | null = null;
 
     constructor(private _logger: Logger) {
         this._textDecoder = new TextDecoder();
@@ -162,22 +163,10 @@ export class DeviceMonitor {
      */
     init(): void {
         this._netMgrSignals.push(
-            this._client.connect("any-device-added", this._deviceChanged.bind(this))
-        );
-        this._netMgrSignals.push(
-            this._client.connect("any-device-removed", this._deviceChanged.bind(this))
-        );
-        this._netMgrSignals.push(
             this._client.connect("device-added", this._deviceChanged.bind(this))
         );
         this._netMgrSignals.push(
             this._client.connect("device-removed", this._deviceChanged.bind(this))
-        );
-        this._netMgrSignals.push(
-            this._client.connect("connection-added", this._connectionChanged.bind(this))
-        );
-        this._netMgrSignals.push(
-            this._client.connect("connection-removed", this._connectionChanged.bind(this))
         );
         this._netMgrSignals.push(
             this._client.connect("active-connection-added", this._connectionChanged.bind(this))
@@ -197,10 +186,16 @@ export class DeviceMonitor {
      * It disconnects from the network manager signals.
      */
     deinit(): void {
+        if (this._reloadTimeout) {
+            GLib.source_remove(this._reloadTimeout);
+            this._reloadTimeout = null;
+        }
+        this._disconnectDeviceStateChangeSignals();
         this._netMgrSignals.forEach((sigId) => {
             this._client.disconnect(sigId);
         });
         this._netMgrSignals = [];
+        this._devices = {};
     }
 
     /**
@@ -212,6 +207,7 @@ export class DeviceMonitor {
     private _loadDevices(): void {
         // disconnect "state-changed" signals of previously stored devices.
         this._disconnectDeviceStateChangeSignals();
+        this._devices = {};
 
         const fileContent = GLib.file_get_contents("/proc/net/dev");
         const lines = this._textDecoder.decode(fileContent[1]).split("\n");
@@ -228,21 +224,29 @@ export class DeviceMonitor {
             devices.push(deviceName);
         }
         for (const name of devices) {
-            const deviceObj = this._client.get_device_by_iface(name);
-            const addresses = this._getIPAddress(deviceObj, GLib.SYSDEF_AF_INET);
-            const type = this.getDeviceType(deviceObj);
-            const active = this.isActive(deviceObj);
-            const metered = this.isMetered(deviceObj);
-            const dummy = this.isDummy(deviceObj);
-            this._devices[name] = {
-                name,
-                type,
-                device: deviceObj,
-                ip: addresses[0] || "",
-                active,
-                metered,
-                dummy
-            };
+            try {
+                const deviceObj = this._client.get_device_by_iface(name);
+                if (deviceObj == null) {
+                    // Skip interfaces not managed by NetworkManager (e.g. Docker veth pairs)
+                    continue;
+                }
+                const addresses = this._getIPAddress(deviceObj, GLib.SYSDEF_AF_INET);
+                const type = this.getDeviceType(deviceObj);
+                const active = this.isActive(deviceObj);
+                const metered = this.isMetered(deviceObj);
+                const dummy = this.isDummy(deviceObj);
+                this._devices[name] = {
+                    name,
+                    type,
+                    device: deviceObj,
+                    ip: addresses[0] || "",
+                    active,
+                    metered,
+                    dummy
+                };
+            } catch (e) {
+                this._logger.info(`Skipping device '${name}': ${e}`);
+            }
         }
 
         // connect "state-changed" signals of new stored devices.
@@ -299,11 +303,26 @@ export class DeviceMonitor {
     }
 
     /**
+     * Schedules a debounced reload of devices.
+     * Multiple rapid signal callbacks are collapsed into a single reload.
+     */
+    private _scheduleReload(): void {
+        if (this._reloadTimeout) {
+            GLib.source_remove(this._reloadTimeout);
+        }
+        this._reloadTimeout = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 500, () => {
+            this._reloadTimeout = null;
+            this._loadDevices();
+            return GLib.SOURCE_REMOVE;
+        });
+    }
+
+    /**
      * Handles the device state changed signal.
      * It reloads the devices.
      */
     private _deviceStateChanged(): void {
-        this._loadDevices();
+        this._scheduleReload();
     }
 
     /**
@@ -311,7 +330,7 @@ export class DeviceMonitor {
      * It reloads the devices.
      */
     private _deviceChanged(): void {
-        this._loadDevices();
+        this._scheduleReload();
     }
 
     /**
@@ -319,7 +338,7 @@ export class DeviceMonitor {
      * It reloads the devices.
      */
     private _connectionChanged(): void {
-        this._loadDevices();
+        this._scheduleReload();
     }
 
     /**
@@ -328,11 +347,21 @@ export class DeviceMonitor {
      * @param family - IP address family
      * @returns IP addresses of the device.
      */
-    private _getIPAddress(device: NMDevice, family: number): string[] {
+    private _getIPAddress(device: NMDevice | null, family: number): string[] {
         const addresses: string[] = [];
+        if (device == null) {
+            addresses[0] = "-";
+            return addresses;
+        }
         let ipConfig: NM.IPConfig | null = null;
-        if (family == GLib.SYSDEF_AF_INET) ipConfig = device.get_ip4_config();
-        else ipConfig = device.get_ip6_config();
+        try {
+            if (family == GLib.SYSDEF_AF_INET) ipConfig = device.get_ip4_config();
+            else ipConfig = device.get_ip6_config();
+        } catch (e) {
+            this._logger.info(`Failed to get IP config for device '${device.get_iface()}': ${e}`);
+            addresses[0] = "-";
+            return addresses;
+        }
 
         if (ipConfig == null) {
             this._logger.info(`No config found for device '${device.get_iface()}'`);

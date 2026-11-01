@@ -47,6 +47,7 @@ export class AppController {
         Broadcasters.titleClickedMessageBroadcaster?.unsubscribe(this.onRightClick);
         this._appSettingsModel.unsubscribe(this.onSettingChanged);
         this._devicePresenter.saveStats();
+        this._devicePresenter.deinit();
         this._appSettingsModel.deinit();
         this.uninstallTimers();
     }
