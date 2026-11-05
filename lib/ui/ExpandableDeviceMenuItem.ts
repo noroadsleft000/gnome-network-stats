@@ -5,7 +5,7 @@ import St from "gi://St";
 import { PopupSubMenuMenuItem } from "resource:///org/gnome/shell/ui/popupMenu.js";
 import { gettext as _ } from "resource:///org/gnome/shell/extensions/extension.js";
 
-import { getIconPath, getDeviceIcon, getThemeIconPath } from "../utils/GenUtils.js";
+import { getDeviceIcon, getThemeIconPath } from "../utils/GenUtils.js";
 import { registerGObjectClass } from "../utils/gjs.js";
 import { DeviceViewModel } from "../net/DevicePresenter.js";
 
@@ -220,10 +220,7 @@ export class ExpandableDeviceMenuItem extends PopupSubMenuMenuItem {
      * @returns The new row as a St.BoxLayout.
      */
     addNewRowWithItems(items: St.Widget[]): St.BoxLayout {
-        const box = new St.BoxLayout({
-            style_class: "popup-menu-item",
-            vertical: false
-        });
+        const box = new St.BoxLayout({ style_class: "popup-menu-item" });
         for (const item of items) {
             box.add_child(item);
         }

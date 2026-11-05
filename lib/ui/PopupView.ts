@@ -356,7 +356,7 @@ export class PopupView extends PanelMenuButton {
      * Adds default top menu items to the popup menu
      */
     addDefaultMenuItems() {
-        const box = new St.BoxLayout({ style_class: "view-item", vertical: false });
+        const box = new St.BoxLayout({ style_class: "view-item" });
         box.add_child(this._totalSpeed);
         box.add_child(this._downloadSpeed);
         box.add_child(this._uploadSpeed);
