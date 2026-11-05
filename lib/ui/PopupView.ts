@@ -516,6 +516,10 @@ export class PopupView extends PanelMenuButton {
             this._interfaceSettings.disconnect(this._colorSchemeId);
             this._colorSchemeId = undefined;
         }
+        if (this._gtkThemeId) {
+            this._interfaceSettings.disconnect(this._gtkThemeId);
+            this._gtkThemeId = undefined;
+        }
         if (this.menu) {
             this.menu.close();
         }
