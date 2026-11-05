@@ -3,6 +3,7 @@ import St from "gi://St";
 
 import { MainPanel } from "./MainPanel.js";
 import { PopupView } from "./PopupView.js";
+import { connectLegacyPress } from "../utils/ShellCompat.js";
 import type { Logger } from "../utils/Logger.js";
 import type { AppSettingsModel } from "../AppSettingsModel.js";
 import type { DevicePresenter } from "../net/DevicePresenter.js";
@@ -59,7 +60,7 @@ export class AppView {
         });
 
         button.set_child(label);
-        button.connect("button-press-event", this.showDropDown);
+        connectLegacyPress(button, this.showDropDown);
         return { label, button };
     }
 

@@ -12,6 +12,7 @@ import { DeviceMenuTitleItem } from "./DeviceMenuTitleItem.js";
 import { Broadcasters } from "../utils/Broadcasters.js";
 import { DisplayMode } from "../utils/Constants.js";
 import { registerGObjectClass } from "../utils/gjs.js";
+import { connectButtonActivated, connectLegacyPress } from "../utils/ShellCompat.js";
 import { getDeviceIcon, getIconPath, getThemeIconPath } from "../utils/GenUtils.js";
 import { ExtensionUtils } from "../utils/ExtensionUtils.js";
 import type { AppSettingsModel, ListenerFunc } from "../AppSettingsModel.ts";
@@ -174,31 +175,31 @@ export class PopupView extends PanelMenuButton {
             y_expand: true
         });
 
-        this._settings.connect("button-press-event", () => {
+        connectButtonActivated(this._settings, () => {
             ExtensionUtils.openPreferences();
         });
 
-        this._totalSpeed.connect("button-press-event", () => {
+        connectButtonActivated(this._totalSpeed, () => {
             //this._logger.debug("total speed button pressed");
             this._appSettingsModel.displayMode = DisplayMode.TOTAL_SPEED;
             this.updateGroupButtonsState();
         });
-        this._downloadSpeed.connect("button-press-event", () => {
+        connectButtonActivated(this._downloadSpeed, () => {
             //this._logger.debug("download speed button pressed");
             this._appSettingsModel.displayMode = DisplayMode.DOWNLOAD_SPEED;
             this.updateGroupButtonsState();
         });
-        this._uploadSpeed.connect("button-press-event", () => {
+        connectButtonActivated(this._uploadSpeed, () => {
             //this._logger.debug("upload speed button pressed");
             this._appSettingsModel.displayMode = DisplayMode.UPLOAD_SPEED;
             this.updateGroupButtonsState();
         });
-        this._bothSpeed.connect("button-press-event", () => {
+        connectButtonActivated(this._bothSpeed, () => {
             //this._logger.debug("upload speed button pressed");
             this._appSettingsModel.displayMode = DisplayMode.BOTH_SPEED;
             this.updateGroupButtonsState();
         });
-        this._dataUsage.connect("button-press-event", () => {
+        connectButtonActivated(this._dataUsage, () => {
             //this._logger.debug("total data button pressed");
             this._appSettingsModel.displayMode = DisplayMode.TOTAL_DATA;
             this.updateGroupButtonsState();
@@ -206,7 +207,9 @@ export class PopupView extends PanelMenuButton {
         this.updateGroupButtonsState();
 
         // connect to main button click event
-        this.connect("button-press-event", this.onMainButtonClicked.bind(this));
+        connectLegacyPress(this, (button) => {
+            this.onMainButtonClicked(button);
+        });
 
         // connect to app settings model change event
         this._settingsListener = this._appSettingsModel.subscribe(() => {
@@ -314,18 +317,16 @@ export class PopupView extends PanelMenuButton {
 
     /**
      * Handles the main button click event
-     * @param _button - button that was clicked
-     * @param event - event that was triggered
+     * @param button - number of the mouse button that was clicked
      */
-    onMainButtonClicked(_button: St.Button, event: Clutter.Event): void {
-        //this._logger.debug(event);
+    onMainButtonClicked(button: number): void {
         const broadcaster = Broadcasters.titleClickedMessageBroadcaster;
         if (broadcaster) {
-            if (event.get_button() == 1) {
+            if (button == 1) {
                 broadcaster.broadcast({ button: "left" });
-            } else if (event.get_button() == 2) {
+            } else if (button == 2) {
                 broadcaster.broadcast({ button: "middle" });
-            } else if (event.get_button() == 3) {
+            } else if (button == 3) {
                 broadcaster.broadcast({ button: "right" });
             }
         }
@@ -356,7 +357,7 @@ export class PopupView extends PanelMenuButton {
      * Adds default top menu items to the popup menu
      */
     addDefaultMenuItems() {
-        const box = new St.BoxLayout({ style_class: "view-item", vertical: false });
+        const box = new St.BoxLayout({ style_class: "view-item" });
         box.add_child(this._totalSpeed);
         box.add_child(this._downloadSpeed);
         box.add_child(this._uploadSpeed);
@@ -501,7 +502,12 @@ export class PopupView extends PanelMenuButton {
                 return true;
             }
         }
-        return super.vfunc_event(event);
+        // GNOME 45-49 toggle the menu from PanelMenu.Button.vfunc_event. GNOME 50+ use a
+        // ClickGesture instead, and calling the unimplemented inherited vfunc would throw.
+        if (Object.hasOwn(PanelMenuButton.prototype, "vfunc_event")) {
+            return super.vfunc_event(event);
+        }
+        return Clutter.EVENT_PROPAGATE;
     }
 
     /** @override */
@@ -509,6 +515,10 @@ export class PopupView extends PanelMenuButton {
         if (this._colorSchemeId) {
             this._interfaceSettings.disconnect(this._colorSchemeId);
             this._colorSchemeId = undefined;
+        }
+        if (this._gtkThemeId) {
+            this._interfaceSettings.disconnect(this._gtkThemeId);
+            this._gtkThemeId = undefined;
         }
         if (this.menu) {
             this.menu.close();

@@ -14,7 +14,7 @@ export class TableView extends St.BoxLayout {
      * Adds a row to the table.
      */
     addRow(...controls: St.Widget[]): void {
-        const box = new St.BoxLayout({ vertical: false });
+        const box = new St.BoxLayout();
         for (const control of controls) {
             box.add_child(control);
         }

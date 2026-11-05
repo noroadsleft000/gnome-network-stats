@@ -5,8 +5,9 @@ import St from "gi://St";
 import { PopupSubMenuMenuItem } from "resource:///org/gnome/shell/ui/popupMenu.js";
 import { gettext as _ } from "resource:///org/gnome/shell/extensions/extension.js";
 
-import { getIconPath, getDeviceIcon, getThemeIconPath } from "../utils/GenUtils.js";
+import { getDeviceIcon, getThemeIconPath } from "../utils/GenUtils.js";
 import { registerGObjectClass } from "../utils/gjs.js";
+import { connectButtonActivated } from "../utils/ShellCompat.js";
 import { DeviceViewModel } from "../net/DevicePresenter.js";
 
 export interface ExtendedDeviceStats extends DeviceViewModel {
@@ -170,7 +171,7 @@ export class ExpandableDeviceMenuItem extends PopupSubMenuMenuItem {
             y_expand: true
         });
 
-        resetButton.connect("button-press-event", onResetClicked);
+        connectButtonActivated(resetButton, onResetClicked);
         this._resetButton = resetButton;
         this.addNewRowWithItems([
             this._lastResetedTitleLabel,
@@ -203,7 +204,7 @@ export class ExpandableDeviceMenuItem extends PopupSubMenuMenuItem {
             y_expand: true
         });
 
-        makeDefaultButton.connect("button-press-event", onMarkDefaultClicked);
+        connectButtonActivated(makeDefaultButton, onMarkDefaultClicked);
         this._makeDefaultButton = makeDefaultButton;
         this.addNewRowWithItems([
             this._makeDefaultTitleLabel,
@@ -220,10 +221,7 @@ export class ExpandableDeviceMenuItem extends PopupSubMenuMenuItem {
      * @returns The new row as a St.BoxLayout.
      */
     addNewRowWithItems(items: St.Widget[]): St.BoxLayout {
-        const box = new St.BoxLayout({
-            style_class: "popup-menu-item",
-            vertical: false
-        });
+        const box = new St.BoxLayout({ style_class: "popup-menu-item" });
         for (const item of items) {
             box.add_child(item);
         }
