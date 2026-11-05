@@ -7,6 +7,7 @@ import { gettext as _ } from "resource:///org/gnome/shell/extensions/extension.j
 
 import { getDeviceIcon, getThemeIconPath } from "../utils/GenUtils.js";
 import { registerGObjectClass } from "../utils/gjs.js";
+import { connectButtonActivated } from "../utils/ShellCompat.js";
 import { DeviceViewModel } from "../net/DevicePresenter.js";
 
 export interface ExtendedDeviceStats extends DeviceViewModel {
@@ -170,7 +171,7 @@ export class ExpandableDeviceMenuItem extends PopupSubMenuMenuItem {
             y_expand: true
         });
 
-        resetButton.connect("button-press-event", onResetClicked);
+        connectButtonActivated(resetButton, onResetClicked);
         this._resetButton = resetButton;
         this.addNewRowWithItems([
             this._lastResetedTitleLabel,
@@ -203,7 +204,7 @@ export class ExpandableDeviceMenuItem extends PopupSubMenuMenuItem {
             y_expand: true
         });
 
-        makeDefaultButton.connect("button-press-event", onMarkDefaultClicked);
+        connectButtonActivated(makeDefaultButton, onMarkDefaultClicked);
         this._makeDefaultButton = makeDefaultButton;
         this.addNewRowWithItems([
             this._makeDefaultTitleLabel,
