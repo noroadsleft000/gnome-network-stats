@@ -5,7 +5,7 @@ UUID = network-stats@gnome.noroadsleft.xyz
 
 GETTEXT_PACKAGE = $(PACKAGE)
 
-LANGUAGES=en_US nl se_SV ru
+LANGUAGES=en_US nl se_SV ru hr_HR
 DOC_FILES=README.md docs/TODO.md
 SRC_FILES= extension.ts prefs.ts $(shell find lib -name "*.ts" 2>/dev/null)
 DIST_FILES=dist/extension.js dist/prefs.js $(shell find dist/lib -name "*.js" 2>/dev/null) AUTHORS LICENSE

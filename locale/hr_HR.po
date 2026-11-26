@@ -1,0 +1,197 @@
+# Croatian translations for network-stats package
+# Hrvatski prijevod za paket network-stats.
+# Copyright (C) 2026 Noroadsleft
+# This file is distributed under the same license as the network-stats package.
+# Automatically generated, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: network-stats\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-21 20:11+0100\n"
+"PO-Revision-Date: 2026-11-21 20:11+0100\n"
+"Last-Translator: AnduinOS Croatian translation contributors\n"
+"Language: hr_HR\n"
+"Language-Team: Croatian <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: prefs.js:140
+msgid "Refresh Interval (ms)"
+msgstr "Interval osvježavanja (ms)"
+
+#: prefs.js:157
+msgid "What to show in status bar"
+msgstr "Što prikazati u statusnoj traci"
+
+#: prefs.js:164 lib/ui/ExpandableDeviceMenuItem.js:209
+msgid "Total speed"
+msgstr "Ukupna brzina"
+
+#: prefs.js:165 lib/ui/ExpandableDeviceMenuItem.js:205
+msgid "Upload speed"
+msgstr "Brzina slanja"
+
+#: prefs.js:166 lib/ui/ExpandableDeviceMenuItem.js:207
+msgid "Download speed"
+msgstr "Brzina preuzimanja"
+
+#: prefs.js:167
+msgid "Upload and download speed"
+msgstr "Brzina slanja i preuzimanja"
+
+#: prefs.js:168 lib/ui/ExpandableDeviceMenuItem.js:211
+msgid "Total data used"
+msgstr "Ukupno korištenih podataka"
+
+#: prefs.js:183
+msgid "When do you want to reset the stats ?"
+msgstr "Kada želite poništiti statistiku?"
+
+#: prefs.js:190
+msgid "Daily"
+msgstr "Dnevno"
+
+#: prefs.js:191
+msgid "Weekly"
+msgstr "Tjedno"
+
+#: prefs.js:192
+msgid "BiWeekly"
+msgstr "Svaka dva tjedna"
+
+#: prefs.js:193
+msgid "Monthly"
+msgstr "Mjesečno"
+
+#: prefs.js:194
+msgid "Never"
+msgstr "Nikad"
+
+#: prefs.js:209
+msgid "Reset on day of week"
+msgstr "Dan poništavanja u tjednu"
+
+#: prefs.js:216
+msgid "Monday"
+msgstr "Ponedjeljak"
+
+#: prefs.js:217
+msgid "Tuesday"
+msgstr "Utorak"
+
+#: prefs.js:218
+msgid "Wednesday"
+msgstr "Srijeda"
+
+#: prefs.js:219
+msgid "Thursday"
+msgstr "Četvrtak"
+
+#: prefs.js:220
+msgid "Friday"
+msgstr "Petak"
+
+#: prefs.js:221
+msgid "Saturday"
+msgstr "Subota"
+
+#: prefs.js:222
+msgid "Sunday"
+msgstr "Nedjelja"
+
+#: prefs.js:237
+msgid "Reset on day of month"
+msgstr "Dan poništavanja u mjesecu"
+
+#: prefs.js:254
+msgid "What time should we reset network stats"
+msgstr "U koliko sati poništiti statistiku mreže"
+
+#: prefs.js:295
+msgid "Reset all interfaces"
+msgstr "Poništi statistiku svih sučelja"
+
+#: prefs.js:299
+msgid "Reset now"
+msgstr "Poništi sada"
+
+#: prefs.js:306
+msgid "Show speeds in bytes instead of bits"
+msgstr "Prikaži brzine u bajtovima umjesto u bitovima"
+
+#: prefs.js:320
+msgid "Show icon in status bar (requires reload)"
+msgstr "Prikaži ikonu u statusnoj traci (potrebno ponovno učitavanje)"
+
+#: prefs.js:334
+msgid "Font size (status label)"
+msgstr "Veličina slova (statusna oznaka)"
+
+#: prefs.js:351
+msgid "Show devices/interfaces"
+msgstr "Prikaži uređaje/sučelja"
+
+#: prefs.js:358
+msgid "All"
+msgstr "Sve"
+
+#: prefs.js:359
+msgid "Active"
+msgstr "Aktivno"
+
+#: prefs.js:360
+msgid "Metered"
+msgstr "Mjerena"
+
+#: prefs.js:361
+msgid "Prefered"
+msgstr "Preferirano"
+
+#: prefs.js:362
+msgid "Non dummy"
+msgstr "Prava sučelja"
+
+#: lib/ui/ExpandableDeviceMenuItem.js:158
+msgid "Make Default"
+msgstr "Postavi kao zadano"
+
+#. details
+#: lib/ui/ExpandableDeviceMenuItem.js:203
+msgid "IP"
+msgstr "IP"
+
+#: lib/ui/ExpandableDeviceMenuItem.js:212
+msgid "Since last reset"
+msgstr "Od posljednjeg poništavanja"
+
+#: lib/ui/ExpandableDeviceMenuItem.js:213
+msgid "Last reset at"
+msgstr "Posljednje poništavanje"
+
+#: lib/ui/ExpandableDeviceMenuItem.js:217
+msgid "Yes"
+msgstr "Da"
+
+#: lib/ui/ExpandableDeviceMenuItem.js:221
+msgid "No"
+msgstr "Ne"
+
+#: lib/ui/ExpandableDeviceMenuItem.js:225
+msgid "Default device"
+msgstr "Zadani uređaj"
+
+#: lib/ui/PopupView.js:339
+msgid "Device"
+msgstr "Uređaj"
+
+#: lib/ui/PopupView.js:339
+msgid "Speed"
+msgstr "Brzina"
+
+#: lib/ui/PopupView.js:339
+msgid "Data Used"
+msgstr "Iskorišteni podaci"
